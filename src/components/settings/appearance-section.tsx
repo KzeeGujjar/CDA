@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import { Laptop, Moon, Sun, type LucideIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/utils";
 
 const themeOptions: { value: "light" | "dark" | "system"; icon: LucideIcon }[] = [
@@ -15,6 +16,7 @@ const themeOptions: { value: "light" | "dark" | "system"; icon: LucideIcon }[] =
 export function AppearanceSection() {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
+  const mounted = useMounted();
 
   return (
     <Card>
@@ -27,7 +29,7 @@ export function AppearanceSection() {
       <CardContent>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {themeOptions.map((option) => {
-            const isActive = theme === option.value;
+            const isActive = mounted && theme === option.value;
             const Icon = option.icon;
             return (
               <button

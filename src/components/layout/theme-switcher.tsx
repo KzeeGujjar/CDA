@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/utils";
 
 const themeOptions = [
@@ -21,8 +22,9 @@ const themeOptions = [
 export function ThemeSwitcher() {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
+  const mounted = useMounted();
 
-  const active = themeOptions.find((o) => o.value === theme) ?? themeOptions[2];
+  const active = (mounted && themeOptions.find((o) => o.value === theme)) || themeOptions[2];
   const ActiveIcon = active.icon;
 
   return (

@@ -25,9 +25,9 @@ export function DashboardAdBanner() {
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
             <Megaphone className="size-4" />
           </div>
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <div className="flex min-w-0 items-center gap-2">
-              <span className="truncate text-sm font-medium text-foreground">{ad.title}</span>
+              <span className="text-sm font-medium text-foreground">{ad.title}</span>
               {ad.badge && (
                 <Badge variant="default" className="shrink-0">
                   {ad.badge}
