@@ -63,6 +63,27 @@ const cannedRules: CannedRule[] = [
       "Based on comparable UAE listings and current mileage, I'd position this trade-in within 3-5% of market average — high enough to protect margin, low enough to move within 30 days. Want me to run a full valuation?",
   },
   {
+    keywords: [
+      "bank financing",
+      "bank finance",
+      "financing evaluation",
+      "bank valuation",
+      "loan valuation",
+      "finance evaluation",
+      "mortgage valuation",
+      "adib",
+      "adcb",
+      "enbd",
+      "dib",
+      "eib",
+      "fab",
+      "al hilal",
+      "mashreq",
+    ],
+    response:
+      "We can prepare an official bank-financing valuation report for ADIB, ADCB, Emirates Islamic (EIB), Emirates NBD (ENBD), Dubai Islamic Bank (DIB), FAB, Al Hilal Bank, and Mashreq Bank. Each evaluation costs AED 300 per vehicle. You can submit a request from the Vehicle Valuation page under \"Bank Financing Evaluation.\"",
+  },
+  {
     keywords: ["valuation", "value", "worth"],
     response:
       "I can pull a market valuation for you — head to Vehicle Valuation and enter the make, model, year, and mileage, and I'll estimate a value range with comparable listings.",

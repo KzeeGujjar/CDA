@@ -419,7 +419,37 @@
     "confidence": "Confidence",
     "comparables": "Comparable listings",
     "compareVehicles": "Compare vehicles",
-    "addToCompare": "Add to comparison"
+    "addToCompare": "Add to comparison",
+    "bankFinancing": {
+      "title": "Bank Financing Evaluation",
+      "subtitle": "Request an official valuation report for a customer's bank auto-finance application.",
+      "feeNotice": "This evaluation costs AED {fee} per vehicle, payable by the customer at the time of request.",
+      "form": {
+        "vehicle": "Vehicle",
+        "vehiclePlaceholder": "Select a vehicle",
+        "bank": "Bank",
+        "bankPlaceholder": "Select a bank",
+        "customerName": "Customer name",
+        "notes": "Notes",
+        "submit": "Request evaluation"
+      },
+      "table": {
+        "vehicle": "Vehicle",
+        "bank": "Bank",
+        "customer": "Customer",
+        "fee": "Fee",
+        "status": "Status",
+        "requested": "Requested"
+      },
+      "status": {
+        "requested": "Requested",
+        "in_review": "In review",
+        "completed": "Completed",
+        "rejected": "Rejected"
+      },
+      "empty": "No bank evaluation requests yet.",
+      "success": "Evaluation requested — AED 300 fee applies. We'll notify you once the report is ready."
+    }
   },
   "aiMarketing": {
     "title": "AI Marketing",

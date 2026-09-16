@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FormField } from "@/components/forms/form-field";
 import { DataTable, type DataTableColumn } from "@/components/tables/data-table";
 import { ValuationGauge } from "@/components/vehicles/valuation-gauge";
+import { BankEvaluationSection } from "@/components/vehicles/bank-evaluation-section";
 import { ErrorState } from "@/components/shared/error-state";
 import { formatMoney } from "@/components/shared/currency";
 import { getMarketValuation } from "@/services/valuation";
@@ -125,6 +126,8 @@ function ValuationForm() {
           )}
         </div>
       </div>
+
+      <BankEvaluationSection />
     </>
   );
 }

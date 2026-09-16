@@ -1,0 +1,40 @@
+import type { BankEvaluationRequest } from "@/types/bank-evaluation";
+
+export const bankEvaluationsFixture: BankEvaluationRequest[] = [
+  {
+    id: "bev-001",
+    vehicleId: "veh-004",
+    vehicleLabel: "2023 Lexus LX",
+    bankCode: "enbd",
+    bankName: "Emirates NBD",
+    customerName: "Mariam Al Zaabi",
+    fee: { amount: 300, currency: "AED" },
+    status: "completed",
+    requestedAt: "2026-09-08T09:00:00Z",
+    completedAt: "2026-09-09T13:30:00Z",
+    estimatedValue: { amount: 268000, currency: "AED" },
+    reportReference: "BFE-2026-0091",
+  },
+  {
+    id: "bev-002",
+    vehicleId: "veh-002",
+    vehicleLabel: "2023 Nissan Patrol",
+    bankCode: "adib",
+    bankName: "Abu Dhabi Islamic Bank",
+    customerName: "Ahmed Al Mazrouei",
+    fee: { amount: 300, currency: "AED" },
+    status: "in_review",
+    requestedAt: "2026-09-13T10:15:00Z",
+  },
+  {
+    id: "bev-003",
+    vehicleId: "veh-005",
+    vehicleLabel: "2024 BMW X7",
+    bankCode: "dib",
+    bankName: "Dubai Islamic Bank",
+    customerName: "Omar Al Falasi",
+    fee: { amount: 300, currency: "AED" },
+    status: "requested",
+    requestedAt: "2026-09-14T08:45:00Z",
+  },
+];
