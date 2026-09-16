@@ -1,0 +1,1185 @@
+{
+  "app": {
+    "name": "ऑटोमाइंड AI",
+    "tagline": "एआई कार डीलर एजेंट"
+  },
+  "nav": {
+    "groups": {
+      "overview": "अवलोकन",
+      "ai": "एआई",
+      "vehiclesInventory": "वाहन और इन्वेंटरी",
+      "salesCrm": "सेल्स और ग्राहक",
+      "marketIntelligence": "मार्केट इंटेलिजेंस",
+      "marketing": "मार्केटिंग",
+      "operations": "संचालन",
+      "system": "सिस्टम"
+    },
+    "dashboard": "डैशबोर्ड",
+    "aiCarAgent": "एआई कार एजेंट",
+    "vehicles": "वाहन",
+    "inventory": "इन्वेंटरी",
+    "buyVehicles": "वाहन खरीदें",
+    "sellVehicles": "वाहन बेचें",
+    "leads": "लीड्स",
+    "customers": "ग्राहक",
+    "deals": "डील्स",
+    "marketIntelligence": "मार्केट इंटेलिजेंस",
+    "priceAnalyzer": "प्राइस एनालाइज़र",
+    "profitCalculator": "प्रॉफिट कैलकुलेटर",
+    "vehicleValuation": "वाहन मूल्यांकन",
+    "aiMarketing": "एआई मार्केटिंग",
+    "contractsDocuments": "अनुबंध और दस्तावेज़",
+    "tasks": "कार्य",
+    "messages": "संदेश",
+    "reports": "रिपोर्ट्स",
+    "settings": "सेटिंग्स",
+    "aiActivity": "एआई गतिविधि"
+  },
+  "common": {
+    "search": "खोजें",
+    "searchPlaceholder": "वाहन, ग्राहक, लीड्स, डील्स, दस्तावेज़, टास्क, संदेश खोजें...",
+    "viewAll": "सभी देखें",
+    "seeDetails": "विवरण देखें",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "saveChanges": "परिवर्तन सहेजें",
+    "create": "बनाएं",
+    "add": "जोड़ें",
+    "loading": "लोड हो रहा है...",
+    "noResults": "कोई परिणाम नहीं मिला",
+    "status": "स्थिति",
+    "actions": "कार्रवाइयाँ",
+    "back": "वापस",
+    "next": "अगला",
+    "filters": "फ़िल्टर",
+    "clearFilters": "फ़िल्टर हटाएं",
+    "send": "संदेश भेजें",
+    "copy": "कॉपी करें",
+    "openNavigation": "नेविगेशन मेनू खोलें",
+    "moreActions": "अधिक कार्रवाइयां",
+    "skipToContent": "मुख्य सामग्री पर जाएं",
+    "collapseSidebar": "साइडबार संकुचित करें",
+    "expandSidebar": "साइडबार विस्तृत करें",
+    "comingSoon": "जल्द आ रहा है",
+    "comingSoonDescription": "यह सुविधा हमारे रोडमैप में है और यह लाइव एआई तथा डीलरशिप डेटा से जुड़ेगी।",
+    "whatItWillDo": "यह क्या करेगा",
+    "quickAdd": "त्वरित जोड़ें",
+    "newVehicle": "नया वाहन",
+    "newLead": "नया लीड",
+    "newDeal": "नई डील",
+    "notifications": "सूचनाएं",
+    "markAllRead": "सभी को पढ़ा हुआ चिह्नित करें",
+    "noNotifications": "कोई नई सूचना नहीं",
+    "profile": "प्रोफ़ाइल",
+    "signOut": "साइन आउट",
+    "dealership": "डीलरशिप",
+    "switchDealership": "डीलरशिप बदलें",
+    "language": "भाषा",
+    "theme": "थीम",
+    "demoMode": "डेमो मोड",
+    "demoModeTooltip": "यह वर्कस्पेस वास्तविक नमूना डेटा पर चलता है — कोई लाइव बैकएंड कनेक्ट नहीं है।",
+    "today": "आज",
+    "yesterday": "कल",
+    "askAi": "एआई से पूछें",
+    "aed": "दिरहम",
+    "download": "डाउनलोड",
+    "aiConversations": "एआई बातचीत",
+    "permissionDeniedTitle": "आपको इस तक पहुंच नहीं है",
+    "permissionDeniedDescription": "आपकी भूमिका में इस सेक्शन की अनुमति शामिल नहीं है। पहुंच के लिए डीलर मालिक या एडमिन से संपर्क करें।",
+    "somethingWentWrong": "कुछ गलत हो गया",
+    "somethingWentWrongDescription": "हम इसे लोड नहीं कर सके। कृपया पुनः प्रयास करें।",
+    "retry": "पुनः प्रयास करें",
+    "previous": "पिछला",
+    "next": "अगला",
+    "pageOf": "पेज {page} / {total}",
+    "sortBy": "इसके अनुसार क्रमबद्ध करें",
+    "signIn": "साइन इन करें",
+    "signingIn": "साइन इन हो रहा है...",
+    "email": "ईमेल",
+    "password": "पासवर्ड"
+  },
+  "theme": {
+    "light": "लाइट",
+    "dark": "डार्क",
+    "system": "सिस्टम"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "subtitle": "आज आपकी डीलरशिप का प्रदर्शन इस प्रकार है।",
+    "kpi": {
+      "totalVehicles": "कुल वाहन",
+      "availableVehicles": "उपलब्ध वाहन",
+      "vehiclesSold": "बिके हुए वाहन",
+      "vehiclesPurchased": "खरीदे गए वाहन",
+      "totalInventoryValue": "कुल इन्वेंटरी मूल्य",
+      "expectedRevenue": "अपेक्षित राजस्व",
+      "grossProfit": "सकल लाभ",
+      "monthlySales": "मासिक बिक्री",
+      "newLeads": "नई लीड्स",
+      "conversionRate": "रूपांतरण दर"
+    },
+    "salesTrend": "बिक्री का रुझान",
+    "recentLeads": "हाल के लीड्स",
+    "inventoryAging": "इन्वेंटरी एजिंग",
+    "upcomingFollowUps": "आगामी फॉलो-अप",
+    "aiCopilotPrompt": "अपनी डीलरशिप के बारे में अपने एआई सहायक से कुछ भी पूछें",
+    "aiCopilotPlaceholder": "उदाहरण: कौन से वाहन सबसे लंबे समय से स्टॉक में हैं?",
+    "aiInsights": {
+      "title": "एआई मार्केट इनसाइट"
+    }
+  },
+  "inventory": {
+    "title": "इन्वेंटरी",
+    "subtitle": "अपनी डीलरशिप के स्टॉक के हर वाहन को प्रबंधित करें।",
+    "addVehicle": "वाहन जोड़ें",
+    "gridView": "ग्रिड",
+    "tableView": "टेबल",
+    "make": "मेक",
+    "model": "मॉडल",
+    "variant": "वेरिएंट",
+    "year": "वर्ष",
+    "price": "मांगी गई कीमत",
+    "status": "स्थिति",
+    "daysInStock": "स्टॉक में दिन",
+    "condition": "स्थिति",
+    "vin": "वीआईएन",
+    "mileage": "माइलेज",
+    "location": "स्थान",
+    "getValuation": "एआई मार्केट वैल्यूएशन प्राप्त करें",
+    "stockNumber": "स्टॉक नंबर",
+    "engine": "इंजन",
+    "horsepower": "हॉर्सपावर",
+    "transmission": "ट्रांसमिशन",
+    "fuelType": "ईंधन प्रकार",
+    "exteriorColor": "बाहरी रंग",
+    "interiorColor": "आंतरिक रंग",
+    "seats": "सीटें",
+    "bodyType": "बॉडी प्रकार",
+    "importSpec": "स्पेसिफिकेशन",
+    "emirate": "अमीरात",
+    "allEmirates": "सभी अमीरात",
+    "sourceType": "वाहन स्रोत",
+    "accidentHistory": "दुर्घटना इतिहास",
+    "serviceHistory": "सर्विस इतिहास",
+    "owners": "मालिकों की संख्या",
+    "purchasePrice": "खरीद मूल्य",
+    "repairCost": "मरम्मत लागत",
+    "transportCost": "परिवहन लागत",
+    "totalCost": "कुल लागत",
+    "expectedSellingPrice": "अपेक्षित बिक्री मूल्य",
+    "estimatedMarketValue": "अनुमानित बाज़ार मूल्य",
+    "expectedProfit": "अपेक्षित लाभ",
+    "profitMargin": "लाभ मार्जिन",
+    "tabs": {
+      "overview": "अवलोकन",
+      "history": "इतिहास",
+      "documents": "दस्तावेज़",
+      "service": "सर्विस इतिहास",
+      "inspection": "निरीक्षण",
+      "aiAnalysis": "एआई विश्लेषण",
+      "inquiries": "ग्राहक पूछताछ",
+      "notes": "नोट्स",
+      "tasks": "कार्य",
+      "timeline": "टाइमलाइन",
+      "pricingMargin": "मूल्य और मार्जिन",
+      "activity": "गतिविधि"
+    },
+    "actions": {
+      "edit": "संपादित करें",
+      "sell": "बेचें",
+      "reserve": "आरक्षित करें",
+      "generateQuote": "कोटेशन बनाएं",
+      "generateContract": "अनुबंध बनाएं",
+      "aiAnalyze": "एआई विश्लेषण करें",
+      "compare": "तुलना करें",
+      "share": "साझा करें",
+      "print": "प्रिंट करें",
+      "linkCopied": "लिंक कॉपी हो गया",
+      "contractComingSoon": "बैकएंड से जुड़ने के बाद अनुबंध जनरेशन उपलब्ध होगा"
+    },
+    "pricing": {
+      "aboveMarket": "बाज़ार से ऊपर",
+      "belowMarket": "बाज़ार से नीचे",
+      "reviewPricing": "कीमत की समीक्षा करें"
+    },
+    "inspection": {
+      "pass": "उत्तीर्ण",
+      "needsAttention": "ध्यान देने की आवश्यकता"
+    },
+    "statuses": {
+      "available": "उपलब्ध",
+      "reserved": "आरक्षित",
+      "sold": "बिका हुआ",
+      "purchased": "खरीदा गया",
+      "in_transit": "पारगमन में",
+      "under_inspection": "निरीक्षण में",
+      "under_repair": "मरम्मत में",
+      "archived": "संग्रहीत"
+    },
+    "importSpecs": {
+      "GCC": "जीसीसी स्पेसिफिकेशन",
+      "UAE": "यूएई स्पेसिफिकेशन",
+      "Imported": "आयातित वाहन"
+    },
+    "emirates": {
+      "dubai": "दुबई",
+      "abu_dhabi": "अबू धाबी",
+      "sharjah": "शारजाह",
+      "ajman": "अजमान",
+      "ras_al_khaimah": "रास अल खैमाह",
+      "fujairah": "फुजैराह",
+      "umm_al_quwain": "उम्म अल क़ुवैन"
+    },
+    "sourceTypes": {
+      "export": "निर्यात वाहन",
+      "import": "आयात वाहन",
+      "auction": "नीलामी वाहन",
+      "dealer": "डीलर वाहन",
+      "private": "निजी वाहन"
+    },
+    "registration": {
+      "title": "पंजीकरण और आरटीए जानकारी",
+      "status": "पंजीकरण स्थिति",
+      "statuses": {
+        "registered": "पंजीकृत",
+        "not_registered": "अपंजीकृत",
+        "pending_transfer": "स्थानांतरण लंबित"
+      },
+      "plateNumber": "प्लेट नंबर",
+      "expiryDate": "पंजीकरण समाप्ति",
+      "rtaNotes": "आरटीए जानकारी",
+      "rtaNotesPlaceholder": "जैसे सालिक टैग, मुलकिया नंबर, ट्रैफ़िक फ़ाइल संदर्भ...",
+      "rtaNotesEmpty": "अभी तक कोई आरटीए जानकारी दर्ज नहीं है।",
+      "placeholderNotice": "केवल संदर्भ फ़ील्ड — उपलब्ध होने पर आधिकारिक आरटीए सेवाओं से जुड़ेगा।"
+    },
+    "sort": {
+      "recent": "हाल ही में जोड़ा गया",
+      "priceDesc": "कीमत: अधिक से कम",
+      "priceAsc": "कीमत: कम से अधिक",
+      "yearDesc": "नवीनतम मॉडल पहले",
+      "daysDesc": "स्टॉक में सबसे लंबा समय"
+    }
+  },
+  "leads": {
+    "title": "लीड्स",
+    "subtitle": "अपने सेल्स पाइपलाइन में हर खरीदार को ट्रैक करें।",
+    "newLead": "नया लीड",
+    "newLeadDescription": "एक लीड बनाएं और उसे किसी सेल्सपर्सन को सौंपें।",
+    "createdToast": "नए लीड के रूप में जोड़ा गया",
+    "viewCustomerProfile": "ग्राहक प्रोफ़ाइल देखें",
+    "stages": {
+      "new": "नया",
+      "contacted": "संपर्क किया गया",
+      "qualified": "योग्य",
+      "viewing": "निरीक्षण",
+      "negotiation": "बातचीत",
+      "won": "जीता",
+      "lost": "खोया"
+    },
+    "sources": {
+      "website": "वेबसाइट",
+      "walk_in": "वॉक-इन",
+      "referral": "रेफ़रल",
+      "social_media": "सोशल मीडिया",
+      "marketplace": "मार्केटप्लेस",
+      "phone": "फ़ोन"
+    },
+    "fields": {
+      "customer": "ग्राहक",
+      "budget": "बजट",
+      "score": "स्कोर",
+      "source": "स्रोत",
+      "lastContact": "अंतिम संपर्क",
+      "pipelineValue": "पाइपलाइन वैल्यू"
+    },
+    "aiScoring": {
+      "title": "AI लीड स्कोरिंग",
+      "leadScore": "लीड स्कोर",
+      "purchaseProbability": "खरीद की संभावना",
+      "recommendedAction": "अनुशंसित कार्रवाई",
+      "classifications": {
+        "hot": "हॉट लीड",
+        "warm": "वॉर्म लीड",
+        "cold": "कोल्ड लीड"
+      },
+      "actions": {
+        "hot": "15 मिनट के भीतर संपर्क करें।",
+        "warm": "2 घंटे के भीतर फॉलो-अप करें।",
+        "cold": "नर्चर कैंपेन में जोड़ें — 3 दिनों के भीतर फॉलो-अप करें।"
+      }
+    },
+    "nextFollowUp": "अगला फॉलो-अप",
+    "assignedTo": "सौंपा गया",
+    "interactions": "बातचीत",
+    "addNote": "नोट जोड़ें",
+    "scheduleFollowUp": "फॉलो-अप शेड्यूल करें",
+    "changeStage": "चरण बदलें",
+    "interestedIn": "रुचि है"
+  },
+  "customers": {
+    "title": "ग्राहक",
+    "subtitle": "आपके डीलरशिप से जुड़े हर खरीदार और विक्रेता की संपूर्ण प्रोफ़ाइल।",
+    "lifetimeValue": "लाइफटाइम वैल्यू",
+    "customerSince": "ग्राहक बने",
+    "newDeal": "नई डील",
+    "interestedVehicles": "रुचि की गाड़ियां",
+    "previousPurchases": "पिछली खरीदारियां",
+    "currentNegotiations": "चल रही बातचीत",
+    "aiRecommendations": "AI सिफ़ारिशें",
+    "addNote": "नोट जोड़ें",
+    "sendMessage": "संदेश लिखें...",
+    "taskAdded": "टास्क जोड़ा गया",
+    "newTaskPlaceholder": "नए टास्क का शीर्षक",
+    "due": "नियत तारीख़",
+    "tabs": {
+      "overview": "ओवरव्यू",
+      "messages": "संदेश",
+      "calls": "कॉल्स",
+      "notes": "नोट्स",
+      "documents": "दस्तावेज़",
+      "tasks": "टास्क",
+      "timeline": "टाइमलाइन"
+    },
+    "channels": {
+      "whatsapp": "व्हाट्सएप",
+      "email": "ईमेल",
+      "sms": "एसएमएस"
+    },
+    "callOutcomes": {
+      "connected": "कॉल मिली",
+      "no_answer": "कोई जवाब नहीं",
+      "voicemail": "वॉइसमेल"
+    },
+    "documentTypes": {
+      "id": "पहचान पत्र",
+      "license": "लाइसेंस",
+      "contract": "अनुबंध",
+      "invoice": "इनवॉइस",
+      "other": "अन्य"
+    }
+  },
+  "aiAssistant": {
+    "title": "एआई कार एजेंट",
+    "subtitle": "आपका वर्चुअल सेल्स और रिसेप्शनिस्ट सहायक।",
+    "newThread": "नई बातचीत",
+    "placeholder": "इन्वेंटरी, लीड्स, मूल्य निर्धारण, या किसी भी चीज़ के बारे में पूछें...",
+    "thinking": "सोच रहा है...",
+    "suggestions": {
+      "summarizeLeads": "आज के लीड्स का सारांश दें",
+      "draftFollowUp": "व्हाट्सएप फॉलो-अप तैयार करें",
+      "agingInventory": "मेरी सबसे पुरानी इन्वेंटरी क्या है?",
+      "pricingAdvice": "मुझे इस ट्रेड-इन की कीमत कैसे तय करनी चाहिए?"
+    },
+    "marketplace": {
+      "fetchButton": "Dubizzle और YallaMotor इन्वेंट्री प्राप्त करें",
+      "prompt": "मुझे Dubizzle और YallaMotor की नवीनतम इन्वेंट्री दिखाएं",
+      "viewListing": "लिस्टिंग देखें",
+      "addToInventory": "इन्वेंट्री में जोड़ें",
+      "viewListingToast": "मार्केटप्लेस इंटीग्रेशन जुड़ने के बाद यह लाइव लिस्टिंग खोलेगा",
+      "addedToInventory": "आपकी बाय व्हीकल्स पाइपलाइन में जोड़ दिया गया"
+    },
+    "composer": {
+      "attachFile": "फ़ाइल संलग्न करें",
+      "uploadPhoto": "वाहन की फ़ोटो अपलोड करें",
+      "voiceInput": "वॉइस इनपुट",
+      "listening": "सुन रहा है...",
+      "searchWeb": "वेब पर खोजें",
+      "fileAttached": "फ़ाइल संलग्न हुई",
+      "photoAttached": "फ़ोटो संलग्न हुई"
+    },
+    "context": {
+      "vehicle": "वाहन संदर्भ",
+      "selectVehicle": "एक वाहन चुनें",
+      "removeVehicle": "वाहन संदर्भ हटाएं",
+      "customer": "ग्राहक संदर्भ",
+      "selectCustomer": "एक ग्राहक चुनें",
+      "removeCustomer": "ग्राहक संदर्भ हटाएं",
+      "recommendations": "एआई सिफारिशें",
+      "actions": "कार्य",
+      "generateQuote": "कोटेशन बनाएं",
+      "estimateValue": "बाज़ार मूल्य का अनुमान लगाएं",
+      "compareVehicle": "इस वाहन की तुलना करें"
+    }
+  },
+  "valuation": {
+    "title": "वाहन मूल्यांकन",
+    "subtitle": "किसी भी वाहन के लिए एआई-अनुमानित बाज़ार मूल्य प्राप्त करें।",
+    "compareTitle": "वाहनों की तुलना करें",
+    "form": {
+      "make": "मेक",
+      "model": "मॉडल",
+      "year": "वर्ष",
+      "mileage": "माइलेज (किमी)",
+      "condition": "स्थिति",
+      "submit": "मूल्य का अनुमान लगाएं"
+    },
+    "estimatedValue": "अनुमानित बाज़ार मूल्य",
+    "confidence": "विश्वास स्तर",
+    "comparables": "तुलनीय लिस्टिंग",
+    "compareVehicles": "वाहनों की तुलना करें",
+    "addToCompare": "तुलना में जोड़ें"
+  },
+  "aiMarketing": {
+    "title": "AI मार्केटिंग",
+    "subtitle": "किसी भी वाहन के लिए सेकंडों में विज्ञापन और सोशल कंटेंट बनाएं।",
+    "vehicleAndPhotos": "वाहन और फ़ोटो",
+    "selectVehicle": "वाहन चुनें",
+    "selectVehiclePrompt": "मार्केटिंग कंटेंट बनाने के लिए एक वाहन चुनें।",
+    "addPhotos": "फ़ोटो जोड़ें",
+    "generateContent": "कंटेंट जनरेट करें",
+    "generatedHistory": "जनरेट किया गया कंटेंट",
+    "translate": "अनुवाद करें",
+    "copied": "क्लिपबोर्ड पर कॉपी हो गया",
+    "includeInCampaign": "कैंपेन में शामिल करें",
+    "emptyState": "अभी तक कोई कंटेंट जनरेट नहीं हुआ",
+    "emptyStateDescription": "अपना पहला कंटेंट बनाने के लिए ऊपर से कोई फ़ंक्शन चुनें।",
+    "createCampaign": "कैंपेन बनाएं",
+    "campaignNamePlaceholder": "कैंपेन का नाम",
+    "piecesSelected": "आइटम चुने गए",
+    "pastCampaigns": "कैंपेन",
+    "campaignCreatedToast": "कैंपेन बन गया",
+    "types": {
+      "vehicleAd": "वाहन विज्ञापन",
+      "instagramCaption": "इंस्टाग्राम कैप्शन",
+      "facebookPost": "फेसबुक पोस्ट",
+      "tiktokScript": "टिकटॉक स्क्रिप्ट",
+      "whatsappMessage": "व्हाट्सएप संदेश",
+      "email": "ईमेल",
+      "listingDescription": "लिस्टिंग विवरण",
+      "seoDescription": "SEO विवरण",
+      "translatedAd": "विज्ञापन का अनुवाद"
+    },
+    "channels": {
+      "advertisement": "विज्ञापन",
+      "instagram": "इंस्टाग्राम",
+      "facebook": "फेसबुक",
+      "tiktok": "टिकटॉक",
+      "whatsapp": "व्हाट्सएप",
+      "email": "ईमेल",
+      "listing": "लिस्टिंग",
+      "seo": "SEO"
+    },
+    "statuses": {
+      "draft": "ड्राफ्ट",
+      "scheduled": "शेड्यूल्ड",
+      "published": "प्रकाशित"
+    }
+  },
+  "contractsDocuments": {
+    "title": "अनुबंध और दस्तावेज़",
+    "subtitle": "हर डील से जुड़ा दस्तावेज़ बनाएं, प्रबंधित करें और हस्ताक्षर करें।",
+    "tabs": {
+      "documents": "दस्तावेज़",
+      "assistant": "AI सहायक"
+    },
+    "newDocument": "नया दस्तावेज़",
+    "editDocument": "दस्तावेज़ संपादित करें",
+    "formDescription": "दस्तावेज़ जनरेशन और ई-हस्ताक्षर एकीकरण बाद में बैकएंड से जोड़ा जाएगा — यह फ़ॉर्म केवल दस्तावेज़ रिकॉर्ड बनाता और ट्रैक करता है।",
+    "allTypes": "सभी प्रकार",
+    "createdToast": "दस्तावेज़ बन गया",
+    "updatedToast": "दस्तावेज़ अपडेट हो गया",
+    "previewDisclaimer": "यह एक सिम्युलेटेड पूर्वावलोकन है। बैकएंड से जुड़ने पर असली PDF जनरेशन उपलब्ध होगी।",
+    "fields": {
+      "type": "दस्तावेज़ प्रकार",
+      "title": "शीर्षक",
+      "vehicle": "वाहन",
+      "customer": "ग्राहक",
+      "preparedBy": "तैयार किया गया"
+    },
+    "types": {
+      "purchaseAgreement": "वाहन खरीद अनुबंध",
+      "salesAgreement": "वाहन बिक्री अनुबंध",
+      "quotation": "कोटेशन",
+      "invoice": "इनवॉइस",
+      "receipt": "रसीद",
+      "inspectionReport": "निरीक्षण रिपोर्ट",
+      "deliveryForm": "डिलीवरी फॉर्म",
+      "customerAgreement": "ग्राहक अनुबंध"
+    },
+    "statuses": {
+      "draft": "ड्राफ्ट",
+      "pending_signature": "हस्ताक्षर लंबित",
+      "signed": "हस्ताक्षरित",
+      "completed": "पूर्ण"
+    },
+    "actions": {
+      "edit": "संपादित करें",
+      "preview": "पूर्वावलोकन",
+      "download": "डाउनलोड",
+      "print": "प्रिंट",
+      "share": "शेयर",
+      "sign": "हस्ताक्षर करें",
+      "signedToast": "दस्तावेज़ पर हस्ताक्षर हो गए",
+      "downloaded": "दस्तावेज़ डाउनलोड हो गया",
+      "linkCopied": "लिंक क्लिपबोर्ड पर कॉपी हो गया",
+      "copy": "कॉपी करें",
+      "copied": "क्लिपबोर्ड पर कॉपी हो गया"
+    },
+    "aiAssistant": {
+      "intro": "मुझसे अनुबंध बनाने, कोटेशन तैयार करने, रिपोर्ट का सारांश देने, दस्तावेज़ का अनुवाद करने, या छूटी हुई जानकारी जांचने के लिए कहें।",
+      "placeholder": "AI दस्तावेज़ सहायक से पूछें...",
+      "previewTitle": "AI-जनित दस्तावेज़ पूर्वावलोकन",
+      "noPreview": "जनरेट किए गए दस्तावेज़ यहां दिखाई देंगे।",
+      "prompts": {
+        "createPurchaseAgreement": "एक वाहन खरीद अनुबंध बनाएं।",
+        "prepareQuotation": "इस ग्राहक के लिए कोटेशन तैयार करें।",
+        "summarizeInspection": "इस निरीक्षण रिपोर्ट का सारांश दें।",
+        "translateArabic": "इस दस्तावेज़ का अरबी में अनुवाद करें।",
+        "findMissingInfo": "छूटी हुई जानकारी ढूंढें।"
+      }
+    }
+  },
+  "tasks": {
+    "title": "टास्क",
+    "subtitle": "हर फॉलो-अप, निरीक्षण और डिलीवरी पर नज़र रखें।",
+    "newTask": "नया टास्क",
+    "newTaskDescription": "एक टास्क बनाएं और उसे किसी टीम सदस्य को सौंपें।",
+    "createdToast": "टास्क बन गया",
+    "buckets": {
+      "today": "आज",
+      "upcoming": "आगामी",
+      "overdue": "विलंबित",
+      "completed": "पूर्ण"
+    },
+    "categories": {
+      "followUp": "ग्राहक से फॉलो-अप",
+      "inspection": "वाहन निरीक्षण",
+      "photography": "वाहन फ़ोटोग्राफ़ी",
+      "documents": "दस्तावेज़ अपलोड करें",
+      "call": "ग्राहक को कॉल करें",
+      "quotation": "कोटेशन भेजें",
+      "service": "वाहन सर्विस",
+      "delivery": "वाहन डिलीवरी"
+    },
+    "priorities": {
+      "low": "कम",
+      "medium": "मध्यम",
+      "high": "उच्च"
+    },
+    "fields": {
+      "title": "टास्क शीर्षक",
+      "category": "श्रेणी",
+      "priority": "प्राथमिकता",
+      "dueDate": "नियत तारीख़",
+      "assignee": "सौंपा गया",
+      "vehicle": "वाहन",
+      "customer": "ग्राहक"
+    }
+  },
+  "messages": {
+    "title": "मैसेज",
+    "subtitle": "व्हाट्सएप, ईमेल, एसएमएस, वेबसाइट चैट और आपके AI एजेंट के लिए एक एकीकृत इनबॉक्स।",
+    "allChannels": "सभी चैनल",
+    "replyPlaceholder": "जवाब लिखें...",
+    "channels": {
+      "whatsapp": "व्हाट्सएप",
+      "email": "ईमेल",
+      "sms": "एसएमएस",
+      "websiteChat": "वेबसाइट चैट",
+      "aiAgent": "AI एजेंट"
+    }
+  },
+  "deals": {
+    "title": "डील्स",
+    "subtitle": "कोटेशन बनाएं, स्वीकृतियों को ट्रैक करें, और अनुबंधों में बदलें।",
+    "newDeal": "नई डील",
+    "customer": "ग्राहक",
+    "vehicle": "वाहन",
+    "lineItems": "लाइन आइटम",
+    "vat": "वैट (5%)",
+    "subtotal": "उप-योग",
+    "total": "कुल",
+    "convertToContract": "अनुबंध में बदलें",
+    "statuses": {
+      "draft": "ड्राफ्ट",
+      "sent": "भेजा गया",
+      "accepted": "स्वीकृत",
+      "converted_to_contract": "अनुबंध में बदला गया",
+      "declined": "अस्वीकृत"
+    }
+  },
+  "aiActivity": {
+    "title": "एआई गतिविधि",
+    "subtitle": "आपके एआई सहायक द्वारा की गई हर कार्रवाई का लाइव ऑडिट ट्रेल।",
+    "allActions": "सभी कार्रवाइयाँ",
+    "allStatuses": "सभी स्थितियाँ",
+    "kpi": {
+      "totalActions": "कुल कार्रवाइयाँ",
+      "completed": "पूर्ण",
+      "needsReview": "समीक्षा आवश्यक",
+      "timeSaved": "बचाया गया समय"
+    },
+    "table": {
+      "time": "समय",
+      "action": "एआई कार्रवाई",
+      "vehicle": "वाहन",
+      "customer": "ग्राहक",
+      "result": "परिणाम",
+      "status": "स्थिति"
+    },
+    "actions": {
+      "valuation": "एआई मूल्यांकन",
+      "leadScoring": "एआई लीड स्कोरिंग",
+      "marketingContent": "एआई मार्केटिंग",
+      "documentGeneration": "एआई दस्तावेज़ निर्माण",
+      "documentTranslation": "एआई दस्तावेज़ अनुवाद",
+      "documentSummary": "एआई दस्तावेज़ सारांश",
+      "priceAnalysis": "एआई मूल्य विश्लेषण",
+      "chatResponse": "एआई कार एजेंट का जवाब",
+      "followUpSuggestion": "एआई फ़ॉलो-अप सुझाव"
+    },
+    "status": {
+      "completed": "पूर्ण",
+      "in_progress": "जारी है",
+      "needs_review": "समीक्षा आवश्यक",
+      "failed": "विफल"
+    }
+  },
+  "login": {
+    "title": "साइन इन करें",
+    "subtitle": "अपने एआई कार डीलर एजेंट वर्कस्पेस में वापसी पर स्वागत है।",
+    "error": "हम आपको साइन इन नहीं कर सके। अपनी जानकारी जांचें और पुनः प्रयास करें।",
+    "placeholderNotice": "प्रमाणीकरण एक प्लेसहोल्डर है — एक वास्तविक पहचान प्रदाता को जोड़ने पर यह स्क्रीन बाकी ऐप को बदले बिना बदल जाएगी।"
+  },
+  "reports": {
+    "title": "रिपोर्ट्स",
+    "subtitle": "एक नज़र में डीलरशिप के प्रदर्शन को समझें।",
+    "tabs": {
+      "sales": "बिक्री रिपोर्ट",
+      "purchase": "खरीद रिपोर्ट",
+      "profit": "लाभ रिपोर्ट",
+      "inventory": "इन्वेंटरी रिपोर्ट",
+      "leads": "लीड रिपोर्ट",
+      "salesperson": "सेल्सपर्सन प्रदर्शन",
+      "vehiclePerformance": "वाहन प्रदर्शन",
+      "market": "बाज़ार रिपोर्ट",
+      "aiPerformance": "एआई प्रदर्शन"
+    },
+    "export": {
+      "pdf": "PDF निर्यात करें",
+      "excel": "Excel निर्यात करें",
+      "csv": "CSV निर्यात करें",
+      "comingSoon": "रिपोर्टिंग को लाइव डेटा से जोड़ने के बाद निर्यात उपलब्ध होगा।"
+    },
+    "kpi": {
+      "totalRevenue": "कुल राजस्व",
+      "unitsSold": "बिकी हुई इकाइयाँ",
+      "avgSalePrice": "औसत बिक्री मूल्य",
+      "avgDaysToSell": "बिक्री के औसत दिन",
+      "totalSpend": "कुल व्यय",
+      "unitsPurchased": "खरीदी गई इकाइयाँ",
+      "avgCostPerUnit": "प्रति इकाई औसत लागत",
+      "grossProfit": "सकल लाभ",
+      "netMargin": "शुद्ध मार्जिन",
+      "avgProfitPerUnit": "प्रति इकाई औसत लाभ",
+      "totalUnits": "कुल इकाइयाँ",
+      "totalValue": "कुल मूल्य",
+      "avgDaysInStock": "स्टॉक में औसत दिन",
+      "totalLeads": "कुल लीड्स",
+      "conversionRate": "रूपांतरण दर",
+      "avgResponseTime": "औसत प्रतिक्रिया समय",
+      "totalInteractions": "कुल इंटरैक्शन",
+      "satisfaction": "संतुष्टि दर",
+      "timeSaved": "बचाया गया समय"
+    },
+    "charts": {
+      "salesTrend": "बिक्री का रुझान",
+      "revenueByMake": "मेक के अनुसार राजस्व",
+      "purchaseTrend": "खरीद का रुझान",
+      "purchasesBySource": "स्रोत के अनुसार खरीद",
+      "profitTrend": "लाभ का रुझान",
+      "profitByMake": "मेक के अनुसार लाभ",
+      "inventoryAging": "इन्वेंटरी एजिंग",
+      "inventoryByStatus": "स्थिति के अनुसार इन्वेंटरी",
+      "leadFunnel": "चरण के अनुसार लीड फ़नल",
+      "leadsBySource": "स्रोत के अनुसार लीड्स",
+      "revenueByRep": "सेल्सपर्सन के अनुसार राजस्व",
+      "dealsByRep": "सेल्सपर्सन के अनुसार डील्स",
+      "topSellingModels": "सबसे ज़्यादा बिकने वाले मॉडल",
+      "slowestMoving": "सबसे धीमी गति से बिकने वाला स्टॉक",
+      "demandByCategory": "श्रेणी के अनुसार मांग",
+      "priceTrend": "बाज़ार मूल्य रुझान",
+      "usageTrend": "एआई उपयोग रुझान"
+    },
+    "table": {
+      "date": "तिथि",
+      "reference": "संदर्भ",
+      "vehicle": "वाहन",
+      "customer": "ग्राहक",
+      "salesperson": "सेल्सपर्सन",
+      "salePrice": "बिक्री मूल्य",
+      "supplier": "आपूर्तिकर्ता",
+      "purchasePrice": "खरीद मूल्य",
+      "transportCost": "परिवहन लागत",
+      "totalCost": "कुल लागत",
+      "costPrice": "लागत मूल्य",
+      "sellingPrice": "विक्रय मूल्य",
+      "grossProfit": "सकल लाभ",
+      "margin": "मार्जिन",
+      "status": "स्थिति",
+      "daysInStock": "स्टॉक में दिन",
+      "currentPrice": "वर्तमान मूल्य",
+      "location": "स्थान",
+      "source": "स्रोत",
+      "stage": "चरण",
+      "assignedTo": "सौंपा गया",
+      "score": "स्कोर",
+      "leadsAssigned": "सौंपी गई लीड्स",
+      "dealsWon": "जीती गई डील्स",
+      "conversionRate": "रूपांतरण दर",
+      "revenue": "राजस्व",
+      "avgResponse": "औसत प्रतिक्रिया",
+      "make": "मेक",
+      "daysToSell": "बिक्री के दिन",
+      "views": "व्यूज़",
+      "inquiries": "पूछताछ",
+      "model": "मॉडल",
+      "avgMarketPrice": "औसत बाज़ार मूल्य",
+      "yourAvgPrice": "आपका औसत मूल्य",
+      "demandIndex": "मांग सूचकांक",
+      "trend": "रुझान",
+      "feature": "एआई फ़ीचर",
+      "interactions": "इंटरैक्शन",
+      "successRate": "सफलता दर",
+      "avgResponseTime": "औसत प्रतिक्रिया समय",
+      "timeSaved": "बचाया गया समय"
+    }
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "subtitle": "अपनी प्रोफ़ाइल, डीलरशिप, और प्लेटफ़ॉर्म प्राथमिकताएं प्रबंधित करें।",
+    "nav": {
+      "profile": "प्रोफ़ाइल",
+      "dealership": "डीलरशिप",
+      "users": "उपयोगकर्ता",
+      "rolesPermissions": "भूमिकाएं और अनुमतियां",
+      "notifications": "सूचनाएं",
+      "aiSettings": "एआई सेटिंग्स",
+      "integrations": "एकीकरण",
+      "language": "भाषा",
+      "appearance": "दिखावट",
+      "currency": "मुद्रा",
+      "tax": "कर",
+      "documentTemplates": "दस्तावेज़ टेम्पलेट्स",
+      "marketplaceConnections": "मार्केटप्लेस कनेक्शन",
+      "security": "सुरक्षा",
+      "billing": "बिलिंग",
+      "apiKeys": "एपीआई कीज़",
+      "dashboardAds": "डैशबोर्ड विज्ञापन",
+      "demoData": "डेमो डेटा"
+    },
+    "profile": {
+      "subtitle": "प्लेटफ़ॉर्म पर आपका नाम और संपर्क विवरण कैसे दिखते हैं, इसे प्रबंधित करें।",
+      "avatarComingSoon": "अकाउंट्स को लाइव स्टोरेज से जोड़ने के बाद फ़ोटो अपलोड उपलब्ध होगा।",
+      "fullName": "पूरा नाम",
+      "email": "ईमेल",
+      "phone": "फ़ोन",
+      "saved": "प्रोफ़ाइल अपडेट हो गई"
+    },
+    "dealership": {
+      "subtitle": "आपकी डीलरशिप की पहचान, संपर्क विवरण, और शाखाएं।",
+      "nameEn": "नाम (अंग्रेज़ी)",
+      "nameAr": "नाम (अरबी)",
+      "phone": "फ़ोन",
+      "email": "ईमेल",
+      "address": "पता",
+      "saved": "डीलरशिप विवरण अपडेट हो गया",
+      "branches": "शाखाएं",
+      "branchesSubtitle": "वे स्थान जिनके बीच आपकी टीम प्लेटफ़ॉर्म पर स्विच कर सकती है।",
+      "editComingSoon": "अकाउंट्स को लाइव डेटा से जोड़ने के बाद शाखा संपादन उपलब्ध होगा।",
+      "hours": "कारोबारी घंटे",
+      "hoursSubtitle": "शोरूम आने के बारे में पूछने वाले ग्राहकों को दिखाया जाता है।",
+      "closed": "बंद",
+      "days": {
+        "mon": "सोमवार",
+        "tue": "मंगलवार",
+        "wed": "बुधवार",
+        "thu": "गुरुवार",
+        "fri": "शुक्रवार",
+        "sat": "शनिवार",
+        "sun": "रविवार"
+      }
+    },
+    "users": {
+      "subtitle": "प्रबंधित करें कि आपकी डीलरशिप के वर्कस्पेस तक किसकी पहुंच है।",
+      "invite": "उपयोगकर्ता आमंत्रित करें",
+      "name": "नाम",
+      "email": "ईमेल",
+      "role": "भूमिका",
+      "removed": "उपयोगकर्ता हटाया गया",
+      "inviteTitle": "एक उपयोगकर्ता को आमंत्रित करें",
+      "inviteDescription": "अपनी डीलरशिप के वर्कस्पेस में शामिल होने का निमंत्रण भेजें।",
+      "sendInvite": "निमंत्रण भेजें",
+      "invited": "{name} को निमंत्रण भेजा गया",
+      "status": {
+        "active": "सक्रिय",
+        "invited": "आमंत्रित"
+      }
+    },
+    "rolesPermissions": {
+      "subtitle": "भूमिकाएं परिभाषित करें और नियंत्रित करें कि हर भूमिका किन मॉड्यूल तक पहुंच सकती है।",
+      "matrixTitle": "अनुमति मैट्रिक्स",
+      "matrixSubtitle": "भूमिका के अनुसार मॉड्यूल पहुंच टॉगल करें। एडमिन के पास हमेशा पूर्ण पहुंच होती है।",
+      "module": "मॉड्यूल",
+      "saved": "अनुमतियां अपडेट हो गईं",
+      "roles": {
+        "superAdmin": "सुपर एडमिन",
+        "dealerOwner": "डीलर मालिक",
+        "manager": "मैनेजर",
+        "salesperson": "सेल्सपर्सन",
+        "buyer": "खरीदार",
+        "accountant": "अकाउंटेंट",
+        "marketingManager": "मार्केटिंग मैनेजर",
+        "viewer": "दर्शक"
+      },
+      "roleDescriptions": {
+        "superAdmin": "हर डीलरशिप, मॉड्यूल, और सेटिंग — बिलिंग और एपीआई कीज़ सहित — तक पूर्ण प्लेटफ़ॉर्म पहुंच।",
+        "dealerOwner": "इस डीलरशिप के डेटा और सेटिंग्स, बिलिंग और उपयोगकर्ता प्रबंधन सहित, तक पूर्ण पहुंच।",
+        "manager": "इन्वेंटरी, लीड्स, डील्स, और टीम प्रदर्शन का प्रबंधन करता है।",
+        "salesperson": "अपने को सौंपी गई लीड्स, डील्स, और दस्तावेज़ों पर काम करता है।",
+        "buyer": "इन्वेंटरी के लिए वाहन खरीद के स्रोत खोजता और बातचीत करता है।",
+        "accountant": "बिलिंग, चालान, और वित्तीय रिपोर्टिंग का प्रबंधन करता है।",
+        "marketingManager": "एआई मार्केटिंग अभियान और सामग्री बनाता और प्रबंधित करता है।",
+        "viewer": "रिपोर्टिंग और निगरानी के लिए केवल पढ़ने की पहुंच।"
+      },
+      "modules": {
+        "inventory": "इन्वेंटरी",
+        "purchasing": "वाहन खरीदें",
+        "leads": "लीड्स",
+        "deals": "डील्स",
+        "documents": "अनुबंध और दस्तावेज़",
+        "billing": "बिलिंग",
+        "marketing": "एआई मार्केटिंग",
+        "reports": "रिपोर्ट्स",
+        "settings": "सेटिंग्स",
+        "aiActivity": "एआई गतिविधि"
+      }
+    },
+    "notifications": {
+      "subtitle": "चुनें कि आपकी टीम को डीलरशिप गतिविधि के बारे में कैसे सूचित किया जाए।",
+      "event": "घटना",
+      "saved": "सूचना प्राथमिकताएं अपडेट हो गईं",
+      "channels": {
+        "email": "ईमेल",
+        "sms": "एसएमएस",
+        "push": "पुश"
+      },
+      "events": {
+        "newLead": "नई लीड सौंपी गई",
+        "taskDue": "टास्क जल्द ही देय है",
+        "documentSigned": "दस्तावेज़ पर हस्ताक्षर हुए",
+        "aiNeedsReview": "एआई कार्रवाई को समीक्षा की आवश्यकता है",
+        "newMessage": "नया ग्राहक संदेश",
+        "dealWon": "डील जीती गई"
+      }
+    },
+    "aiSettings": {
+      "subtitle": "अपनी डीलरशिप में एआई सहायक के व्यवहार को नियंत्रित करें।",
+      "tone": "एआई जवाब का लहजा",
+      "saved": "एआई सेटिंग्स अपडेट हो गईं",
+      "toggles": {
+        "autoReplyChat": {
+          "label": "वेबसाइट चैट का स्वचालित जवाब",
+          "description": "एआई एजेंट को वेबसाइट चैट पर ग्राहकों को स्वचालित रूप से जवाब देने दें।"
+        },
+        "requireApproval": {
+          "label": "दस्तावेज़ भेजने से पहले अनुमोदन आवश्यक",
+          "description": "एआई-तैयार अनुबंध और कोटेशन भेजे जाने से पहले स्टाफ़ की मंज़ूरी की प्रतीक्षा करते हैं।"
+        },
+        "autoLeadScoring": {
+          "label": "स्वचालित लीड स्कोरिंग",
+          "description": "नई लीड्स बनते ही उन्हें एआई से स्कोर करें।"
+        },
+        "autoFollowUps": {
+          "label": "स्वचालित फ़ॉलो-अप सुझाव",
+          "description": "एआई को हाल की गतिविधि के बिना लीड्स के लिए फ़ॉलो-अप टास्क सुझाने दें।"
+        }
+      },
+      "tones": {
+        "professional": "पेशेवर",
+        "friendly": "मैत्रीपूर्ण",
+        "concise": "संक्षिप्त"
+      },
+      "provider": "एआई प्रदाता",
+      "providerNote": "कनेक्ट होने के बाद बैकएंड अनुरोधों को इस प्रदाता पर भेजेगा — ऐप किसी एक प्रदाता पर निर्भर नहीं है।",
+      "providers": {
+        "openai": "OpenAI",
+        "anthropic": "Anthropic Claude",
+        "google": "Google Gemini",
+        "other": "अन्य / कस्टम"
+      }
+    },
+    "integrations": {
+      "subtitle": "उन टूल्स को कनेक्ट करें जिनका आपकी डीलरशिप पहले से उपयोग करती है।",
+      "connectedToast": "एकीकरण कनेक्ट हो गया",
+      "disconnectedToast": "एकीकरण डिस्कनेक्ट हो गया",
+      "items": {
+        "whatsapp": "व्हाट्सएप बिज़नेस एपीआई",
+        "calendar": "गूगल कैलेंडर",
+        "email": "ईमेल / SMTP",
+        "zapier": "Zapier",
+        "accounting": "अकाउंटिंग सॉफ़्टवेयर"
+      }
+    },
+    "language": {
+      "subtitle": "इंटरफ़ेस की भाषा चुनें। अरबी और उर्दू लेआउट को स्वचालित रूप से दाएं-से-बाएं में बदल देती हैं।"
+    },
+    "appearance": {
+      "subtitle": "चुनें कि इस डिवाइस पर ऑटोमाइंड AI कैसा दिखे।"
+    },
+    "currency": {
+      "subtitle": "डिफ़ॉल्ट मुद्रा और कीमतें कैसे दिखाई जाएं, यह सेट करें।",
+      "defaultCurrency": "डिफ़ॉल्ट मुद्रा",
+      "displayFormat": "प्रदर्शन प्रारूप",
+      "roundPrices": "प्रदर्शित कीमतों को राउंड करें",
+      "roundPricesDescription": "प्लेटफ़ॉर्म पर कीमतों को निकटतम पूर्ण संख्या तक राउंड करें।",
+      "saved": "मुद्रा सेटिंग्स अपडेट हो गईं",
+      "primary": "प्राथमिक",
+      "ready": "तैयार",
+      "previewTitle": "USD रूपांतरण पूर्वावलोकन",
+      "previewDescription": "AED प्लेटफ़ॉर्म की प्राथमिक मुद्रा है। अंतरराष्ट्रीय खरीदारों के लिए डेटा मॉडल और प्राइसिंग यूटिलिटीज़ में USD पूरी तरह समर्थित है, जो यूएई सेंट्रल बैंक की निश्चित पेग दर का उपयोग करता है।"
+    },
+    "tax": {
+      "subtitle": "दस्तावेज़ों और चालानों के लिए वैट और कर पंजीकरण विवरण कॉन्फ़िगर करें।",
+      "vatRate": "वैट दर (%)",
+      "trn": "कर पंजीकरण नंबर (TRN)",
+      "pricesIncludeTax": "कीमतों में कर शामिल है",
+      "pricesIncludeTaxDescription": "प्लेटफ़ॉर्म पर वाहन की कीमतें वैट सहित दिखाएं।",
+      "saved": "कर सेटिंग्स अपडेट हो गईं"
+    },
+    "documentTemplates": {
+      "subtitle": "हर जनरेट किए गए दस्तावेज़ प्रकार के लिए उपयोग की जाने वाली भाषा और लेआउट को अनुकूलित करें।",
+      "editTemplate": "टेम्पलेट संपादित करें",
+      "editComingSoon": "दस्तावेज़ निर्माण को लाइव डेटा से जोड़ने के बाद टेम्पलेट संपादन उपलब्ध होगा।"
+    },
+    "security": {
+      "subtitle": "अपना पासवर्ड, दो-चरणीय प्रमाणीकरण, और सक्रिय सत्र प्रबंधित करें।",
+      "currentPassword": "वर्तमान पासवर्ड",
+      "newPassword": "नया पासवर्ड",
+      "updatePassword": "पासवर्ड अपडेट करें",
+      "passwordChanged": "पासवर्ड अपडेट हो गया",
+      "twoFactor": "दो-चरणीय प्रमाणीकरण",
+      "twoFactorDescription": "पासवर्ड के अतिरिक्त एक सत्यापन कोड की आवश्यकता रखें।",
+      "activeSessions": "सक्रिय सत्र",
+      "activeSessionsSubtitle": "वे डिवाइस जो फ़िलहाल आपके खाते में साइन इन हैं।",
+      "thisDevice": "यह डिवाइस",
+      "signOut": "साइन आउट",
+      "signedOut": "सत्र साइन आउट हो गया"
+    },
+    "billing": {
+      "subtitle": "अपनी सदस्यता, भुगतान विधि, और चालान प्रबंधित करें।",
+      "currentPlan": "वर्तमान योजना",
+      "planName": "प्रोफेशनल",
+      "planDescription": "AED 999/माह — 10 उपयोगकर्ताओं तक और असीमित एआई कार्रवाइयां।",
+      "managePlan": "योजना प्रबंधित करें",
+      "managePlanComingSoon": "बिलिंग को लाइव भुगतान प्रदाता से जोड़ने के बाद योजना में बदलाव उपलब्ध होंगे।",
+      "paymentMethod": "भुगतान विधि",
+      "updatePayment": "भुगतान विधि अपडेट करें",
+      "updatePaymentComingSoon": "बिलिंग को लाइव भुगतान प्रदाता से जोड़ने के बाद भुगतान विधि अपडेट उपलब्ध होंगे।",
+      "invoiceHistory": "चालान इतिहास",
+      "invoiceHistorySubtitle": "अपने रिकॉर्ड के लिए पिछले चालान डाउनलोड करें।",
+      "invoice": "चालान",
+      "amount": "राशि",
+      "paid": "भुगतान किया गया",
+      "downloadComingSoon": "बिलिंग को लाइव डेटा से जोड़ने के बाद चालान डाउनलोड उपलब्ध होंगे।"
+    },
+    "apiKeys": {
+      "subtitle": "बाहरी टूल्स को आपकी डीलरशिप डेटा से जोड़ने के लिए उपयोग की जाने वाली एपीआई कीज़ प्रबंधित करें।",
+      "generate": "नई कुंजी जनरेट करें",
+      "newKeyName": "नई कुंजी",
+      "generated": "एपीआई कुंजी जनरेट हो गई",
+      "copied": "एपीआई कुंजी क्लिपबोर्ड में कॉपी हो गई",
+      "revoke": "एपीआई कुंजी रद्द करें",
+      "revoked": "एपीआई कुंजी रद्द कर दी गई",
+      "name": "नाम",
+      "key": "कुंजी",
+      "created": "निर्माण तिथि",
+      "lastUsed": "अंतिम उपयोग"
+    },
+    "dashboardAds": {
+      "title": "डैशबोर्ड प्रमोशन",
+      "subtitle": "डैशबोर्ड पर दिखाए जाने वाले प्रचार बैनर को नियंत्रित करें। कभी भी जोड़ें, संपादित करें, या हटाएं।",
+      "addAd": "प्रमोशन जोड़ें",
+      "editAd": "प्रमोशन संपादित करें",
+      "formHint": "यह बैनर इस डीलरशिप के सभी उपयोगकर्ताओं के लिए डैशबोर्ड के शीर्ष पर दिखाई देता है।",
+      "fieldTitle": "शीर्षक",
+      "fieldDescription": "विवरण",
+      "fieldCtaLabel": "बटन लेबल",
+      "fieldCtaUrl": "लिंक",
+      "fieldBadge": "बैज (वैकल्पिक)",
+      "fieldActive": "डैशबोर्ड पर दिखाएं",
+      "empty": "अभी तक कोई प्रमोशन नहीं",
+      "emptyDescription": "ऑफ़र, सुविधाओं, या घोषणाओं को हाइलाइट करने के लिए एक प्रचार बैनर जोड़ें।",
+      "confirmDeleteTitle": "इस प्रमोशन को हटाएं?",
+      "confirmDeleteDescription": "यह बैनर तुरंत डैशबोर्ड से हटा दिया जाएगा। इसे वापस नहीं लाया जा सकता।",
+      "deleted": "प्रमोशन हटा दिया गया"
+    },
+    "demoData": {
+      "subtitle": "इस वर्कस्पेस में वास्तविक नमूना डेटा पहले से लोड है ताकि लाइव बैकएंड के बिना हर सुविधा को एक्सप्लोर किया जा सके।",
+      "stats": {
+        "vehicles": "वाहन",
+        "customers": "ग्राहक",
+        "leads": "लीड्स",
+        "deals": "डील्स",
+        "aiConversations": "एआई बातचीत",
+        "documents": "दस्तावेज़",
+        "tasks": "कार्य",
+        "notifications": "सूचनाएं"
+      },
+      "resetButton": "डेमो डेटा रीसेट करें",
+      "resetConfirmTitle": "डेमो डेटा रीसेट करें?",
+      "resetConfirmDescription": "यह इस सत्र में किए गए सभी बदलावों — जैसे लीड्स को स्थानांतरित करना, कार्य पूरा करना, दस्तावेज़ बनाना — को हटाकर मूल नमूना डेटा बहाल कर देगा।",
+      "resetConfirmAction": "रीसेट करें"
+    },
+    "marketplaceConnections": {
+      "title": "मार्केटप्लेस कनेक्शन",
+      "subtitle": "अपने मार्केटप्लेस खाते कनेक्ट करें ताकि ग्राहक के पूछने पर AI एजेंट लाइव इन्वेंट्री, फ़ोटो और कीमतें प्राप्त कर सके।",
+      "connect": "कनेक्ट करें",
+      "connecting": "कनेक्ट हो रहा है...",
+      "disconnect": "डिस्कनेक्ट करें",
+      "connected": "कनेक्टेड",
+      "notConnected": "कनेक्ट नहीं है",
+      "dialogTitle": "Dubizzle कनेक्ट करें",
+      "dialogDescription": "अपने Dubizzle डीलरशिप या शोरूम पेज का लिंक पेस्ट करें। AI एजेंट इसका उपयोग आपकी लाइव इन्वेंट्री प्राप्त करने के लिए करेगा।",
+      "fieldLabel": "Dubizzle खाता लिंक",
+      "fieldPlaceholder": "https://dubizzle.com/en/motors/showroom/your-dealership",
+      "connectedToast": "Dubizzle खाता कनेक्ट हो गया",
+      "disconnectedToast": "Dubizzle खाता डिस्कनेक्ट हो गया",
+      "fetchInventory": "इन्वेंट्री प्राप्त करें",
+      "fetchDialogTitle": "Dubizzle इन्वेंट्री प्राप्त करें",
+      "fetchDialogDescription": "यह आपके Dubizzle खाते से जुड़ा लाइव स्टॉक है। चुनें कि कौन-सी लिस्टिंग आपकी इन्वेंट्री में जोड़नी हैं — आयात के बाद विवरण संपादित किए जा सकते हैं।",
+      "addToInventory": "इन्वेंट्री में जोड़ें",
+      "importing": "इन्वेंट्री में जोड़ा जा रहा है...",
+      "importedToast": "वाहन आपकी इन्वेंट्री में जोड़ दिए गए",
+      "csvRowTitle": "Dubizzle CSV एक्सपोर्ट से आयात करें",
+      "csvRowDescription": "अपनी लिस्टिंग Dubizzle से CSV फ़ाइल के रूप में एक्सपोर्ट करें और यहां अपलोड करें — लॉगिन की आवश्यकता नहीं।",
+      "csvButton": "CSV एक्सपोर्ट आयात करें",
+      "csvDialogTitle": "Dubizzle CSV एक्सपोर्ट आयात करें",
+      "csvDialogDescription": "अपने Dubizzle सेलर डैशबोर्ड से एक्सपोर्ट की गई CSV फ़ाइल अपलोड करें। हम मेक, मॉडल, वर्ष, कीमत, माइलेज और स्थान जैसे सामान्य कॉलम स्वचालित रूप से मिलाएंगे।",
+      "csvChooseFile": "एक CSV फ़ाइल चुनें",
+      "csvHint": "Dubizzle के लिस्टिंग मैनेजर से एक्सपोर्ट की गई CSV फ़ाइलें",
+      "csvChooseDifferent": "एक अलग फ़ाइल चुनें",
+      "csvInvalidRows": "पंक्तियों में आवश्यक फ़ील्ड नहीं हैं और उन्हें आयात नहीं किया जा सकता"
+    }
+  },
+  "placeholder": {
+    "generic": {
+      "description": "यह मॉड्यूल अभी सक्रिय नहीं है — यह एआई कार डीलर एजेंट के रोडमैप का हिस्सा है।",
+      "capabilities": [
+        "पूर्ण एआई-सहायता प्राप्त वर्कफ़्लो",
+        "लाइव डीलरशिप डेटा से जुड़ा हुआ",
+        "बैकएंड जुड़ने पर उपलब्ध होगा"
+      ]
+    },
+    "vehicles": {
+      "title": "वाहन",
+      "description": "अपनी इन्वेंटरी में जोड़ने से पहले जुड़े हुए मार्केटप्लेस पर वाहन खोजें और खोजें।",
+      "capabilities": [
+        "यूएई और अंतरराष्ट्रीय मार्केटप्लेस लिस्टिंग में खोजें",
+        "मिले वाहनों की तुलना अपने लक्ष्य मार्जिन से करें",
+        "एक क्लिक में बाय व्हीकल्स पाइपलाइन में जोड़ें"
+      ]
+    },
+    "buyVehicles": {
+      "title": "वाहन खरीदें",
+      "description": "आपके द्वारा खरीदे जा रहे वाहनों की सोर्सिंग और अधिग्रहण पाइपलाइन प्रबंधित करें।",
+      "capabilities": [
+        "अधिग्रहण प्रस्तावों और बातचीत को ट्रैक करें",
+        "एआई-सहायता प्राप्त खरीद मूल्य सिफारिशें",
+        "स्वीकृत प्रस्तावों को सीधे इन्वेंटरी में बदलें"
+      ]
+    },
+    "sellVehicles": {
+      "title": "वाहन बेचें",
+      "description": "इन्वेंटरी छोड़ने के लिए तैयार वाहनों के लिए बिक्री वर्कफ़्लो प्रबंधित करें।",
+      "capabilities": [
+        "जुड़े हुए सेल्स चैनलों पर वाहन सूचीबद्ध करें",
+        "एआई-जनित लिस्टिंग विवरण",
+        "एक ही स्थान पर खरीदार की रुचि और प्रस्तावों को ट्रैक करें"
+      ]
+    },
+    "customers": {
+      "title": "ग्राहक",
+      "description": "आपकी डीलरशिप से जुड़े हर खरीदार और विक्रेता के लिए एकीकृत प्रोफ़ाइल।",
+      "capabilities": [
+        "पूर्ण खरीद और बातचीत का इतिहास",
+        "जुड़े हुए लीड्स, डील्स, और दस्तावेज़",
+        "प्रत्येक ग्राहक के लिए एआई-सुझाई गई अगली कार्रवाई"
+      ]
+    },
+    "marketIntelligence": {
+      "title": "मार्केट इंटेलिजेंस",
+      "description": "यूएई ऑटोमोटिव बाज़ार की स्थितियों और रुझानों को वास्तविक समय में समझें।",
+      "capabilities": [
+        "क्षेत्रीय मांग और मूल्य रुझान",
+        "प्रतिस्पर्धी इन्वेंटरी बेंचमार्किंग",
+        "एआई-जनित बाज़ार ब्रीफिंग"
+      ]
+    },
+    "priceAnalyzer": {
+      "title": "प्राइस एनालाइज़र",
+      "description": "लाइव मार्केट तुलनाओं के मुकाबले वाहन मूल्य निर्धारण का विश्लेषण करें।",
+      "capabilities": [
+        "बाज़ार के मुकाबले वास्तविक समय मूल्य स्थिति",
+        "सुझाए गए मूल्य समायोजन",
+        "ऐतिहासिक मूल्य रुझान चार्ट"
+      ]
+    },
+    "profitCalculator": {
+      "title": "प्रॉफिट कैलकुलेटर",
+      "description": "अधिग्रहण, नवीनीकरण, और बिक्री में लाभ मार्जिन का मॉडल तैयार करें।",
+      "capabilities": [
+        "प्रति-वाहन मार्जिन विवरण",
+        "मूल्य निर्धारण निर्णयों के लिए परिदृश्य मॉडलिंग",
+        "पूरे पोर्टफोलियो का लाभप्रदता दृश्य"
+      ]
+    },
+    "aiMarketing": {
+      "title": "एआई मार्केटिंग",
+      "description": "एआई के साथ विज्ञापन और सोशल मीडिया सामग्री तैयार करें।",
+      "capabilities": [
+        "एआई-जनित विज्ञापन कॉपी और क्रिएटिव",
+        "सोशल मीडिया पोस्ट शेड्यूलिंग",
+        "अभियान प्रदर्शन ट्रैकिंग"
+      ]
+    },
+    "contractsDocuments": {
+      "title": "अनुबंध और दस्तावेज़",
+      "description": "अनुबंध तैयार करें और हर वाहन और ग्राहक दस्तावेज़ को ट्रैक करें।",
+      "capabilities": [
+        "एआई-तैयार खरीद और बिक्री अनुबंध",
+        "दस्तावेज़ समाप्ति ट्रैकिंग और अलर्ट",
+        "सुरक्षित ग्राहक दस्तावेज़ भंडारण"
+      ]
+    },
+    "tasks": {
+      "title": "कार्य",
+      "description": "अपनी पूरी टीम में फॉलो-अप और कार्यों को प्रबंधित करें।",
+      "capabilities": [
+        "टीम-व्यापी कार्य असाइनमेंट",
+        "स्वचालित फॉलो-अप रिमाइंडर",
+        "एआई-सुझाई गई अगली कार्रवाइयाँ"
+      ]
+    },
+    "messages": {
+      "title": "संदेश",
+      "description": "सभी ग्राहक संचार के लिए एक एकीकृत इनबॉक्स।",
+      "capabilities": [
+        "व्हाट्सएप, ईमेल, और एसएमएस एक ही स्थान पर",
+        "एआई-तैयार जवाब",
+        "प्रत्येक ग्राहक के लिए पूर्ण बातचीत इतिहास"
+      ]
+    },
+    "aiActivity": {
+      "title": "एआई गतिविधि",
+      "description": "आपके एआई सहायक द्वारा स्वचालित की गई हर चीज़ की लाइव फ़ीड।",
+      "capabilities": [
+        "एआई कार्रवाइयों का पूर्ण ऑडिट ट्रेल",
+        "स्वचालन नियम और ट्रिगर",
+        "एआई द्वारा की गई कार्रवाइयों को स्वीकृत या पूर्ववत करें"
+      ]
+    }
+  }
+}

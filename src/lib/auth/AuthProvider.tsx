@@ -1,0 +1,62 @@
+"use client";
+
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import type { AuthUser, LoginCredentials } from "@/types/auth";
+import { currentUserFixture } from "@/mock/auth";
+import { login as loginRequest, logout as logoutRequest } from "@/services/auth";
+
+interface AuthContextValue {
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  isPending: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+/**
+ * Placeholder authentication context. There is no real backend yet, so the
+ * app starts pre-authenticated as the dealership's default user — every
+ * existing page keeps working unchanged. The seam (login/logout, the
+ * AuthUser shape, the /login route) is real: swapping in a real identity
+ * provider means editing lib/data/auth.ts, not any component that reads
+ * useAuth().
+ */
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(currentUserFixture);
+  const [isPending, setIsPending] = useState(false);
+
+  const login = useCallback(async (credentials: LoginCredentials) => {
+    setIsPending(true);
+    try {
+      const session = await loginRequest(credentials);
+      setUser(session.user);
+    } finally {
+      setIsPending(false);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    setIsPending(true);
+    try {
+      await logoutRequest();
+      setUser(null);
+    } finally {
+      setIsPending(false);
+    }
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({ user, isAuthenticated: user !== null, isPending, login, logout }),
+    [user, isPending, login, logout]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
+}

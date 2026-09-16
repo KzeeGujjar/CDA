@@ -1,0 +1,205 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-6: var(--chart-6);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-success: var(--success);
+  --color-info: var(--info);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+  Premium automotive SaaS palette — supports light, dark, and system modes
+  (toggled by next-themes via a `.dark` class on <html>). Quality bar:
+  Porsche/Tesla/Mercedes/BMW precision blended with Stripe/Linear/HubSpot
+  polish — original, not copied — held equally in BOTH modes, not just dark.
+  Anti-patterns to avoid anywhere these tokens are used:
+    - no cheap/rainbow gradients, no glassmorphism
+    - no heavy drop shadows (elevation = 1px border + faint accent glow)
+    - no excessive/bouncy motion (see --motion-* below)
+    - no childish icons/illustrations
+    - no cluttered layouts — generous whitespace, one clear focal point
+  Primary accent (emerald) is used deliberately and sparingly: primary actions,
+  active nav state, key data highlights — never as decoration.
+*/
+:root {
+  /* light mode — soft off-white surfaces, deep-navy text, deepened accent
+     hues so every accent color still clears 4.5:1 text contrast on white */
+  --background: hsl(210 20% 98%);
+  --foreground: hsl(222 47% 11%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --primary: hsl(158 72% 30%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(210 20% 95%);
+  --secondary-foreground: hsl(222 47% 11%);
+  --muted: hsl(210 20% 95%);
+  --muted-foreground: hsl(215 15% 40%);
+  --accent: hsl(32 90% 38%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 72% 42%);
+  --success: hsl(158 72% 30%);
+  --info: hsl(199 89% 38%);
+  --border: hsl(220 15% 88%);
+  --input: hsl(220 15% 88%);
+  --ring: hsl(158 72% 30% / 45%);
+  --chart-1: hsl(158 70% 34%);
+  --chart-2: hsl(32 88% 42%);
+  --chart-3: hsl(199 85% 42%);
+  --chart-4: hsl(262 55% 52%);
+  --chart-5: hsl(346 70% 50%);
+  --chart-6: hsl(215 15% 45%);
+  --radius: 0.75rem;
+  --sidebar: hsl(210 25% 96%);
+  --sidebar-foreground: hsl(222 40% 14%);
+  --sidebar-primary: hsl(158 72% 30%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(210 20% 91%);
+  --sidebar-accent-foreground: hsl(222 47% 11%);
+  --sidebar-border: hsl(220 15% 88%);
+  --sidebar-ring: hsl(158 72% 30% / 45%);
+
+  /* motion — restrained, purposeful only; never decorative/bouncy */
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* locale-aware body font: Latin by default, swapped per <html lang> */
+  --font-sans: var(--font-latin);
+}
+
+.dark {
+  /* dark mode — near-black graphite surfaces, the original palette */
+  --background: hsl(222 47% 6%);
+  --foreground: hsl(210 20% 96%);
+  --card: hsl(222 35% 9%);
+  --card-foreground: hsl(210 20% 96%);
+  --popover: hsl(222 32% 10%);
+  --popover-foreground: hsl(210 20% 96%);
+  --primary: hsl(158 64% 42%);
+  --primary-foreground: hsl(222 47% 6%);
+  --secondary: hsl(222 30% 12%);
+  --secondary-foreground: hsl(210 20% 96%);
+  --muted: hsl(222 28% 13%);
+  --muted-foreground: hsl(215 15% 62%);
+  --accent: hsl(38 92% 50%);
+  --accent-foreground: hsl(222 47% 6%);
+  --destructive: hsl(0 72% 51%);
+  --success: hsl(158 64% 42%);
+  --info: hsl(199 89% 48%);
+  --border: hsl(222 20% 16%);
+  --input: hsl(222 20% 16%);
+  --ring: hsl(158 64% 42% / 50%);
+  --chart-1: hsl(158 64% 42%);
+  --chart-2: hsl(38 92% 50%);
+  --chart-3: hsl(199 89% 48%);
+  --chart-4: hsl(262 60% 62%);
+  --chart-5: hsl(346 77% 60%);
+  --chart-6: hsl(215 15% 55%);
+  --sidebar: hsl(222 40% 7%);
+  --sidebar-foreground: hsl(210 20% 92%);
+  --sidebar-primary: hsl(158 64% 42%);
+  --sidebar-primary-foreground: hsl(222 47% 6%);
+  --sidebar-accent: hsl(222 30% 12%);
+  --sidebar-accent-foreground: hsl(210 20% 96%);
+  --sidebar-border: hsl(222 20% 16%);
+  --sidebar-ring: hsl(158 64% 42% / 50%);
+}
+
+:root[lang="ar"] {
+  --font-sans: var(--font-arabic);
+}
+
+:root[lang="ur"] {
+  --font-sans: var(--font-urdu);
+}
+
+:root[lang="hi"] {
+  --font-sans: var(--font-devanagari);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/*
+  Small custom motion primitives not covered by tw-animate-css. Kept short and
+  purposeful per the anti-bounce rule above — the typing dots use a gentle
+  4px rise instead of Tailwind's default animate-bounce, which is too large
+  for a professional AI-typing affordance.
+*/
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-dot {
+  animation: typing-dot 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-typing-dot {
+    animation: none;
+  }
+}

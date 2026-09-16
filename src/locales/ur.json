@@ -1,0 +1,1185 @@
+{
+  "app": {
+    "name": "آٹو مائنڈ AI",
+    "tagline": "اے آئی کار ڈیلر ایجنٹ"
+  },
+  "nav": {
+    "groups": {
+      "overview": "جائزہ",
+      "ai": "مصنوعی ذہانت",
+      "vehiclesInventory": "گاڑیاں اور انوینٹری",
+      "salesCrm": "سیلز اور کسٹمرز",
+      "marketIntelligence": "مارکیٹ انٹیلیجنس",
+      "marketing": "مارکیٹنگ",
+      "operations": "آپریشنز",
+      "system": "سسٹم"
+    },
+    "dashboard": "ڈیش بورڈ",
+    "aiCarAgent": "اے آئی کار ایجنٹ",
+    "vehicles": "گاڑیاں",
+    "inventory": "انوینٹری",
+    "buyVehicles": "گاڑیاں خریدیں",
+    "sellVehicles": "گاڑیاں بیچیں",
+    "leads": "لیڈز",
+    "customers": "کسٹمرز",
+    "deals": "ڈیلز",
+    "marketIntelligence": "مارکیٹ انٹیلیجنس",
+    "priceAnalyzer": "پرائس تجزیہ کار",
+    "profitCalculator": "پرافٹ کیلکولیٹر",
+    "vehicleValuation": "گاڑی کی قیمت کا تعین",
+    "aiMarketing": "اے آئی مارکیٹنگ",
+    "contractsDocuments": "معاہدے اور دستاویزات",
+    "tasks": "ٹاسکس",
+    "messages": "پیغامات",
+    "reports": "رپورٹس",
+    "settings": "ترتیبات",
+    "aiActivity": "اے آئی سرگرمی"
+  },
+  "common": {
+    "search": "تلاش کریں",
+    "searchPlaceholder": "گاڑیاں، کسٹمرز، لیڈز، ڈیلز، دستاویزات، ٹاسکس، پیغامات تلاش کریں...",
+    "viewAll": "سب دیکھیں",
+    "seeDetails": "تفصیلات دیکھیں",
+    "edit": "ترمیم کریں",
+    "delete": "حذف کریں",
+    "cancel": "منسوخ کریں",
+    "save": "محفوظ کریں",
+    "saveChanges": "تبدیلیاں محفوظ کریں",
+    "create": "بنائیں",
+    "add": "شامل کریں",
+    "loading": "لوڈ ہو رہا ہے...",
+    "noResults": "کوئی نتیجہ نہیں ملا",
+    "status": "حیثیت",
+    "actions": "اقدامات",
+    "back": "واپس",
+    "next": "اگلا",
+    "filters": "فلٹرز",
+    "clearFilters": "فلٹرز صاف کریں",
+    "send": "پیغام بھیجیں",
+    "copy": "کاپی کریں",
+    "openNavigation": "نیویگیشن مینو کھولیں",
+    "moreActions": "مزید اقدامات",
+    "skipToContent": "مرکزی مواد پر جائیں",
+    "collapseSidebar": "سائیڈبار سکیڑیں",
+    "expandSidebar": "سائیڈبار پھیلائیں",
+    "comingSoon": "جلد آ رہا ہے",
+    "comingSoonDescription": "یہ خصوصیت ہمارے روڈ میپ میں شامل ہے اور یہ لائیو اے آئی اور ڈیلرشپ ڈیٹا سے منسلک ہوگی۔",
+    "whatItWillDo": "یہ کیا کرے گا",
+    "quickAdd": "فوری اضافہ",
+    "newVehicle": "نئی گاڑی",
+    "newLead": "نیا لیڈ",
+    "newDeal": "نئی ڈیل",
+    "notifications": "اطلاعات",
+    "markAllRead": "سب کو پڑھا ہوا نشان زد کریں",
+    "noNotifications": "کوئی نئی اطلاع نہیں",
+    "profile": "پروفائل",
+    "signOut": "سائن آؤٹ",
+    "dealership": "ڈیلرشپ",
+    "switchDealership": "ڈیلرشپ تبدیل کریں",
+    "language": "زبان",
+    "theme": "تھیم",
+    "demoMode": "ڈیمو موڈ",
+    "demoModeTooltip": "یہ ورک اسپیس حقیقت پسندانہ نمونہ ڈیٹا پر چلتی ہے — کوئی لائیو بیک اینڈ منسلک نہیں ہے۔",
+    "today": "آج",
+    "yesterday": "کل",
+    "askAi": "اے آئی سے پوچھیں",
+    "aed": "درہم",
+    "download": "ڈاؤن لوڈ",
+    "aiConversations": "اے آئی گفتگو",
+    "permissionDeniedTitle": "آپ کو اس تک رسائی حاصل نہیں",
+    "permissionDeniedDescription": "آپ کے کردار میں اس سیکشن کی اجازت شامل نہیں۔ رسائی کے لیے ڈیلر مالک یا ایڈمن سے رابطہ کریں۔",
+    "somethingWentWrong": "کچھ غلط ہو گیا",
+    "somethingWentWrongDescription": "ہم اسے لوڈ نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "retry": "دوبارہ کوشش کریں",
+    "previous": "پچھلا",
+    "next": "اگلا",
+    "pageOf": "صفحہ {page} از {total}",
+    "sortBy": "ترتیب دیں",
+    "signIn": "سائن ان",
+    "signingIn": "سائن ان ہو رہا ہے...",
+    "email": "ای میل",
+    "password": "پاس ورڈ"
+  },
+  "theme": {
+    "light": "لائٹ",
+    "dark": "ڈارک",
+    "system": "سسٹم"
+  },
+  "dashboard": {
+    "title": "ڈیش بورڈ",
+    "subtitle": "آج آپ کی ڈیلرشپ کی کارکردگی کچھ یوں ہے۔",
+    "kpi": {
+      "totalVehicles": "کل گاڑیاں",
+      "availableVehicles": "دستیاب گاڑیاں",
+      "vehiclesSold": "فروخت شدہ گاڑیاں",
+      "vehiclesPurchased": "خریدی گئی گاڑیاں",
+      "totalInventoryValue": "انوینٹری کی کل مالیت",
+      "expectedRevenue": "متوقع آمدنی",
+      "grossProfit": "مجموعی منافع",
+      "monthlySales": "اس ماہ کی فروخت",
+      "newLeads": "نئی لیڈز",
+      "conversionRate": "تبدیلی کی شرح"
+    },
+    "salesTrend": "فروخت کا رجحان",
+    "recentLeads": "حالیہ لیڈز",
+    "inventoryAging": "انوینٹری کی مدت",
+    "upcomingFollowUps": "آنے والی فالو اپس",
+    "aiCopilotPrompt": "اپنے اے آئی معاون سے اپنی ڈیلرشپ کے بارے میں کچھ بھی پوچھیں",
+    "aiCopilotPlaceholder": "مثلاً: کون سی گاڑیاں سب سے زیادہ عرصے سے اسٹاک میں ہیں؟",
+    "aiInsights": {
+      "title": "اے آئی مارکیٹ بصیرت"
+    }
+  },
+  "inventory": {
+    "title": "انوینٹری",
+    "subtitle": "اپنی ڈیلرشپ کے اسٹاک کی ہر گاڑی کا انتظام کریں۔",
+    "addVehicle": "گاڑی شامل کریں",
+    "gridView": "گرڈ",
+    "tableView": "ٹیبل",
+    "make": "میک",
+    "model": "ماڈل",
+    "variant": "ویریئنٹ",
+    "year": "سال",
+    "price": "مطلوبہ قیمت",
+    "status": "حیثیت",
+    "daysInStock": "اسٹاک میں دن",
+    "condition": "حالت",
+    "vin": "وی آئی این",
+    "mileage": "مائلیج",
+    "location": "مقام",
+    "getValuation": "اے آئی مارکیٹ ویلیوایشن حاصل کریں",
+    "stockNumber": "اسٹاک نمبر",
+    "engine": "انجن",
+    "horsepower": "ہارس پاور",
+    "transmission": "ٹرانسمیشن",
+    "fuelType": "ایندھن کی قسم",
+    "exteriorColor": "بیرونی رنگ",
+    "interiorColor": "اندرونی رنگ",
+    "seats": "نشستیں",
+    "bodyType": "باڈی کی قسم",
+    "importSpec": "اسپیسیفیکیشن",
+    "emirate": "امارات",
+    "allEmirates": "تمام امارات",
+    "sourceType": "گاڑی کا ذریعہ",
+    "accidentHistory": "حادثے کی تاریخ",
+    "serviceHistory": "سروس ہسٹری",
+    "owners": "مالکان کی تعداد",
+    "purchasePrice": "خریداری قیمت",
+    "repairCost": "مرمت کی لاگت",
+    "transportCost": "نقل و حمل کی لاگت",
+    "totalCost": "کل لاگت",
+    "expectedSellingPrice": "متوقع فروخت قیمت",
+    "estimatedMarketValue": "تخمینی مارکیٹ ویلیو",
+    "expectedProfit": "متوقع منافع",
+    "profitMargin": "منافع کا مارجن",
+    "tabs": {
+      "overview": "جائزہ",
+      "history": "تاریخ",
+      "documents": "دستاویزات",
+      "service": "سروس ہسٹری",
+      "inspection": "معائنہ",
+      "aiAnalysis": "اے آئی تجزیہ",
+      "inquiries": "گاہک کے استفسارات",
+      "notes": "نوٹس",
+      "tasks": "کام",
+      "timeline": "ٹائم لائن",
+      "pricingMargin": "قیمت اور مارجن",
+      "activity": "سرگرمی"
+    },
+    "actions": {
+      "edit": "ترمیم کریں",
+      "sell": "فروخت کریں",
+      "reserve": "محفوظ کریں",
+      "generateQuote": "کوٹیشن بنائیں",
+      "generateContract": "کنٹریکٹ بنائیں",
+      "aiAnalyze": "اے آئی تجزیہ کریں",
+      "compare": "موازنہ کریں",
+      "share": "شیئر کریں",
+      "print": "پرنٹ کریں",
+      "linkCopied": "لنک کاپی ہو گیا",
+      "contractComingSoon": "بیک اینڈ سے منسلک ہونے کے بعد کنٹریکٹ جنریشن دستیاب ہوگی"
+    },
+    "pricing": {
+      "aboveMarket": "مارکیٹ سے زیادہ",
+      "belowMarket": "مارکیٹ سے کم",
+      "reviewPricing": "قیمت کا جائزہ لیں"
+    },
+    "inspection": {
+      "pass": "درست",
+      "needsAttention": "توجہ درکار ہے"
+    },
+    "statuses": {
+      "available": "دستیاب",
+      "reserved": "محفوظ شدہ",
+      "sold": "فروخت شدہ",
+      "purchased": "خریدا گیا",
+      "in_transit": "راستے میں",
+      "under_inspection": "زیر معائنہ",
+      "under_repair": "زیر مرمت",
+      "archived": "آرکائیو شدہ"
+    },
+    "importSpecs": {
+      "GCC": "جی سی سی اسپیسیفیکیشن",
+      "UAE": "یو اے ای اسپیسیفیکیشن",
+      "Imported": "درآمد شدہ گاڑی"
+    },
+    "emirates": {
+      "dubai": "دبئی",
+      "abu_dhabi": "ابوظبی",
+      "sharjah": "شارجہ",
+      "ajman": "عجمان",
+      "ras_al_khaimah": "راس الخیمہ",
+      "fujairah": "الفجیرہ",
+      "umm_al_quwain": "ام القوین"
+    },
+    "sourceTypes": {
+      "export": "ایکسپورٹ گاڑی",
+      "import": "امپورٹ گاڑی",
+      "auction": "نیلامی گاڑی",
+      "dealer": "ڈیلر گاڑی",
+      "private": "پرائیویٹ گاڑی"
+    },
+    "registration": {
+      "title": "رجسٹریشن اور آر ٹی اے معلومات",
+      "status": "رجسٹریشن کی حیثیت",
+      "statuses": {
+        "registered": "رجسٹرڈ",
+        "not_registered": "غیر رجسٹرڈ",
+        "pending_transfer": "منتقلی زیر التوا"
+      },
+      "plateNumber": "پلیٹ نمبر",
+      "expiryDate": "رجسٹریشن کی میعاد",
+      "rtaNotes": "آر ٹی اے معلومات",
+      "rtaNotesPlaceholder": "مثلاً سالک ٹیگ، ملکیہ نمبر، ٹریفک فائل حوالہ...",
+      "rtaNotesEmpty": "ابھی تک کوئی آر ٹی اے معلومات درج نہیں ہیں۔",
+      "placeholderNotice": "صرف حوالہ جاتی فیلڈ — دستیاب ہونے پر سرکاری آر ٹی اے سروسز سے منسلک ہوگی۔"
+    },
+    "sort": {
+      "recent": "حال ہی میں شامل کردہ",
+      "priceDesc": "قیمت: زیادہ سے کم",
+      "priceAsc": "قیمت: کم سے زیادہ",
+      "yearDesc": "پہلے نیا ماڈل",
+      "daysDesc": "سب سے زیادہ عرصہ اسٹاک میں"
+    }
+  },
+  "leads": {
+    "title": "لیڈز",
+    "subtitle": "اپنی سیلز پائپ لائن میں ہر خریدار کو ٹریک کریں۔",
+    "newLead": "نیا لیڈ",
+    "newLeadDescription": "ایک لیڈ بنائیں اور اسے کسی سیلز پرسن کو تفویض کریں۔",
+    "createdToast": "نئے لیڈ کے طور پر شامل کیا گیا",
+    "viewCustomerProfile": "کسٹمر پروفائل دیکھیں",
+    "stages": {
+      "new": "نیا",
+      "contacted": "رابطہ ہو چکا",
+      "qualified": "اہل",
+      "viewing": "معائنہ",
+      "negotiation": "گفت و شنید",
+      "won": "کامیاب",
+      "lost": "ناکام"
+    },
+    "sources": {
+      "website": "ویب سائٹ",
+      "walk_in": "براہ راست وزٹ",
+      "referral": "حوالہ",
+      "social_media": "سوشل میڈیا",
+      "marketplace": "مارکیٹ پلیس",
+      "phone": "فون"
+    },
+    "fields": {
+      "customer": "کسٹمر",
+      "budget": "بجٹ",
+      "score": "اسکور",
+      "source": "ذریعہ",
+      "lastContact": "آخری رابطہ",
+      "pipelineValue": "پائپ لائن ویلیو"
+    },
+    "aiScoring": {
+      "title": "AI لیڈ اسکورنگ",
+      "leadScore": "لیڈ اسکور",
+      "purchaseProbability": "خریداری کا امکان",
+      "recommendedAction": "تجویز کردہ اقدام",
+      "classifications": {
+        "hot": "ہاٹ لیڈ",
+        "warm": "وارم لیڈ",
+        "cold": "کولڈ لیڈ"
+      },
+      "actions": {
+        "hot": "15 منٹ کے اندر رابطہ کریں۔",
+        "warm": "2 گھنٹوں کے اندر فالو اپ کریں۔",
+        "cold": "نرچر کیمپین میں شامل کریں — 3 دن کے اندر فالو اپ کریں۔"
+      }
+    },
+    "nextFollowUp": "اگلی فالو اپ",
+    "assignedTo": "تفویض کردہ",
+    "interactions": "بات چیت",
+    "addNote": "نوٹ شامل کریں",
+    "scheduleFollowUp": "فالو اپ شیڈول کریں",
+    "changeStage": "مرحلہ تبدیل کریں",
+    "interestedIn": "دلچسپی رکھتا ہے"
+  },
+  "customers": {
+    "title": "کسٹمرز",
+    "subtitle": "آپ کے ڈیلرشپ سے تعامل کرنے والے ہر خریدار اور بیچنے والے کا مکمل پروفائل۔",
+    "lifetimeValue": "لائف ٹائم ویلیو",
+    "customerSince": "کسٹمر بننے کی تاریخ",
+    "newDeal": "نیا ڈیل",
+    "interestedVehicles": "دلچسپی کی گاڑیاں",
+    "previousPurchases": "پچھلی خریداریاں",
+    "currentNegotiations": "جاری گفت و شنید",
+    "aiRecommendations": "AI تجاویز",
+    "addNote": "نوٹ شامل کریں",
+    "sendMessage": "پیغام لکھیں...",
+    "taskAdded": "ٹاسک شامل کر دیا گیا",
+    "newTaskPlaceholder": "نئے ٹاسک کا عنوان",
+    "due": "آخری تاریخ",
+    "tabs": {
+      "overview": "جائزہ",
+      "messages": "پیغامات",
+      "calls": "کالز",
+      "notes": "نوٹس",
+      "documents": "دستاویزات",
+      "tasks": "ٹاسکس",
+      "timeline": "ٹائم لائن"
+    },
+    "channels": {
+      "whatsapp": "واٹس ایپ",
+      "email": "ای میل",
+      "sms": "ایس ایم ایس"
+    },
+    "callOutcomes": {
+      "connected": "کال ملی",
+      "no_answer": "کوئی جواب نہیں",
+      "voicemail": "وائس میل"
+    },
+    "documentTypes": {
+      "id": "شناختی کارڈ",
+      "license": "لائسنس",
+      "contract": "معاہدہ",
+      "invoice": "انوائس",
+      "other": "دیگر"
+    }
+  },
+  "aiAssistant": {
+    "title": "اے آئی کار ایجنٹ",
+    "subtitle": "آپ کا ورچوئل سیلز اور استقبالیہ معاون۔",
+    "newThread": "نئی گفتگو",
+    "placeholder": "انوینٹری، لیڈز، قیمتوں یا کسی بھی چیز کے بارے میں پوچھیں...",
+    "thinking": "سوچ رہا ہے...",
+    "suggestions": {
+      "summarizeLeads": "آج کے لیڈز کا خلاصہ کریں",
+      "draftFollowUp": "واٹس ایپ فالو اپ تیار کریں",
+      "agingInventory": "میری سب سے پرانی انوینٹری کیا ہے؟",
+      "pricingAdvice": "اس ٹریڈ اِن کی قیمت کیسے لگاؤں؟"
+    },
+    "marketplace": {
+      "fetchButton": "ڈوبیزل اور یلا موٹر انوینٹری حاصل کریں",
+      "prompt": "مجھے ڈوبیزل اور یلا موٹر سے تازہ ترین انوینٹری دکھائیں",
+      "viewListing": "لسٹنگ دیکھیں",
+      "addToInventory": "انوینٹری میں شامل کریں",
+      "viewListingToast": "مارکیٹ پلیس انضمام مکمل ہونے کے بعد یہ لائیو لسٹنگ کھولے گا",
+      "addedToInventory": "آپ کی بائے وہیکلز پائپ لائن میں شامل کر دیا گیا"
+    },
+    "composer": {
+      "attachFile": "فائل منسلک کریں",
+      "uploadPhoto": "گاڑی کی تصویر اپ لوڈ کریں",
+      "voiceInput": "صوتی ان پٹ",
+      "listening": "سن رہا ہے...",
+      "searchWeb": "ویب پر تلاش کریں",
+      "fileAttached": "فائل منسلک ہو گئی",
+      "photoAttached": "تصویر منسلک ہو گئی"
+    },
+    "context": {
+      "vehicle": "گاڑی کا سیاق و سباق",
+      "selectVehicle": "ایک گاڑی منتخب کریں",
+      "removeVehicle": "گاڑی کا سیاق و سباق ہٹائیں",
+      "customer": "گاہک کا سیاق و سباق",
+      "selectCustomer": "ایک گاہک منتخب کریں",
+      "removeCustomer": "گاہک کا سیاق و سباق ہٹائیں",
+      "recommendations": "اے آئی تجاویز",
+      "actions": "اقدامات",
+      "generateQuote": "کوٹیشن بنائیں",
+      "estimateValue": "مارکیٹ ویلیو کا تخمینہ لگائیں",
+      "compareVehicle": "اس گاڑی کا موازنہ کریں"
+    }
+  },
+  "valuation": {
+    "title": "گاڑی کی قیمت کا تعین",
+    "subtitle": "کسی بھی گاڑی کی اے آئی تخمینی مارکیٹ ویلیو حاصل کریں۔",
+    "compareTitle": "گاڑیوں کا موازنہ",
+    "form": {
+      "make": "میک",
+      "model": "ماڈل",
+      "year": "سال",
+      "mileage": "مائلیج (کلومیٹر)",
+      "condition": "حالت",
+      "submit": "قیمت کا تخمینہ لگائیں"
+    },
+    "estimatedValue": "تخمینی مارکیٹ ویلیو",
+    "confidence": "اعتماد کی سطح",
+    "comparables": "مماثل اشتہارات",
+    "compareVehicles": "گاڑیوں کا موازنہ کریں",
+    "addToCompare": "موازنے میں شامل کریں"
+  },
+  "aiMarketing": {
+    "title": "AI مارکیٹنگ",
+    "subtitle": "چند سیکنڈوں میں کسی بھی گاڑی کے لیے اشتہارات اور سوشل مواد تیار کریں۔",
+    "vehicleAndPhotos": "گاڑی اور تصاویر",
+    "selectVehicle": "گاڑی منتخب کریں",
+    "selectVehiclePrompt": "مارکیٹنگ مواد بنانے کے لیے ایک گاڑی منتخب کریں۔",
+    "addPhotos": "تصاویر شامل کریں",
+    "generateContent": "مواد تیار کریں",
+    "generatedHistory": "تیار کردہ مواد",
+    "translate": "ترجمہ کریں",
+    "copied": "کلپ بورڈ میں کاپی ہو گیا",
+    "includeInCampaign": "مہم میں شامل کریں",
+    "emptyState": "ابھی تک کوئی مواد تیار نہیں ہوا",
+    "emptyStateDescription": "اپنا پہلا مواد بنانے کے لیے اوپر کوئی فنکشن منتخب کریں۔",
+    "createCampaign": "مہم بنائیں",
+    "campaignNamePlaceholder": "مہم کا نام",
+    "piecesSelected": "آئٹمز منتخب کیے گئے",
+    "pastCampaigns": "مہمات",
+    "campaignCreatedToast": "مہم بن گئی",
+    "types": {
+      "vehicleAd": "گاڑی کا اشتہار",
+      "instagramCaption": "انسٹاگرام کیپشن",
+      "facebookPost": "فیس بک پوسٹ",
+      "tiktokScript": "ٹک ٹاک اسکرپٹ",
+      "whatsappMessage": "واٹس ایپ پیغام",
+      "email": "ای میل",
+      "listingDescription": "لسٹنگ تفصیل",
+      "seoDescription": "SEO تفصیل",
+      "translatedAd": "اشتہار کا ترجمہ"
+    },
+    "channels": {
+      "advertisement": "اشتہار",
+      "instagram": "انسٹاگرام",
+      "facebook": "فیس بک",
+      "tiktok": "ٹک ٹاک",
+      "whatsapp": "واٹس ایپ",
+      "email": "ای میل",
+      "listing": "لسٹنگ",
+      "seo": "SEO"
+    },
+    "statuses": {
+      "draft": "ڈرافٹ",
+      "scheduled": "شیڈول شدہ",
+      "published": "شائع شدہ"
+    }
+  },
+  "contractsDocuments": {
+    "title": "معاہدے اور دستاویزات",
+    "subtitle": "ہر ڈیل سے منسلک دستاویز بنائیں، منظم کریں اور دستخط کریں۔",
+    "tabs": {
+      "documents": "دستاویزات",
+      "assistant": "AI اسسٹنٹ"
+    },
+    "newDocument": "نئی دستاویز",
+    "editDocument": "دستاویز میں ترمیم کریں",
+    "formDescription": "دستاویز بنانے اور ای-دستخط کا نظام بعد میں بیک اینڈ سے منسلک کیا جائے گا — یہ فارم صرف دستاویز کا ریکارڈ بناتا اور ٹریک کرتا ہے۔",
+    "allTypes": "تمام اقسام",
+    "createdToast": "دستاویز بن گئی",
+    "updatedToast": "دستاویز اپ ڈیٹ ہو گئی",
+    "previewDisclaimer": "یہ ایک سمیولیٹڈ پیش منظر ہے۔ اصل PDF جنریشن بیک اینڈ سے منسلک ہونے پر دستیاب ہوگی۔",
+    "fields": {
+      "type": "دستاویز کی قسم",
+      "title": "عنوان",
+      "vehicle": "گاڑی",
+      "customer": "کسٹمر",
+      "preparedBy": "تیار کردہ از"
+    },
+    "types": {
+      "purchaseAgreement": "گاڑی خریداری کا معاہدہ",
+      "salesAgreement": "گاڑی فروخت کا معاہدہ",
+      "quotation": "کوٹیشن",
+      "invoice": "انوائس",
+      "receipt": "رسید",
+      "inspectionReport": "معائنہ رپورٹ",
+      "deliveryForm": "ڈیلیوری فارم",
+      "customerAgreement": "کسٹمر معاہدہ"
+    },
+    "statuses": {
+      "draft": "ڈرافٹ",
+      "pending_signature": "دستخط کا منتظر",
+      "signed": "دستخط شدہ",
+      "completed": "مکمل"
+    },
+    "actions": {
+      "edit": "ترمیم",
+      "preview": "پیش منظر",
+      "download": "ڈاؤن لوڈ",
+      "print": "پرنٹ",
+      "share": "شیئر",
+      "sign": "دستخط کریں",
+      "signedToast": "دستاویز پر دستخط ہو گئے",
+      "downloaded": "دستاویز ڈاؤن لوڈ ہو گئی",
+      "linkCopied": "لنک کلپ بورڈ میں کاپی ہو گیا",
+      "copy": "کاپی کریں",
+      "copied": "کلپ بورڈ میں کاپی ہو گیا"
+    },
+    "aiAssistant": {
+      "intro": "مجھ سے معاہدہ بنانے، کوٹیشن تیار کرنے، رپورٹ کا خلاصہ کرنے، دستاویز کا ترجمہ کرنے، یا ناقص معلومات چیک کرنے کے لیے کہیں۔",
+      "placeholder": "AI دستاویز اسسٹنٹ سے پوچھیں...",
+      "previewTitle": "AI سے تیار کردہ دستاویز کا پیش منظر",
+      "noPreview": "تیار کردہ دستاویزات یہاں ظاہر ہوں گی۔",
+      "prompts": {
+        "createPurchaseAgreement": "ایک گاڑی خریداری کا معاہدہ بنائیں۔",
+        "prepareQuotation": "اس کسٹمر کے لیے کوٹیشن تیار کریں۔",
+        "summarizeInspection": "اس معائنہ رپورٹ کا خلاصہ کریں۔",
+        "translateArabic": "اس دستاویز کا عربی میں ترجمہ کریں۔",
+        "findMissingInfo": "ناقص معلومات تلاش کریں۔"
+      }
+    }
+  },
+  "tasks": {
+    "title": "ٹاسکس",
+    "subtitle": "ہر فالو اپ، معائنہ اور ڈیلیوری پر نظر رکھیں۔",
+    "newTask": "نیا ٹاسک",
+    "newTaskDescription": "ایک ٹاسک بنائیں اور اسے کسی ٹیم ممبر کو تفویض کریں۔",
+    "createdToast": "ٹاسک بن گیا",
+    "buckets": {
+      "today": "آج",
+      "upcoming": "آئندہ",
+      "overdue": "تاخیر شدہ",
+      "completed": "مکمل"
+    },
+    "categories": {
+      "followUp": "کسٹمر کے ساتھ فالو اپ",
+      "inspection": "گاڑی کا معائنہ",
+      "photography": "گاڑی کی تصویر کشی",
+      "documents": "دستاویزات اپ لوڈ کریں",
+      "call": "کسٹمر کو کال کریں",
+      "quotation": "کوٹیشن بھیجیں",
+      "service": "گاڑی کی سروس",
+      "delivery": "گاڑی کی ڈیلیوری"
+    },
+    "priorities": {
+      "low": "کم",
+      "medium": "درمیانہ",
+      "high": "زیادہ"
+    },
+    "fields": {
+      "title": "ٹاسک کا عنوان",
+      "category": "قسم",
+      "priority": "ترجیح",
+      "dueDate": "آخری تاریخ",
+      "assignee": "تفویض کردہ",
+      "vehicle": "گاڑی",
+      "customer": "کسٹمر"
+    }
+  },
+  "messages": {
+    "title": "پیغامات",
+    "subtitle": "واٹس ایپ، ای میل، ایس ایم ایس، ویب سائٹ چیٹ اور آپ کے AI ایجنٹ کے لیے ایک متحد ان باکس۔",
+    "allChannels": "تمام چینلز",
+    "replyPlaceholder": "جواب لکھیں...",
+    "channels": {
+      "whatsapp": "واٹس ایپ",
+      "email": "ای میل",
+      "sms": "ایس ایم ایس",
+      "websiteChat": "ویب سائٹ چیٹ",
+      "aiAgent": "AI ایجنٹ"
+    }
+  },
+  "deals": {
+    "title": "ڈیلز",
+    "subtitle": "قیمتیں بنائیں، منظوریوں کو ٹریک کریں، اور معاہدوں میں تبدیل کریں۔",
+    "newDeal": "نئی ڈیل",
+    "customer": "کسٹمر",
+    "vehicle": "گاڑی",
+    "lineItems": "آئٹمز",
+    "vat": "ویٹ (٥٪)",
+    "subtotal": "ذیلی مجموعہ",
+    "total": "کل رقم",
+    "convertToContract": "معاہدے میں تبدیل کریں",
+    "statuses": {
+      "draft": "مسودہ",
+      "sent": "بھیج دیا گیا",
+      "accepted": "منظور شدہ",
+      "converted_to_contract": "معاہدے میں تبدیل",
+      "declined": "مسترد"
+    }
+  },
+  "aiActivity": {
+    "title": "اے آئی سرگرمی",
+    "subtitle": "آپ کے اے آئی اسسٹنٹ کے ہر اقدام کا لائیو آڈٹ ٹریل۔",
+    "allActions": "تمام اقدامات",
+    "allStatuses": "تمام حیثیتیں",
+    "kpi": {
+      "totalActions": "کل اقدامات",
+      "completed": "مکمل",
+      "needsReview": "جائزے کی ضرورت ہے",
+      "timeSaved": "بچایا گیا وقت"
+    },
+    "table": {
+      "time": "وقت",
+      "action": "اے آئی اقدام",
+      "vehicle": "گاڑی",
+      "customer": "کسٹمر",
+      "result": "نتیجہ",
+      "status": "حیثیت"
+    },
+    "actions": {
+      "valuation": "اے آئی ویلیوایشن",
+      "leadScoring": "اے آئی لیڈ اسکورنگ",
+      "marketingContent": "اے آئی مارکیٹنگ",
+      "documentGeneration": "اے آئی دستاویز تخلیق",
+      "documentTranslation": "اے آئی دستاویز ترجمہ",
+      "documentSummary": "اے آئی دستاویز خلاصہ",
+      "priceAnalysis": "اے آئی قیمت تجزیہ",
+      "chatResponse": "اے آئی کار ایجنٹ کا جواب",
+      "followUpSuggestion": "اے آئی فالو اپ تجویز"
+    },
+    "status": {
+      "completed": "مکمل",
+      "in_progress": "جاری ہے",
+      "needs_review": "جائزے کی ضرورت ہے",
+      "failed": "ناکام"
+    }
+  },
+  "login": {
+    "title": "سائن ان کریں",
+    "subtitle": "اپنے اے آئی کار ڈیلر ایجنٹ ورک اسپیس میں خوش آمدید۔",
+    "error": "ہم آپ کو سائن ان نہیں کر سکے۔ اپنی تفصیلات چیک کریں اور دوبارہ کوشش کریں۔",
+    "placeholderNotice": "تصدیق ایک پلیس ہولڈر ہے — حقیقی شناختی فراہم کنندہ کو منسلک کرنے سے یہ اسکرین باقی ایپ کو تبدیل کیے بغیر تبدیل ہو جائے گی۔"
+  },
+  "reports": {
+    "title": "رپورٹس",
+    "subtitle": "ایک نظر میں ڈیلرشپ کی کارکردگی سمجھیں۔",
+    "tabs": {
+      "sales": "سیلز رپورٹ",
+      "purchase": "خریداری رپورٹ",
+      "profit": "منافع رپورٹ",
+      "inventory": "انوینٹری رپورٹ",
+      "leads": "لیڈ رپورٹ",
+      "salesperson": "سیلز پرسن کی کارکردگی",
+      "vehiclePerformance": "گاڑی کی کارکردگی",
+      "market": "مارکیٹ رپورٹ",
+      "aiPerformance": "اے آئی کارکردگی"
+    },
+    "export": {
+      "pdf": "PDF ایکسپورٹ کریں",
+      "excel": "Excel ایکسپورٹ کریں",
+      "csv": "CSV ایکسپورٹ کریں",
+      "comingSoon": "رپورٹنگ کو لائیو ڈیٹا سے منسلک کرنے کے بعد ایکسپورٹ دستیاب ہوگا۔"
+    },
+    "kpi": {
+      "totalRevenue": "کل آمدنی",
+      "unitsSold": "فروخت شدہ یونٹس",
+      "avgSalePrice": "اوسط فروخت قیمت",
+      "avgDaysToSell": "فروخت کے اوسط دن",
+      "totalSpend": "کل اخراجات",
+      "unitsPurchased": "خریدے گئے یونٹس",
+      "avgCostPerUnit": "فی یونٹ اوسط لاگت",
+      "grossProfit": "مجموعی منافع",
+      "netMargin": "خالص مارجن",
+      "avgProfitPerUnit": "فی یونٹ اوسط منافع",
+      "totalUnits": "کل یونٹس",
+      "totalValue": "کل قدر",
+      "avgDaysInStock": "اسٹاک میں اوسط دن",
+      "totalLeads": "کل لیڈز",
+      "conversionRate": "تبدیلی کی شرح",
+      "avgResponseTime": "اوسط جوابی وقت",
+      "totalInteractions": "کل تعاملات",
+      "satisfaction": "اطمینان کی شرح",
+      "timeSaved": "بچایا گیا وقت"
+    },
+    "charts": {
+      "salesTrend": "فروخت کا رجحان",
+      "revenueByMake": "میک کے لحاظ سے آمدنی",
+      "purchaseTrend": "خریداری کا رجحان",
+      "purchasesBySource": "ذریعہ کے لحاظ سے خریداریاں",
+      "profitTrend": "منافع کا رجحان",
+      "profitByMake": "میک کے لحاظ سے منافع",
+      "inventoryAging": "انوینٹری کی مدت",
+      "inventoryByStatus": "حیثیت کے لحاظ سے انوینٹری",
+      "leadFunnel": "مرحلے کے لحاظ سے لیڈ فنل",
+      "leadsBySource": "ذریعہ کے لحاظ سے لیڈز",
+      "revenueByRep": "سیلز پرسن کے لحاظ سے آمدنی",
+      "dealsByRep": "سیلز پرسن کے لحاظ سے ڈیلز",
+      "topSellingModels": "سب سے زیادہ فروخت ہونے والے ماڈلز",
+      "slowestMoving": "سب سے سست حرکت والا اسٹاک",
+      "demandByCategory": "زمرے کے لحاظ سے طلب",
+      "priceTrend": "مارکیٹ قیمت کا رجحان",
+      "usageTrend": "اے آئی استعمال کا رجحان"
+    },
+    "table": {
+      "date": "تاریخ",
+      "reference": "حوالہ",
+      "vehicle": "گاڑی",
+      "customer": "کسٹمر",
+      "salesperson": "سیلز پرسن",
+      "salePrice": "فروخت قیمت",
+      "supplier": "سپلائر",
+      "purchasePrice": "خریداری قیمت",
+      "transportCost": "ترسیل لاگت",
+      "totalCost": "کل لاگت",
+      "costPrice": "لاگت قیمت",
+      "sellingPrice": "فروخت قیمت",
+      "grossProfit": "مجموعی منافع",
+      "margin": "مارجن",
+      "status": "حیثیت",
+      "daysInStock": "اسٹاک میں دن",
+      "currentPrice": "موجودہ قیمت",
+      "location": "مقام",
+      "source": "ذریعہ",
+      "stage": "مرحلہ",
+      "assignedTo": "تفویض کردہ",
+      "score": "اسکور",
+      "leadsAssigned": "تفویض شدہ لیڈز",
+      "dealsWon": "جیتی گئی ڈیلز",
+      "conversionRate": "تبدیلی کی شرح",
+      "revenue": "آمدنی",
+      "avgResponse": "اوسط جواب",
+      "make": "میک",
+      "daysToSell": "فروخت کے دن",
+      "views": "ملاحظات",
+      "inquiries": "استفسارات",
+      "model": "ماڈل",
+      "avgMarketPrice": "اوسط مارکیٹ قیمت",
+      "yourAvgPrice": "آپ کی اوسط قیمت",
+      "demandIndex": "طلب انڈیکس",
+      "trend": "رجحان",
+      "feature": "اے آئی فیچر",
+      "interactions": "تعاملات",
+      "successRate": "کامیابی کی شرح",
+      "avgResponseTime": "اوسط جوابی وقت",
+      "timeSaved": "بچایا گیا وقت"
+    }
+  },
+  "settings": {
+    "title": "ترتیبات",
+    "subtitle": "اپنا پروفائل، ڈیلرشپ، اور پلیٹ فارم کی ترجیحات منظم کریں۔",
+    "nav": {
+      "profile": "پروفائل",
+      "dealership": "ڈیلرشپ",
+      "users": "صارفین",
+      "rolesPermissions": "کردار اور اجازتیں",
+      "notifications": "اطلاعات",
+      "aiSettings": "اے آئی ترتیبات",
+      "integrations": "انضمام",
+      "language": "زبان",
+      "appearance": "ظاہری شکل",
+      "currency": "کرنسی",
+      "tax": "ٹیکس",
+      "documentTemplates": "دستاویز ٹیمپلیٹس",
+      "marketplaceConnections": "مارکیٹ پلیس کنکشنز",
+      "security": "سیکیورٹی",
+      "billing": "بلنگ",
+      "apiKeys": "اے پی آئی کیز",
+      "dashboardAds": "ڈیش بورڈ اشتہارات",
+      "demoData": "ڈیمو ڈیٹا"
+    },
+    "profile": {
+      "subtitle": "پلیٹ فارم پر آپ کا نام اور رابطہ کی تفصیلات کیسے ظاہر ہوں یہ منظم کریں۔",
+      "avatarComingSoon": "لائیو اسٹوریج سے اکاؤنٹس منسلک ہونے کے بعد فوٹو اپ لوڈ دستیاب ہوگا۔",
+      "fullName": "پورا نام",
+      "email": "ای میل",
+      "phone": "فون",
+      "saved": "پروفائل اپ ڈیٹ ہو گیا"
+    },
+    "dealership": {
+      "subtitle": "آپ کی ڈیلرشپ کی شناخت، رابطہ تفصیلات، اور شاخیں۔",
+      "nameEn": "نام (انگریزی)",
+      "nameAr": "نام (عربی)",
+      "phone": "فون",
+      "email": "ای میل",
+      "address": "پتہ",
+      "saved": "ڈیلرشپ کی تفصیلات اپ ڈیٹ ہو گئیں",
+      "branches": "شاخیں",
+      "branchesSubtitle": "وہ مقامات جن کے درمیان آپ کی ٹیم پلیٹ فارم پر سوئچ کر سکتی ہے۔",
+      "editComingSoon": "اکاؤنٹس لائیو ڈیٹا سے منسلک ہونے کے بعد شاخوں میں ترمیم دستیاب ہوگی۔",
+      "hours": "کاروباری اوقات",
+      "hoursSubtitle": "شوروم آنے کے بارے میں پوچھنے والے کسٹمرز کو دکھایا جاتا ہے۔",
+      "closed": "بند",
+      "days": {
+        "mon": "پیر",
+        "tue": "منگل",
+        "wed": "بدھ",
+        "thu": "جمعرات",
+        "fri": "جمعہ",
+        "sat": "ہفتہ",
+        "sun": "اتوار"
+      }
+    },
+    "users": {
+      "subtitle": "منظم کریں کہ آپ کی ڈیلرشپ کے ورک اسپیس تک کس کی رسائی ہے۔",
+      "invite": "صارف کو مدعو کریں",
+      "name": "نام",
+      "email": "ای میل",
+      "role": "کردار",
+      "removed": "صارف ہٹا دیا گیا",
+      "inviteTitle": "ایک صارف کو مدعو کریں",
+      "inviteDescription": "اپنی ڈیلرشپ کے ورک اسپیس میں شامل ہونے کی دعوت بھیجیں۔",
+      "sendInvite": "دعوت بھیجیں",
+      "invited": "{name} کو دعوت بھیج دی گئی",
+      "status": {
+        "active": "فعال",
+        "invited": "مدعو"
+      }
+    },
+    "rolesPermissions": {
+      "subtitle": "کردار متعین کریں اور ہر کردار کس ماڈیول تک رسائی رکھتا ہے اسے کنٹرول کریں۔",
+      "matrixTitle": "اجازتوں کا میٹرکس",
+      "matrixSubtitle": "کردار کے مطابق ماڈیول تک رسائی کو ٹوگل کریں۔ ایڈمنز کو ہمیشہ مکمل رسائی حاصل ہوتی ہے۔",
+      "module": "ماڈیول",
+      "saved": "اجازتیں اپ ڈیٹ ہو گئیں",
+      "roles": {
+        "superAdmin": "سپر ایڈمن",
+        "dealerOwner": "ڈیلر مالک",
+        "manager": "منیجر",
+        "salesperson": "سیلز پرسن",
+        "buyer": "خریدار",
+        "accountant": "اکاؤنٹنٹ",
+        "marketingManager": "مارکیٹنگ منیجر",
+        "viewer": "ناظر"
+      },
+      "roleDescriptions": {
+        "superAdmin": "ہر ڈیلرشپ، ماڈیول، اور سیٹنگ بشمول بلنگ اور اے پی آئی کیز تک مکمل پلیٹ فارم رسائی۔",
+        "dealerOwner": "اس ڈیلرشپ کے ڈیٹا اور سیٹنگز، بشمول بلنگ اور صارف کے انتظام تک مکمل رسائی۔",
+        "manager": "انوینٹری، لیڈز، ڈیلز، اور ٹیم کی کارکردگی کا انتظام کرتا ہے۔",
+        "salesperson": "اسے تفویض کردہ لیڈز، ڈیلز، اور دستاویزات پر کام کرتا ہے۔",
+        "buyer": "انوینٹری کے لیے گاڑیوں کی خریداری تلاش اور بات چیت کرتا ہے۔",
+        "accountant": "بلنگ، انوائسز، اور مالی رپورٹنگ کا انتظام کرتا ہے۔",
+        "marketingManager": "اے آئی مارکیٹنگ مہمات اور مواد تخلیق اور منظم کرتا ہے۔",
+        "viewer": "رپورٹنگ اور نگرانی کے لیے صرف پڑھنے کی رسائی۔"
+      },
+      "modules": {
+        "inventory": "انوینٹری",
+        "purchasing": "گاڑیاں خریدیں",
+        "leads": "لیڈز",
+        "deals": "ڈیلز",
+        "documents": "معاہدے اور دستاویزات",
+        "billing": "بلنگ",
+        "marketing": "اے آئی مارکیٹنگ",
+        "reports": "رپورٹس",
+        "settings": "ترتیبات",
+        "aiActivity": "اے آئی سرگرمی"
+      }
+    },
+    "notifications": {
+      "subtitle": "منتخب کریں کہ آپ کی ٹیم کو ڈیلرشپ کی سرگرمی کے بارے میں کیسے مطلع کیا جائے۔",
+      "event": "واقعہ",
+      "saved": "اطلاعاتی ترجیحات اپ ڈیٹ ہو گئیں",
+      "channels": {
+        "email": "ای میل",
+        "sms": "ایس ایم ایس",
+        "push": "پش"
+      },
+      "events": {
+        "newLead": "نئی لیڈ تفویض کی گئی",
+        "taskDue": "ٹاسک جلد ہی واجب الادا",
+        "documentSigned": "دستاویز پر دستخط ہو گئے",
+        "aiNeedsReview": "اے آئی اقدام کو جائزے کی ضرورت ہے",
+        "newMessage": "نیا کسٹمر پیغام",
+        "dealWon": "ڈیل جیت لی گئی"
+      }
+    },
+    "aiSettings": {
+      "subtitle": "اپنی ڈیلرشپ میں اے آئی اسسٹنٹ کے رویے کو کنٹرول کریں۔",
+      "tone": "اے آئی جواب کا انداز",
+      "saved": "اے آئی ترتیبات اپ ڈیٹ ہو گئیں",
+      "toggles": {
+        "autoReplyChat": {
+          "label": "ویب سائٹ چیٹ کا خودکار جواب",
+          "description": "اے آئی ایجنٹ کو ویب سائٹ چیٹ پر کسٹمرز کو خودکار طور پر جواب دینے دیں۔"
+        },
+        "requireApproval": {
+          "label": "دستاویزات بھیجنے سے پہلے منظوری درکار ہے",
+          "description": "اے آئی کے تیار کردہ معاہدے اور کوٹیشنز بھیجے جانے سے پہلے عملے کی منظوری کا انتظار کرتے ہیں۔"
+        },
+        "autoLeadScoring": {
+          "label": "خودکار لیڈ اسکورنگ",
+          "description": "نئی لیڈز بننے کے فوراً بعد انہیں اے آئی سے اسکور کریں۔"
+        },
+        "autoFollowUps": {
+          "label": "خودکار فالو اپ تجاویز",
+          "description": "اے آئی کو حالیہ سرگرمی کے بغیر لیڈز کے لیے فالو اپ ٹاسک تجویز کرنے دیں۔"
+        }
+      },
+      "tones": {
+        "professional": "پیشہ ورانہ",
+        "friendly": "دوستانہ",
+        "concise": "جامع"
+      },
+      "provider": "اے آئی فراہم کنندہ",
+      "providerNote": "منسلک ہونے کے بعد بیک اینڈ درخواستیں اس فراہم کنندہ کو بھیجے گا — ایپ کسی ایک فراہم کنندہ پر منحصر نہیں۔",
+      "providers": {
+        "openai": "OpenAI",
+        "anthropic": "Anthropic Claude",
+        "google": "Google Gemini",
+        "other": "دیگر / حسب ضرورت"
+      }
+    },
+    "integrations": {
+      "subtitle": "ان ٹولز کو منسلک کریں جو آپ کی ڈیلرشپ پہلے سے استعمال کرتی ہے۔",
+      "connectedToast": "انضمام منسلک ہو گیا",
+      "disconnectedToast": "انضمام منقطع ہو گیا",
+      "items": {
+        "whatsapp": "واٹس ایپ بزنس اے پی آئی",
+        "calendar": "گوگل کیلنڈر",
+        "email": "ای میل / SMTP",
+        "zapier": "Zapier",
+        "accounting": "اکاؤنٹنگ سافٹ ویئر"
+      }
+    },
+    "language": {
+      "subtitle": "انٹرفیس کی زبان منتخب کریں۔ عربی اور اردو خودکار طور پر لے آؤٹ کو دائیں سے بائیں میں تبدیل کر دیتی ہیں۔"
+    },
+    "appearance": {
+      "subtitle": "منتخب کریں کہ اس ڈیوائس پر آٹو مائنڈ AI کیسا دکھائی دے۔"
+    },
+    "currency": {
+      "subtitle": "ڈیفالٹ کرنسی اور قیمتوں کے ظاہر ہونے کا طریقہ متعین کریں۔",
+      "defaultCurrency": "ڈیفالٹ کرنسی",
+      "displayFormat": "ڈسپلے فارمیٹ",
+      "roundPrices": "ظاہر شدہ قیمتوں کو راؤنڈ کریں",
+      "roundPricesDescription": "پلیٹ فارم پر قیمتوں کو قریب ترین مکمل نمبر تک راؤنڈ کریں۔",
+      "saved": "کرنسی کی ترتیبات اپ ڈیٹ ہو گئیں",
+      "primary": "بنیادی",
+      "ready": "تیار",
+      "previewTitle": "یو ایس ڈی تبدیلی کا پیش منظر",
+      "previewDescription": "درہم پلیٹ فارم کی بنیادی کرنسی ہے۔ بین الاقوامی خریداروں کے لیے یو ایس ڈی ڈیٹا ماڈل اور قیمتوں کے ٹولز میں مکمل طور پر معاون ہے، جو یو اے ای سینٹرل بینک کی مقررہ شرح استعمال کرتا ہے۔"
+    },
+    "tax": {
+      "subtitle": "دستاویزات اور انوائسز کے لیے ویٹ اور ٹیکس رجسٹریشن کی تفصیلات مرتب کریں۔",
+      "vatRate": "ویٹ کی شرح (%)",
+      "trn": "ٹیکس رجسٹریشن نمبر (TRN)",
+      "pricesIncludeTax": "قیمتوں میں ٹیکس شامل ہے",
+      "pricesIncludeTaxDescription": "پلیٹ فارم پر گاڑیوں کی قیمتیں ویٹ سمیت دکھائیں۔",
+      "saved": "ٹیکس کی ترتیبات اپ ڈیٹ ہو گئیں"
+    },
+    "documentTemplates": {
+      "subtitle": "ہر تیار کردہ دستاویز کی قسم کے لیے استعمال ہونے والی زبان اور ترتیب کو حسب ضرورت بنائیں۔",
+      "editTemplate": "ٹیمپلیٹ میں ترمیم کریں",
+      "editComingSoon": "دستاویز کی تخلیق لائیو ڈیٹا سے منسلک ہونے کے بعد ٹیمپلیٹ میں ترمیم دستیاب ہوگی۔"
+    },
+    "security": {
+      "subtitle": "اپنا پاس ورڈ، دو مرحلہ توثیق، اور فعال سیشنز منظم کریں۔",
+      "currentPassword": "موجودہ پاس ورڈ",
+      "newPassword": "نیا پاس ورڈ",
+      "updatePassword": "پاس ورڈ اپ ڈیٹ کریں",
+      "passwordChanged": "پاس ورڈ اپ ڈیٹ ہو گیا",
+      "twoFactor": "دو مرحلہ توثیق",
+      "twoFactorDescription": "پاس ورڈ کے علاوہ تصدیقی کوڈ کی ضرورت ہو۔",
+      "activeSessions": "فعال سیشنز",
+      "activeSessionsSubtitle": "وہ آلات جو فی الحال آپ کے اکاؤنٹ میں سائن ان ہیں۔",
+      "thisDevice": "یہ آلہ",
+      "signOut": "سائن آؤٹ",
+      "signedOut": "سیشن سائن آؤٹ ہو گیا"
+    },
+    "billing": {
+      "subtitle": "اپنی سبسکرپشن، ادائیگی کا طریقہ، اور انوائسز منظم کریں۔",
+      "currentPlan": "موجودہ پلان",
+      "planName": "پروفیشنل",
+      "planDescription": "999 درہم/ماہانہ — 10 صارفین تک اور لامحدود اے آئی اقدامات۔",
+      "managePlan": "پلان منظم کریں",
+      "managePlanComingSoon": "بلنگ کو لائیو ادائیگی فراہم کنندہ سے منسلک کرنے کے بعد پلان میں تبدیلیاں دستیاب ہوں گی۔",
+      "paymentMethod": "ادائیگی کا طریقہ",
+      "updatePayment": "ادائیگی کا طریقہ اپ ڈیٹ کریں",
+      "updatePaymentComingSoon": "بلنگ کو لائیو ادائیگی فراہم کنندہ سے منسلک کرنے کے بعد ادائیگی کے طریقے کی اپ ڈیٹس دستیاب ہوں گی۔",
+      "invoiceHistory": "انوائس کی تاریخ",
+      "invoiceHistorySubtitle": "اپنے ریکارڈ کے لیے پرانی انوائسز ڈاؤن لوڈ کریں۔",
+      "invoice": "انوائس",
+      "amount": "رقم",
+      "paid": "ادا شدہ",
+      "downloadComingSoon": "بلنگ لائیو ڈیٹا سے منسلک ہونے کے بعد انوائس ڈاؤن لوڈز دستیاب ہوں گی۔"
+    },
+    "apiKeys": {
+      "subtitle": "بیرونی ٹولز کو آپ کی ڈیلرشپ کے ڈیٹا سے منسلک کرنے کے لیے استعمال ہونے والی اے پی آئی کیز کا انتظام کریں۔",
+      "generate": "نئی کی بنائیں",
+      "newKeyName": "نئی کی",
+      "generated": "اے پی آئی کی بن گئی",
+      "copied": "اے پی آئی کی کلپ بورڈ میں کاپی ہو گئی",
+      "revoke": "اے پی آئی کی منسوخ کریں",
+      "revoked": "اے پی آئی کی منسوخ کر دی گئی",
+      "name": "نام",
+      "key": "کی",
+      "created": "تخلیق کی تاریخ",
+      "lastUsed": "آخری استعمال"
+    },
+    "dashboardAds": {
+      "title": "ڈیش بورڈ پروموشنز",
+      "subtitle": "ڈیش بورڈ پر دکھائے جانے والے پروموشنل بینر کو کنٹرول کریں۔ کسی بھی وقت شامل، ترمیم یا حذف کریں۔",
+      "addAd": "پروموشن شامل کریں",
+      "editAd": "پروموشن میں ترمیم کریں",
+      "formHint": "یہ بینر اس ڈیلرشپ کے تمام صارفین کے لیے ڈیش بورڈ کے اوپر دکھایا جاتا ہے۔",
+      "fieldTitle": "عنوان",
+      "fieldDescription": "تفصیل",
+      "fieldCtaLabel": "بٹن کا لیبل",
+      "fieldCtaUrl": "لنک",
+      "fieldBadge": "بیج (اختیاری)",
+      "fieldActive": "ڈیش بورڈ پر دکھائیں",
+      "empty": "ابھی تک کوئی پروموشن نہیں",
+      "emptyDescription": "پیشکشوں، خصوصیات، یا اعلانات کو نمایاں کرنے کے لیے ایک پروموشنل بینر شامل کریں۔",
+      "confirmDeleteTitle": "اس پروموشن کو ہٹائیں؟",
+      "confirmDeleteDescription": "یہ بینر فوری طور پر ڈیش بورڈ سے ہٹا دیا جائے گا۔ اسے واپس نہیں لایا جا سکتا۔",
+      "deleted": "پروموشن ہٹا دی گئی"
+    },
+    "demoData": {
+      "subtitle": "اس ورک اسپیس میں حقیقت پسندانہ نمونہ ڈیٹا پہلے سے لوڈ ہے تاکہ ہر فیچر کو لائیو بیک اینڈ کے بغیر دریافت کیا جا سکے۔",
+      "stats": {
+        "vehicles": "گاڑیاں",
+        "customers": "گاہک",
+        "leads": "لیڈز",
+        "deals": "ڈیلز",
+        "aiConversations": "اے آئی گفتگو",
+        "documents": "دستاویزات",
+        "tasks": "کام",
+        "notifications": "اطلاعات"
+      },
+      "resetButton": "ڈیمو ڈیٹا ری سیٹ کریں",
+      "resetConfirmTitle": "ڈیمو ڈیٹا ری سیٹ کریں؟",
+      "resetConfirmDescription": "یہ اس سیشن میں کی گئی تمام تبدیلیوں — جیسے لیڈز کو منتقل کرنا، کام مکمل کرنا، دستاویزات بنانا — کو ختم کر کے اصل نمونہ ڈیٹا بحال کر دے گا۔",
+      "resetConfirmAction": "ری سیٹ کریں"
+    },
+    "marketplaceConnections": {
+      "title": "مارکیٹ پلیس کنکشنز",
+      "subtitle": "اپنے مارکیٹ پلیس اکاؤنٹس کو منسلک کریں تاکہ AI ایجنٹ گاہک کے پوچھنے پر لائیو انوینٹری، تصاویر، اور قیمتیں حاصل کر سکے۔",
+      "connect": "منسلک کریں",
+      "connecting": "منسلک ہو رہا ہے...",
+      "disconnect": "منقطع کریں",
+      "connected": "منسلک ہے",
+      "notConnected": "منسلک نہیں",
+      "dialogTitle": "ڈوبیزل منسلک کریں",
+      "dialogDescription": "اپنے ڈوبیزل ڈیلرشپ یا شورروم پیج کا لنک پیسٹ کریں۔ AI ایجنٹ اسے آپ کی لائیو انوینٹری حاصل کرنے کے لیے استعمال کرے گا۔",
+      "fieldLabel": "ڈوبیزل اکاؤنٹ لنک",
+      "fieldPlaceholder": "https://dubizzle.com/en/motors/showroom/your-dealership",
+      "connectedToast": "ڈوبیزل اکاؤنٹ منسلک ہو گیا",
+      "disconnectedToast": "ڈوبیزل اکاؤنٹ منقطع ہو گیا",
+      "fetchInventory": "انوینٹری حاصل کریں",
+      "fetchDialogTitle": "ڈوبیزل انوینٹری حاصل کریں",
+      "fetchDialogDescription": "یہ آپ کے ڈوبیزل اکاؤنٹ سے منسلک لائیو اسٹاک ہے۔ منتخب کریں کہ کون سی لسٹنگز آپ کی انوینٹری میں شامل کرنی ہیں — درآمد کے بعد تفصیلات کو بہتر بنایا جا سکتا ہے۔",
+      "addToInventory": "انوینٹری میں شامل کریں",
+      "importing": "انوینٹری میں شامل ہو رہا ہے...",
+      "importedToast": "گاڑیاں آپ کی انوینٹری میں شامل کر دی گئیں",
+      "csvRowTitle": "ڈوبیزل CSV ایکسپورٹ سے درآمد کریں",
+      "csvRowDescription": "اپنی لسٹنگز ڈوبیزل سے CSV فائل کے طور پر ایکسپورٹ کریں اور یہاں اپ لوڈ کریں — لاگ اِن کی ضرورت نہیں۔",
+      "csvButton": "CSV ایکسپورٹ درآمد کریں",
+      "csvDialogTitle": "ڈوبیزل CSV ایکسپورٹ درآمد کریں",
+      "csvDialogDescription": "اپنے ڈوبیزل سیلر ڈیش بورڈ سے ایکسپورٹ کی گئی CSV فائل اپ لوڈ کریں۔ ہم میک، ماڈل، سال، قیمت، مائلیج اور مقام جیسے عام کالمز کو خودکار طور پر ملائیں گے۔",
+      "csvChooseFile": "ایک CSV فائل منتخب کریں",
+      "csvHint": "ڈوبیزل کے لسٹنگز مینیجر سے ایکسپورٹ کی گئی CSV فائلیں",
+      "csvChooseDifferent": "ایک مختلف فائل منتخب کریں",
+      "csvInvalidRows": "قطاروں میں ضروری فیلڈز موجود نہیں اور انہیں درآمد نہیں کیا جا سکتا"
+    }
+  },
+  "placeholder": {
+    "generic": {
+      "description": "یہ ماڈیول ابھی فعال نہیں ہے — یہ اے آئی کار ڈیلر ایجنٹ کے روڈ میپ کا حصہ ہے۔",
+      "capabilities": [
+        "مکمل اے آئی سے مدد یافتہ ورک فلو",
+        "لائیو ڈیلرشپ ڈیٹا سے منسلک",
+        "بیک اینڈ منسلک ہونے پر دستیاب ہوگا"
+      ]
+    },
+    "vehicles": {
+      "title": "گاڑیاں",
+      "description": "اپنی انوینٹری میں شامل کرنے سے پہلے منسلک مارکیٹ پلیسز پر گاڑیاں تلاش اور دریافت کریں۔",
+      "capabilities": [
+        "متحدہ عرب امارات اور بین الاقوامی مارکیٹ پلیس اشتہارات میں تلاش",
+        "ملنے والی گاڑیوں کا اپنے ہدف مارجن سے موازنہ",
+        "ایک کلک میں خریداری کی پائپ لائن میں شامل کریں"
+      ]
+    },
+    "buyVehicles": {
+      "title": "گاڑیاں خریدیں",
+      "description": "آپ کی خریدی جانے والی گاڑیوں کی سورسنگ اور خریداری کی پائپ لائن کا انتظام۔",
+      "capabilities": [
+        "خریداری کی پیشکشوں اور بات چیت کو ٹریک کریں",
+        "اے آئی کی مدد سے خریداری کی قیمت کی تجاویز",
+        "منظور شدہ پیشکشوں کو براہ راست انوینٹری میں تبدیل کریں"
+      ]
+    },
+    "sellVehicles": {
+      "title": "گاڑیاں بیچیں",
+      "description": "اسٹاک چھوڑنے کے لیے تیار گاڑیوں کے لیے فروخت کے ورک فلو کا انتظام۔",
+      "capabilities": [
+        "منسلک سیلز چینلز پر گاڑیاں درج کریں",
+        "اے آئی سے تیار کردہ اشتہاری تفصیل",
+        "خریداروں کی دلچسپی اور پیشکشیں ایک ہی جگہ ٹریک کریں"
+      ]
+    },
+    "customers": {
+      "title": "کسٹمرز",
+      "description": "آپ کی ڈیلرشپ سے رابطے میں آنے والے ہر خریدار اور فروخت کنندہ کی یکجا پروفائل۔",
+      "capabilities": [
+        "مکمل خریداری اور بات چیت کی تاریخ",
+        "منسلک لیڈز، ڈیلز، اور دستاویزات",
+        "ہر کسٹمر کے لیے اے آئی کی تجویز کردہ اگلی کارروائی"
+      ]
+    },
+    "marketIntelligence": {
+      "title": "مارکیٹ انٹیلیجنس",
+      "description": "متحدہ عرب امارات کی آٹوموٹو مارکیٹ کے حالات اور رجحانات کو حقیقی وقت میں سمجھیں۔",
+      "capabilities": [
+        "علاقائی طلب اور قیمتوں کے رجحانات",
+        "حریف انوینٹری کا تقابلی جائزہ",
+        "اے آئی سے تیار کردہ مارکیٹ بریفنگز"
+      ]
+    },
+    "priceAnalyzer": {
+      "title": "پرائس تجزیہ کار",
+      "description": "لائیو مارکیٹ موازنوں کے مقابلے میں گاڑی کی قیمتوں کا تجزیہ کریں۔",
+      "capabilities": [
+        "مارکیٹ کے مقابلے میں حقیقی وقت کی قیمت کی پوزیشننگ",
+        "تجویز کردہ قیمت میں تبدیلیاں",
+        "تاریخی قیمت کے رجحان کے چارٹس"
+      ]
+    },
+    "profitCalculator": {
+      "title": "پرافٹ کیلکولیٹر",
+      "description": "خریداری، بحالی، اور فروخت کے دوران منافع کے مارجن کی ماڈلنگ کریں۔",
+      "capabilities": [
+        "فی گاڑی مارجن کی تفصیل",
+        "قیمتوں کے فیصلوں کے لیے منظر نامہ ماڈلنگ",
+        "پورے پورٹ فولیو کے منافع کا جائزہ"
+      ]
+    },
+    "aiMarketing": {
+      "title": "اے آئی مارکیٹنگ",
+      "description": "اے آئی کی مدد سے اشتہارات اور سوشل میڈیا مواد تیار کریں۔",
+      "capabilities": [
+        "اے آئی سے تیار کردہ اشتہاری متن اور تخلیقی مواد",
+        "سوشل میڈیا پوسٹس کی شیڈولنگ",
+        "مہم کی کارکردگی کا ٹریکنگ"
+      ]
+    },
+    "contractsDocuments": {
+      "title": "معاہدے اور دستاویزات",
+      "description": "معاہدے تیار کریں اور ہر گاڑی اور کسٹمر کی دستاویز کو ٹریک کریں۔",
+      "capabilities": [
+        "اے آئی سے تیار کردہ خریداری اور فروخت کے معاہدے",
+        "دستاویز کی معیاد ختم ہونے کی ٹریکنگ اور الرٹس",
+        "کسٹمر دستاویزات کا محفوظ ذخیرہ"
+      ]
+    },
+    "tasks": {
+      "title": "ٹاسکس",
+      "description": "اپنی پوری ٹیم میں فالو اپس اور کاموں کا انتظام کریں۔",
+      "capabilities": [
+        "ٹیم بھر میں ٹاسک تفویض",
+        "خودکار فالو اپ یاد دہانیاں",
+        "اے آئی کی تجویز کردہ اگلی کارروائیاں"
+      ]
+    },
+    "messages": {
+      "title": "پیغامات",
+      "description": "تمام کسٹمر کمیونیکیشن کے لیے ایک یکجا ان باکس۔",
+      "capabilities": [
+        "واٹس ایپ، ای میل، اور ایس ایم ایس ایک ہی جگہ",
+        "اے آئی سے تیار کردہ جوابات",
+        "ہر کسٹمر کی مکمل گفتگو کی تاریخ"
+      ]
+    },
+    "aiActivity": {
+      "title": "اے آئی سرگرمی",
+      "description": "آپ کے اے آئی معاون کی خودکار کردہ ہر چیز کی لائیو فیڈ۔",
+      "capabilities": [
+        "اے آئی اقدامات کا مکمل آڈٹ ٹریل",
+        "خودکار قواعد اور محرکات",
+        "اے آئی کے اقدامات کو منظور یا واپس کریں"
+      ]
+    }
+  }
+}

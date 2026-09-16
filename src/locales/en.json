@@ -1,0 +1,1335 @@
+{
+  "app": {
+    "name": "AutoMind AI",
+    "tagline": "AI Car Dealer Agent"
+  },
+  "nav": {
+    "groups": {
+      "overview": "Overview",
+      "ai": "AI",
+      "vehiclesInventory": "Vehicles & Inventory",
+      "salesCrm": "Sales & CRM",
+      "marketIntelligence": "Market Intelligence",
+      "marketing": "Marketing",
+      "operations": "Operations",
+      "system": "System"
+    },
+    "dashboard": "Dashboard",
+    "aiCarAgent": "AI Car Agent",
+    "vehicles": "Vehicles",
+    "inventory": "Inventory",
+    "buyVehicles": "Buy Vehicles",
+    "sellVehicles": "Sell Vehicles",
+    "leads": "Leads",
+    "customers": "Customers",
+    "deals": "Deals",
+    "marketIntelligence": "Market Intelligence",
+    "priceAnalyzer": "Price Analyzer",
+    "profitCalculator": "Profit Calculator",
+    "vehicleValuation": "Vehicle Valuation",
+    "aiMarketing": "AI Marketing",
+    "contractsDocuments": "Contracts & Documents",
+    "tasks": "Tasks",
+    "messages": "Messages",
+    "reports": "Reports",
+    "settings": "Settings",
+    "aiActivity": "AI Activity"
+  },
+  "common": {
+    "search": "Search",
+    "searchPlaceholder": "Search vehicles, customers, leads, deals, documents, tasks, messages...",
+    "viewAll": "View all",
+    "seeDetails": "See details",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "create": "Create",
+    "add": "Add",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "status": "Status",
+    "actions": "Actions",
+    "back": "Back",
+    "next": "Next",
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "send": "Send message",
+    "copy": "Copy",
+    "openNavigation": "Open navigation menu",
+    "moreActions": "More actions",
+    "skipToContent": "Skip to main content",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "comingSoon": "Coming soon",
+    "comingSoonDescription": "This capability is on our roadmap and will connect to live AI and dealership data.",
+    "whatItWillDo": "What this will do",
+    "quickAdd": "Quick add",
+    "newVehicle": "New vehicle",
+    "newLead": "New lead",
+    "newDeal": "New deal",
+    "notifications": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "You're all caught up",
+    "profile": "Profile",
+    "signOut": "Sign out",
+    "dealership": "Dealership",
+    "switchDealership": "Switch dealership",
+    "language": "Language",
+    "theme": "Theme",
+    "demoMode": "Demo Mode",
+    "demoModeTooltip": "This workspace runs on realistic sample data — no live backend is connected.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "askAi": "Ask AI",
+    "aed": "AED",
+    "download": "Download",
+    "aiConversations": "AI Conversations",
+    "permissionDeniedTitle": "You don't have access to this",
+    "permissionDeniedDescription": "Your role doesn't include permission for this section. Ask a dealer owner or admin to grant access.",
+    "somethingWentWrong": "Something went wrong",
+    "somethingWentWrongDescription": "We couldn't load this. Please try again.",
+    "retry": "Retry",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {total}",
+    "sortBy": "Sort by",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "email": "Email",
+    "password": "Password"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Here's how your dealership is performing today.",
+    "kpi": {
+      "totalVehicles": "Total vehicles",
+      "availableVehicles": "Available vehicles",
+      "vehiclesSold": "Vehicles sold",
+      "vehiclesPurchased": "Vehicles purchased",
+      "totalInventoryValue": "Total inventory value",
+      "expectedRevenue": "Expected revenue",
+      "grossProfit": "Gross profit",
+      "monthlySales": "Monthly sales",
+      "newLeads": "New leads",
+      "conversionRate": "Conversion rate"
+    },
+    "salesTrend": "Sales trend",
+    "recentLeads": "Recent leads",
+    "inventoryAging": "Inventory aging",
+    "upcomingFollowUps": "Upcoming follow-ups",
+    "aiCopilotPrompt": "Ask your AI copilot anything about your dealership",
+    "aiCopilotPlaceholder": "e.g. Which vehicles have been in stock longest?",
+    "aiInsights": {
+      "title": "AI Market Insight"
+    }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "subtitle": "Manage every vehicle in your dealership stock.",
+    "addVehicle": "Add vehicle",
+    "gridView": "Grid",
+    "tableView": "Table",
+    "make": "Make",
+    "model": "Model",
+    "variant": "Variant",
+    "year": "Year",
+    "price": "Asking price",
+    "status": "Status",
+    "daysInStock": "Days in stock",
+    "condition": "Condition",
+    "vin": "VIN",
+    "mileage": "Mileage",
+    "location": "Location",
+    "getValuation": "Get AI market valuation",
+    "stockNumber": "Stock number",
+    "engine": "Engine",
+    "horsepower": "Horsepower",
+    "transmission": "Transmission",
+    "fuelType": "Fuel type",
+    "exteriorColor": "Exterior color",
+    "interiorColor": "Interior color",
+    "seats": "Seats",
+    "bodyType": "Body type",
+    "importSpec": "Specification",
+    "emirate": "Emirate",
+    "allEmirates": "All emirates",
+    "sourceType": "Vehicle source",
+    "accidentHistory": "Accident history",
+    "serviceHistory": "Service history",
+    "owners": "Number of owners",
+    "purchasePrice": "Purchase price",
+    "repairCost": "Repair cost",
+    "transportCost": "Transport cost",
+    "totalCost": "Total cost",
+    "expectedSellingPrice": "Expected selling price",
+    "estimatedMarketValue": "Estimated market value",
+    "expectedProfit": "Expected profit",
+    "profitMargin": "Profit margin",
+    "tabs": {
+      "overview": "Overview",
+      "history": "History",
+      "documents": "Documents",
+      "service": "Service history",
+      "inspection": "Inspection",
+      "aiAnalysis": "AI analysis",
+      "inquiries": "Customer inquiries",
+      "notes": "Notes",
+      "tasks": "Tasks",
+      "timeline": "Timeline",
+      "pricingMargin": "Pricing & Margin",
+      "activity": "Activity"
+    },
+    "actions": {
+      "edit": "Edit",
+      "sell": "Sell",
+      "reserve": "Reserve",
+      "generateQuote": "Generate quote",
+      "generateContract": "Generate contract",
+      "aiAnalyze": "AI analyze",
+      "compare": "Compare",
+      "share": "Share",
+      "print": "Print",
+      "linkCopied": "Link copied to clipboard",
+      "contractComingSoon": "Contract generation will be available once connected to a backend"
+    },
+    "pricing": {
+      "aboveMarket": "Above market",
+      "belowMarket": "Below market",
+      "reviewPricing": "Review pricing"
+    },
+    "inspection": {
+      "pass": "Pass",
+      "needsAttention": "Needs attention"
+    },
+    "statuses": {
+      "available": "Available",
+      "reserved": "Reserved",
+      "sold": "Sold",
+      "purchased": "Purchased",
+      "in_transit": "In transit",
+      "under_inspection": "Under inspection",
+      "under_repair": "Under repair",
+      "archived": "Archived"
+    },
+    "importSpecs": {
+      "GCC": "GCC Specification",
+      "UAE": "UAE Specification",
+      "Imported": "Imported Vehicle"
+    },
+    "emirates": {
+      "dubai": "Dubai",
+      "abu_dhabi": "Abu Dhabi",
+      "sharjah": "Sharjah",
+      "ajman": "Ajman",
+      "ras_al_khaimah": "Ras Al Khaimah",
+      "fujairah": "Fujairah",
+      "umm_al_quwain": "Umm Al Quwain"
+    },
+    "sourceTypes": {
+      "export": "Export Vehicle",
+      "import": "Import Vehicle",
+      "auction": "Auction Vehicle",
+      "dealer": "Dealer Vehicle",
+      "private": "Private Vehicle"
+    },
+    "registration": {
+      "title": "Registration & RTA Information",
+      "status": "Registration status",
+      "statuses": {
+        "registered": "Registered",
+        "not_registered": "Not registered",
+        "pending_transfer": "Pending transfer"
+      },
+      "plateNumber": "Plate number",
+      "expiryDate": "Registration expiry",
+      "rtaNotes": "RTA information",
+      "rtaNotesPlaceholder": "e.g. Salik tag, Mulkiya number, traffic file reference...",
+      "rtaNotesEmpty": "No RTA information recorded yet.",
+      "placeholderNotice": "Reference field only — connects to official RTA services once available."
+    },
+    "sort": {
+      "recent": "Recently added",
+      "priceDesc": "Price: high to low",
+      "priceAsc": "Price: low to high",
+      "yearDesc": "Newest year first",
+      "daysDesc": "Longest in stock"
+    }
+  },
+  "leads": {
+    "title": "Leads",
+    "subtitle": "Track every buyer through your sales pipeline.",
+    "newLead": "New lead",
+    "newLeadDescription": "Create a lead and assign it to a salesperson.",
+    "createdToast": "added as a new lead",
+    "viewCustomerProfile": "View customer profile",
+    "stages": {
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "viewing": "Viewing",
+      "negotiation": "Negotiation",
+      "won": "Won",
+      "lost": "Lost"
+    },
+    "sources": {
+      "website": "Website",
+      "walk_in": "Walk-in",
+      "referral": "Referral",
+      "social_media": "Social media",
+      "marketplace": "Marketplace",
+      "phone": "Phone"
+    },
+    "fields": {
+      "customer": "Customer",
+      "budget": "Budget",
+      "score": "Score",
+      "source": "Source",
+      "lastContact": "Last contact",
+      "pipelineValue": "Pipeline value"
+    },
+    "aiScoring": {
+      "title": "AI Lead Scoring",
+      "leadScore": "Lead Score",
+      "purchaseProbability": "Purchase Probability",
+      "recommendedAction": "Recommended Action",
+      "classifications": {
+        "hot": "Hot Lead",
+        "warm": "Warm Lead",
+        "cold": "Cold Lead"
+      },
+      "actions": {
+        "hot": "Contact within 15 minutes.",
+        "warm": "Follow up within 2 hours.",
+        "cold": "Add to nurture campaign — follow up within 3 days."
+      }
+    },
+    "nextFollowUp": "Next follow-up",
+    "assignedTo": "Assigned to",
+    "interactions": "Interactions",
+    "addNote": "Add note",
+    "scheduleFollowUp": "Schedule follow-up",
+    "changeStage": "Change stage",
+    "interestedIn": "Interested in"
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "A unified profile for every buyer and seller who's interacted with your dealership.",
+    "lifetimeValue": "Lifetime value",
+    "customerSince": "Customer since",
+    "newDeal": "New deal",
+    "interestedVehicles": "Interested vehicles",
+    "previousPurchases": "Previous purchases",
+    "currentNegotiations": "Current negotiations",
+    "aiRecommendations": "AI recommendations",
+    "addNote": "Add note",
+    "sendMessage": "Type a message...",
+    "taskAdded": "Task added",
+    "newTaskPlaceholder": "New task title",
+    "due": "Due",
+    "tabs": {
+      "overview": "Overview",
+      "messages": "Messages",
+      "calls": "Calls",
+      "notes": "Notes",
+      "documents": "Documents",
+      "tasks": "Tasks",
+      "timeline": "Timeline"
+    },
+    "channels": {
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "sms": "SMS"
+    },
+    "callOutcomes": {
+      "connected": "Connected",
+      "no_answer": "No answer",
+      "voicemail": "Voicemail"
+    },
+    "documentTypes": {
+      "id": "ID",
+      "license": "License",
+      "contract": "Contract",
+      "invoice": "Invoice",
+      "other": "Other"
+    }
+  },
+  "aiAssistant": {
+    "title": "AI Car Agent",
+    "subtitle": "Your virtual sales and receptionist assistant.",
+    "newThread": "New conversation",
+    "placeholder": "Ask about inventory, leads, pricing, or anything else...",
+    "thinking": "Thinking...",
+    "suggestions": {
+      "summarizeLeads": "Summarize today's leads",
+      "draftFollowUp": "Draft a WhatsApp follow-up",
+      "agingInventory": "What's my top aging inventory?",
+      "pricingAdvice": "How should I price this trade-in?"
+    },
+    "marketplace": {
+      "fetchButton": "Fetch Dubizzle & YallaMotor inventory",
+      "prompt": "Show me the latest inventory from Dubizzle and YallaMotor",
+      "viewListing": "View listing",
+      "addToInventory": "Add to inventory",
+      "viewListingToast": "This will open the live listing once the marketplace integration is connected",
+      "addedToInventory": "Added to your Buy Vehicles pipeline"
+    },
+    "composer": {
+      "attachFile": "Attach file",
+      "uploadPhoto": "Upload vehicle photo",
+      "voiceInput": "Voice input",
+      "listening": "Listening...",
+      "searchWeb": "Search the web",
+      "fileAttached": "File attached",
+      "photoAttached": "Photo attached"
+    },
+    "context": {
+      "vehicle": "Vehicle context",
+      "selectVehicle": "Select a vehicle",
+      "removeVehicle": "Remove vehicle context",
+      "customer": "Customer context",
+      "selectCustomer": "Select a customer",
+      "removeCustomer": "Remove customer context",
+      "recommendations": "AI recommendations",
+      "actions": "Actions",
+      "generateQuote": "Generate quotation",
+      "estimateValue": "Estimate market value",
+      "compareVehicle": "Compare this vehicle"
+    }
+  },
+  "valuation": {
+    "title": "Vehicle Valuation",
+    "subtitle": "Get an AI-estimated market value for any vehicle.",
+    "compareTitle": "Compare vehicles",
+    "form": {
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "mileage": "Mileage (km)",
+      "condition": "Condition",
+      "submit": "Estimate value"
+    },
+    "estimatedValue": "Estimated market value",
+    "confidence": "Confidence",
+    "comparables": "Comparable listings",
+    "compareVehicles": "Compare vehicles",
+    "addToCompare": "Add to comparison"
+  },
+  "aiMarketing": {
+    "title": "AI Marketing",
+    "subtitle": "Generate advertisements and social content for any vehicle in seconds.",
+    "vehicleAndPhotos": "Vehicle & photos",
+    "selectVehicle": "Select a vehicle",
+    "selectVehiclePrompt": "Select a vehicle to start generating marketing content.",
+    "addPhotos": "Add photos",
+    "generateContent": "Generate content",
+    "generatedHistory": "Generated content",
+    "translate": "Translate",
+    "copied": "Copied to clipboard",
+    "includeInCampaign": "Include in campaign",
+    "emptyState": "No content generated yet",
+    "emptyStateDescription": "Choose a function above to generate your first piece of content.",
+    "createCampaign": "Create campaign",
+    "campaignNamePlaceholder": "Campaign name",
+    "piecesSelected": "pieces selected",
+    "pastCampaigns": "Campaigns",
+    "campaignCreatedToast": "campaign created",
+    "types": {
+      "vehicleAd": "Vehicle advertisement",
+      "instagramCaption": "Instagram caption",
+      "facebookPost": "Facebook post",
+      "tiktokScript": "TikTok script",
+      "whatsappMessage": "WhatsApp message",
+      "email": "Email",
+      "listingDescription": "Listing description",
+      "seoDescription": "SEO description",
+      "translatedAd": "Translate advertisement"
+    },
+    "channels": {
+      "advertisement": "Advertisement",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "listing": "Listing",
+      "seo": "SEO"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    }
+  },
+  "contractsDocuments": {
+    "title": "Contracts & Documents",
+    "subtitle": "Create, manage, and sign every document tied to a deal.",
+    "tabs": {
+      "documents": "Documents",
+      "assistant": "AI Assistant"
+    },
+    "newDocument": "New document",
+    "editDocument": "Edit document",
+    "formDescription": "Document generation and e-signature integration will be connected to a backend later — this creates and tracks document records.",
+    "allTypes": "All types",
+    "createdToast": "Document created",
+    "updatedToast": "Document updated",
+    "previewDisclaimer": "This is a simulated preview. Real PDF generation will be available once connected to a backend.",
+    "fields": {
+      "type": "Document type",
+      "title": "Title",
+      "vehicle": "Vehicle",
+      "customer": "Customer",
+      "preparedBy": "Prepared by"
+    },
+    "types": {
+      "purchaseAgreement": "Vehicle Purchase Agreement",
+      "salesAgreement": "Vehicle Sales Agreement",
+      "quotation": "Quotation",
+      "invoice": "Invoice",
+      "receipt": "Receipt",
+      "inspectionReport": "Inspection Report",
+      "deliveryForm": "Delivery Form",
+      "customerAgreement": "Customer Agreement"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "pending_signature": "Pending signature",
+      "signed": "Signed",
+      "completed": "Completed"
+    },
+    "actions": {
+      "edit": "Edit",
+      "preview": "Preview",
+      "download": "Download",
+      "print": "Print",
+      "share": "Share",
+      "sign": "Sign",
+      "signedToast": "Document signed",
+      "downloaded": "Document downloaded",
+      "linkCopied": "Link copied to clipboard",
+      "copy": "Copy",
+      "copied": "Copied to clipboard"
+    },
+    "aiAssistant": {
+      "intro": "Ask me to create an agreement, prepare a quotation, summarize a report, translate a document, or check for missing information.",
+      "placeholder": "Ask the AI document assistant...",
+      "previewTitle": "AI-generated document preview",
+      "noPreview": "Generated documents will appear here.",
+      "prompts": {
+        "createPurchaseAgreement": "Create a vehicle purchase agreement.",
+        "prepareQuotation": "Prepare a quotation for this customer.",
+        "summarizeInspection": "Summarize this inspection report.",
+        "translateArabic": "Translate this document to Arabic.",
+        "findMissingInfo": "Find missing information."
+      }
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "Stay on top of every follow-up, inspection, and delivery.",
+    "newTask": "New task",
+    "newTaskDescription": "Create a task and assign it to a team member.",
+    "createdToast": "Task created",
+    "buckets": {
+      "today": "Today",
+      "upcoming": "Upcoming",
+      "overdue": "Overdue",
+      "completed": "Completed"
+    },
+    "categories": {
+      "followUp": "Follow up with customer",
+      "inspection": "Vehicle inspection",
+      "photography": "Vehicle photography",
+      "documents": "Upload documents",
+      "call": "Call customer",
+      "quotation": "Send quotation",
+      "service": "Vehicle service",
+      "delivery": "Vehicle delivery"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "fields": {
+      "title": "Task title",
+      "category": "Category",
+      "priority": "Priority",
+      "dueDate": "Due date",
+      "assignee": "Assigned to",
+      "vehicle": "Vehicle",
+      "customer": "Customer"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "One unified inbox for WhatsApp, email, SMS, website chat, and your AI agent.",
+    "allChannels": "All channels",
+    "replyPlaceholder": "Type a reply...",
+    "channels": {
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "sms": "SMS",
+      "websiteChat": "Website Chat",
+      "aiAgent": "AI Agent"
+    }
+  },
+  "deals": {
+    "title": "Deals",
+    "subtitle": "Build quotes, track approvals, and convert to contracts.",
+    "newDeal": "New deal",
+    "customer": "Customer",
+    "vehicle": "Vehicle",
+    "lineItems": "Line items",
+    "vat": "VAT (5%)",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "convertToContract": "Convert to contract",
+    "statuses": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "converted_to_contract": "Converted to contract",
+      "declined": "Declined"
+    }
+  },
+  "aiActivity": {
+    "title": "AI Activity",
+    "subtitle": "A live audit trail of every action your AI assistant has taken.",
+    "allActions": "All actions",
+    "allStatuses": "All statuses",
+    "kpi": {
+      "totalActions": "Total actions",
+      "completed": "Completed",
+      "needsReview": "Needs review",
+      "timeSaved": "Time saved"
+    },
+    "table": {
+      "time": "Time",
+      "action": "AI action",
+      "vehicle": "Vehicle",
+      "customer": "Customer",
+      "result": "Result",
+      "status": "Status"
+    },
+    "actions": {
+      "valuation": "AI Valuation",
+      "leadScoring": "AI Lead Scoring",
+      "marketingContent": "AI Marketing",
+      "documentGeneration": "AI Document Generation",
+      "documentTranslation": "AI Document Translation",
+      "documentSummary": "AI Document Summary",
+      "priceAnalysis": "AI Price Analysis",
+      "chatResponse": "AI Car Agent Reply",
+      "followUpSuggestion": "AI Follow-up Suggestion"
+    },
+    "status": {
+      "completed": "Completed",
+      "in_progress": "In progress",
+      "needs_review": "Needs review",
+      "failed": "Failed"
+    }
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Welcome back to your AI Car Dealer Agent workspace.",
+    "error": "We couldn't sign you in. Check your details and try again.",
+    "placeholderNotice": "Authentication is a placeholder — connecting a real identity provider will replace this screen without changing the rest of the app."
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Understand dealership performance at a glance.",
+    "tabs": {
+      "sales": "Sales Report",
+      "purchase": "Purchase Report",
+      "profit": "Profit Report",
+      "inventory": "Inventory Report",
+      "leads": "Lead Report",
+      "salesperson": "Salesperson Performance",
+      "vehiclePerformance": "Vehicle Performance",
+      "market": "Market Report",
+      "aiPerformance": "AI Performance"
+    },
+    "export": {
+      "pdf": "Export PDF",
+      "excel": "Export Excel",
+      "csv": "Export CSV",
+      "comingSoon": "Export will be available once reporting is connected to live data."
+    },
+    "kpi": {
+      "totalRevenue": "Total revenue",
+      "unitsSold": "Units sold",
+      "avgSalePrice": "Avg. sale price",
+      "avgDaysToSell": "Avg. days to sell",
+      "totalSpend": "Total spend",
+      "unitsPurchased": "Units purchased",
+      "avgCostPerUnit": "Avg. cost per unit",
+      "grossProfit": "Gross profit",
+      "netMargin": "Net margin",
+      "avgProfitPerUnit": "Avg. profit per unit",
+      "totalUnits": "Total units",
+      "totalValue": "Total value",
+      "avgDaysInStock": "Avg. days in stock",
+      "totalLeads": "Total leads",
+      "conversionRate": "Conversion rate",
+      "avgResponseTime": "Avg. response time",
+      "totalInteractions": "Total interactions",
+      "satisfaction": "Satisfaction rate",
+      "timeSaved": "Time saved"
+    },
+    "charts": {
+      "salesTrend": "Sales trend",
+      "revenueByMake": "Revenue by make",
+      "purchaseTrend": "Purchase trend",
+      "purchasesBySource": "Purchases by source",
+      "profitTrend": "Profit trend",
+      "profitByMake": "Profit by make",
+      "inventoryAging": "Inventory aging",
+      "inventoryByStatus": "Inventory by status",
+      "leadFunnel": "Lead funnel by stage",
+      "leadsBySource": "Leads by source",
+      "revenueByRep": "Revenue by salesperson",
+      "dealsByRep": "Deals by salesperson",
+      "topSellingModels": "Top-selling models",
+      "slowestMoving": "Slowest-moving stock",
+      "demandByCategory": "Demand by category",
+      "priceTrend": "Market price trend",
+      "usageTrend": "AI usage trend"
+    },
+    "table": {
+      "date": "Date",
+      "reference": "Reference",
+      "vehicle": "Vehicle",
+      "customer": "Customer",
+      "salesperson": "Salesperson",
+      "salePrice": "Sale price",
+      "supplier": "Supplier",
+      "purchasePrice": "Purchase price",
+      "transportCost": "Transport cost",
+      "totalCost": "Total cost",
+      "costPrice": "Cost price",
+      "sellingPrice": "Selling price",
+      "grossProfit": "Gross profit",
+      "margin": "Margin",
+      "status": "Status",
+      "daysInStock": "Days in stock",
+      "currentPrice": "Current price",
+      "location": "Location",
+      "source": "Source",
+      "stage": "Stage",
+      "assignedTo": "Assigned to",
+      "score": "Score",
+      "leadsAssigned": "Leads assigned",
+      "dealsWon": "Deals won",
+      "conversionRate": "Conversion rate",
+      "revenue": "Revenue",
+      "avgResponse": "Avg. response",
+      "make": "Make",
+      "daysToSell": "Days to sell",
+      "views": "Views",
+      "inquiries": "Inquiries",
+      "model": "Model",
+      "avgMarketPrice": "Avg. market price",
+      "yourAvgPrice": "Your avg. price",
+      "demandIndex": "Demand index",
+      "trend": "Trend",
+      "feature": "AI feature",
+      "interactions": "Interactions",
+      "successRate": "Success rate",
+      "avgResponseTime": "Avg. response time",
+      "timeSaved": "Time saved"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your profile, dealership, and platform preferences.",
+    "nav": {
+      "profile": "Profile",
+      "dealership": "Dealership",
+      "users": "Users",
+      "rolesPermissions": "Roles & Permissions",
+      "notifications": "Notifications",
+      "aiSettings": "AI Settings",
+      "integrations": "Integrations",
+      "language": "Language",
+      "appearance": "Appearance",
+      "currency": "Currency",
+      "tax": "Tax",
+      "documentTemplates": "Document Templates",
+      "marketplaceConnections": "Marketplace Connections",
+      "security": "Security",
+      "billing": "Billing",
+      "apiKeys": "API Keys",
+      "dashboardAds": "Dashboard Ads",
+      "demoData": "Demo Data"
+    },
+    "profile": {
+      "subtitle": "Manage how your name and contact details appear across the platform.",
+      "avatarComingSoon": "Photo uploads will be available once accounts are connected to live storage.",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "saved": "Profile updated"
+    },
+    "dealership": {
+      "subtitle": "Your dealership's identity, contact details, and branches.",
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "saved": "Dealership details updated",
+      "branches": "Branches",
+      "branchesSubtitle": "Locations your team can switch between across the platform.",
+      "editComingSoon": "Branch editing will be available once accounts are connected to live data.",
+      "hours": "Business hours",
+      "hoursSubtitle": "Shown to customers asking about visiting a showroom.",
+      "closed": "Closed",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      }
+    },
+    "users": {
+      "subtitle": "Manage who has access to your dealership's workspace.",
+      "invite": "Invite user",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "removed": "User removed",
+      "inviteTitle": "Invite a user",
+      "inviteDescription": "Send an invitation to join your dealership's workspace.",
+      "sendInvite": "Send invite",
+      "invited": "Invitation sent to {name}",
+      "status": {
+        "active": "Active",
+        "invited": "Invited"
+      }
+    },
+    "rolesPermissions": {
+      "subtitle": "Define roles and control which modules each role can access.",
+      "matrixTitle": "Permission matrix",
+      "matrixSubtitle": "Toggle module access per role. Admins always have full access.",
+      "module": "Module",
+      "saved": "Permissions updated",
+      "roles": {
+        "superAdmin": "Super Admin",
+        "dealerOwner": "Dealer Owner",
+        "manager": "Manager",
+        "salesperson": "Salesperson",
+        "buyer": "Buyer",
+        "accountant": "Accountant",
+        "marketingManager": "Marketing Manager",
+        "viewer": "Viewer"
+      },
+      "roleDescriptions": {
+        "superAdmin": "Full platform access across every dealership, module, and setting — including billing and API keys.",
+        "dealerOwner": "Full access to this dealership's data and settings, including billing and user management.",
+        "manager": "Manages inventory, leads, deals, and team performance.",
+        "salesperson": "Works leads, deals, and documents assigned to them.",
+        "buyer": "Sources and negotiates vehicle acquisitions for inventory.",
+        "accountant": "Manages billing, invoices, and financial reporting.",
+        "marketingManager": "Creates and manages AI marketing campaigns and content.",
+        "viewer": "Read-only access for reporting and oversight."
+      },
+      "modules": {
+        "inventory": "Inventory",
+        "purchasing": "Buy Vehicles",
+        "leads": "Leads",
+        "deals": "Deals",
+        "documents": "Contracts & Documents",
+        "billing": "Billing",
+        "marketing": "AI Marketing",
+        "reports": "Reports",
+        "settings": "Settings",
+        "aiActivity": "AI Activity"
+      }
+    },
+    "notifications": {
+      "subtitle": "Choose how your team is notified about dealership activity.",
+      "event": "Event",
+      "saved": "Notification preferences updated",
+      "channels": {
+        "email": "Email",
+        "sms": "SMS",
+        "push": "Push"
+      },
+      "events": {
+        "newLead": "New lead assigned",
+        "taskDue": "Task due soon",
+        "documentSigned": "Document signed",
+        "aiNeedsReview": "AI action needs review",
+        "newMessage": "New customer message",
+        "dealWon": "Deal won"
+      }
+    },
+    "aiSettings": {
+      "subtitle": "Control how the AI assistant behaves across your dealership.",
+      "tone": "AI reply tone",
+      "saved": "AI settings updated",
+      "toggles": {
+        "autoReplyChat": {
+          "label": "Auto-reply to website chat",
+          "description": "Let the AI Agent respond to customers on Website Chat automatically."
+        },
+        "requireApproval": {
+          "label": "Require approval before sending documents",
+          "description": "AI-drafted contracts and quotations wait for staff approval before they're sent."
+        },
+        "autoLeadScoring": {
+          "label": "Automatic lead scoring",
+          "description": "Score new leads with AI as soon as they're created."
+        },
+        "autoFollowUps": {
+          "label": "Automatic follow-up suggestions",
+          "description": "Let AI suggest follow-up tasks for leads with no recent activity."
+        }
+      },
+      "tones": {
+        "professional": "Professional",
+        "friendly": "Friendly",
+        "concise": "Concise"
+      },
+      "provider": "AI provider",
+      "providerNote": "The backend will route requests to this provider once connected — the app doesn't depend on any single one.",
+      "providers": {
+        "openai": "OpenAI",
+        "anthropic": "Anthropic Claude",
+        "google": "Google Gemini",
+        "other": "Other / custom"
+      }
+    },
+    "integrations": {
+      "subtitle": "Connect the tools your dealership already uses.",
+      "connectedToast": "Integration connected",
+      "disconnectedToast": "Integration disconnected",
+      "items": {
+        "whatsapp": "WhatsApp Business API",
+        "calendar": "Google Calendar",
+        "email": "Email / SMTP",
+        "zapier": "Zapier",
+        "accounting": "Accounting software"
+      }
+    },
+    "language": {
+      "subtitle": "Choose the interface language. Arabic and Urdu automatically switch the layout to right-to-left."
+    },
+    "appearance": {
+      "subtitle": "Choose how AutoMind AI looks on this device."
+    },
+    "currency": {
+      "subtitle": "Set the default currency and how prices are displayed.",
+      "defaultCurrency": "Default currency",
+      "displayFormat": "Display format",
+      "roundPrices": "Round displayed prices",
+      "roundPricesDescription": "Round prices to the nearest whole number across the platform.",
+      "saved": "Currency settings updated",
+      "primary": "Primary",
+      "ready": "Ready",
+      "previewTitle": "USD conversion preview",
+      "previewDescription": "AED is the platform's primary currency. USD is fully supported in the data model and pricing utilities for international buyers, using the UAE Central Bank's fixed peg."
+    },
+    "tax": {
+      "subtitle": "Configure VAT and tax registration details for documents and invoices.",
+      "vatRate": "VAT rate (%)",
+      "trn": "Tax Registration Number (TRN)",
+      "pricesIncludeTax": "Prices include tax",
+      "pricesIncludeTaxDescription": "Show vehicle prices inclusive of VAT across the platform.",
+      "saved": "Tax settings updated"
+    },
+    "documentTemplates": {
+      "subtitle": "Customize the wording and layout used for each generated document type.",
+      "editTemplate": "Edit template",
+      "editComingSoon": "Template editing will be available once document generation is connected to live data."
+    },
+    "security": {
+      "subtitle": "Manage your password, two-factor authentication, and active sessions.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "updatePassword": "Update password",
+      "passwordChanged": "Password updated",
+      "twoFactor": "Two-factor authentication",
+      "twoFactorDescription": "Require a verification code in addition to your password.",
+      "activeSessions": "Active sessions",
+      "activeSessionsSubtitle": "Devices currently signed in to your account.",
+      "thisDevice": "this device",
+      "signOut": "Sign out",
+      "signedOut": "Session signed out"
+    },
+    "billing": {
+      "subtitle": "Manage your subscription, payment method, and invoices.",
+      "currentPlan": "Current plan",
+      "planName": "Professional",
+      "planDescription": "AED 999/month — up to 10 users and unlimited AI actions.",
+      "managePlan": "Manage plan",
+      "managePlanComingSoon": "Plan changes will be available once billing is connected to a live payment provider.",
+      "paymentMethod": "Payment method",
+      "updatePayment": "Update payment method",
+      "updatePaymentComingSoon": "Payment method updates will be available once billing is connected to a live payment provider.",
+      "invoiceHistory": "Invoice history",
+      "invoiceHistorySubtitle": "Download past invoices for your records.",
+      "invoice": "Invoice",
+      "amount": "Amount",
+      "paid": "Paid",
+      "downloadComingSoon": "Invoice downloads will be available once billing is connected to live data."
+    },
+    "apiKeys": {
+      "subtitle": "Manage API keys used to connect external tools to your dealership data.",
+      "generate": "Generate new key",
+      "newKeyName": "New key",
+      "generated": "API key generated",
+      "copied": "API key copied to clipboard",
+      "revoke": "Revoke API key",
+      "revoked": "API key revoked",
+      "name": "Name",
+      "key": "Key",
+      "created": "Created",
+      "lastUsed": "Last used"
+    },
+    "dashboardAds": {
+      "title": "Dashboard promotions",
+      "subtitle": "Control the promotional banner shown on the Dashboard. Add, edit, or remove it anytime.",
+      "addAd": "Add promotion",
+      "editAd": "Edit promotion",
+      "formHint": "This banner appears at the top of the Dashboard for everyone at this dealership.",
+      "fieldTitle": "Title",
+      "fieldDescription": "Description",
+      "fieldCtaLabel": "Button label",
+      "fieldCtaUrl": "Link",
+      "fieldBadge": "Badge (optional)",
+      "fieldActive": "Show on dashboard",
+      "empty": "No promotions yet",
+      "emptyDescription": "Add a promotional banner to highlight offers, features, or announcements on the Dashboard.",
+      "confirmDeleteTitle": "Remove this promotion?",
+      "confirmDeleteDescription": "This will remove the banner from the Dashboard immediately. This can't be undone.",
+      "deleted": "Promotion removed"
+    },
+    "demoData": {
+      "subtitle": "This workspace is preloaded with realistic sample data so every feature can be explored without a live backend.",
+      "stats": {
+        "vehicles": "Vehicles",
+        "customers": "Customers",
+        "leads": "Leads",
+        "deals": "Deals",
+        "aiConversations": "AI conversations",
+        "documents": "Documents",
+        "tasks": "Tasks",
+        "notifications": "Notifications"
+      },
+      "resetButton": "Reset demo data",
+      "resetConfirmTitle": "Reset demo data?",
+      "resetConfirmDescription": "This discards any changes made in this session — moved leads, completed tasks, generated documents, and more — and restores the original sample data.",
+      "resetConfirmAction": "Reset"
+    },
+    "marketplaceConnections": {
+      "title": "Marketplace connections",
+      "subtitle": "Connect your marketplace accounts so the AI agent can fetch live inventory, photos, and pricing when a customer asks.",
+      "connect": "Connect",
+      "connecting": "Connecting...",
+      "disconnect": "Disconnect",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "dialogTitle": "Connect Dubizzle",
+      "dialogDescription": "Paste the link to your Dubizzle dealership or showroom page. The AI agent will use this to fetch your live inventory.",
+      "fieldLabel": "Dubizzle account link",
+      "fieldPlaceholder": "https://dubizzle.com/en/motors/showroom/your-dealership",
+      "connectedToast": "Dubizzle account connected",
+      "disconnectedToast": "Dubizzle account disconnected",
+      "fetchInventory": "Fetch inventory",
+      "fetchDialogTitle": "Fetch Dubizzle inventory",
+      "fetchDialogDescription": "Here's the live stock linked to your Dubizzle account. Choose which listings to add to your inventory — you can refine details after import.",
+      "addToInventory": "Add to inventory",
+      "importing": "Adding to inventory...",
+      "importedToast": "vehicles added to your inventory",
+      "csvRowTitle": "Import from a Dubizzle CSV export",
+      "csvRowDescription": "Export your listings from Dubizzle as a CSV file and upload it here — no login required.",
+      "csvButton": "Import CSV export",
+      "csvDialogTitle": "Import Dubizzle CSV export",
+      "csvDialogDescription": "Upload the CSV file you exported from your Dubizzle seller dashboard. We'll match common columns like make, model, year, price, mileage, and location automatically.",
+      "csvChooseFile": "Choose a CSV file",
+      "csvHint": "CSV files exported from Dubizzle's listings manager",
+      "csvChooseDifferent": "Choose a different file",
+      "csvInvalidRows": "rows are missing required fields and can't be imported"
+    }
+  },
+  "placeholder": {
+    "generic": {
+      "description": "This module isn't wired up yet — it's part of the AI Car Dealer Agent roadmap.",
+      "capabilities": [
+        "Full AI-assisted workflow",
+        "Connected to live dealership data",
+        "Available once the backend is wired in"
+      ]
+    },
+    "vehicles": {
+      "title": "Vehicles",
+      "description": "Search and discover vehicles across connected marketplaces before they enter your inventory.",
+      "capabilities": [
+        "Search UAE and international marketplace listings",
+        "Compare found vehicles against your target margins",
+        "One-click add to your Buy Vehicles pipeline"
+      ]
+    },
+    "buyVehicles": {
+      "title": "Buy Vehicles",
+      "description": "Manage the sourcing and acquisition pipeline for vehicles you're purchasing.",
+      "capabilities": [
+        "Track acquisition offers and negotiations",
+        "AI-assisted purchase price recommendations",
+        "Convert accepted offers directly into inventory"
+      ]
+    },
+    "sellVehicles": {
+      "title": "Sell Vehicles",
+      "description": "Manage outbound sales workflows for vehicles ready to leave your inventory.",
+      "capabilities": [
+        "List vehicles across connected sales channels",
+        "AI-generated listing descriptions",
+        "Track buyer interest and offers in one place"
+      ]
+    },
+    "customers": {
+      "title": "Customers",
+      "description": "A unified profile for every buyer and seller who's interacted with your dealership.",
+      "capabilities": [
+        "Full purchase and interaction history",
+        "Linked leads, deals, and documents",
+        "AI-suggested next best action per customer"
+      ]
+    },
+    "marketIntelligence": {
+      "title": "Market Intelligence",
+      "description": "Understand UAE automotive market conditions and trends in real time.",
+      "capabilities": [
+        "Regional demand and pricing trends",
+        "Competitor inventory benchmarking",
+        "AI-generated market briefings"
+      ]
+    },
+    "priceAnalyzer": {
+      "title": "Price Analyzer",
+      "description": "Analyze vehicle pricing against live market comparables.",
+      "capabilities": [
+        "Real-time price positioning vs. the market",
+        "Suggested price adjustments",
+        "Historical price trend charts"
+      ]
+    },
+    "profitCalculator": {
+      "title": "Profit Calculator",
+      "description": "Model profit margins across acquisition, reconditioning, and sale.",
+      "capabilities": [
+        "Per-vehicle margin breakdown",
+        "Scenario modeling for pricing decisions",
+        "Portfolio-wide profitability view"
+      ]
+    },
+    "aiMarketing": {
+      "title": "AI Marketing",
+      "description": "Generate advertisements and social media content with AI.",
+      "capabilities": [
+        "AI-generated ad copy and creative",
+        "Social media post scheduling",
+        "Campaign performance tracking"
+      ]
+    },
+    "contractsDocuments": {
+      "title": "Contracts & Documents",
+      "description": "Generate contracts and track every vehicle and customer document.",
+      "capabilities": [
+        "AI-drafted purchase and sales contracts",
+        "Document expiry tracking and alerts",
+        "Secure customer document storage"
+      ]
+    },
+    "tasks": {
+      "title": "Tasks",
+      "description": "Manage follow-ups and to-dos across your whole team.",
+      "capabilities": [
+        "Team-wide task assignment",
+        "Automated follow-up reminders",
+        "AI-suggested next actions"
+      ]
+    },
+    "messages": {
+      "title": "Messages",
+      "description": "A unified inbox for all customer communication.",
+      "capabilities": [
+        "WhatsApp, email, and SMS in one inbox",
+        "AI-drafted replies",
+        "Full conversation history per customer"
+      ]
+    },
+    "aiActivity": {
+      "title": "AI Activity",
+      "description": "A live feed of everything your AI assistant has automated.",
+      "capabilities": [
+        "Full audit trail of AI actions",
+        "Automation rules and triggers",
+        "Approve or undo AI-taken actions"
+      ]
+    }
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "signIn": "Sign in",
+      "cta": "Start Free Demo"
+    },
+    "hero": {
+      "badge": "AI-native dealership platform",
+      "headline": "Your AI-Powered Car Dealership.",
+      "subheading": "Buy smarter. Sell faster. Manage everything with AI.",
+      "ctaPrimary": "Start Free Demo",
+      "ctaSecondary": "See How It Works",
+      "stat1Value": "6",
+      "stat1Label": "AI-powered modules",
+      "stat2Value": "4",
+      "stat2Label": "Languages, fully RTL-ready",
+      "stat3Value": "0",
+      "stat3Label": "Setup required"
+    },
+    "features": {
+      "title": "Everything your dealership needs, in one platform",
+      "subtitle": "Six connected modules, powered by AI, built for how modern dealerships actually work.",
+      "aiAgent": {
+        "title": "AI Car Agent",
+        "description": "A virtual sales and receptionist assistant that answers questions, qualifies leads, and works around the clock."
+      },
+      "vehicleIntelligence": {
+        "title": "Vehicle Intelligence",
+        "description": "AI-analyzed pricing, profit margins, and market positioning for every vehicle in your inventory."
+      },
+      "marketIntelligence": {
+        "title": "Market Intelligence",
+        "description": "Track regional pricing trends and spot opportunities before your competitors do."
+      },
+      "crm": {
+        "title": "Smart CRM",
+        "description": "A visual pipeline that scores leads, schedules follow-ups, and never lets a buyer go cold."
+      },
+      "aiMarketing": {
+        "title": "AI Marketing",
+        "description": "Generate ad copy, social posts, and listings in seconds — in the language your customers speak."
+      },
+      "profitAnalytics": {
+        "title": "Profit Analytics",
+        "description": "Real-time margin, revenue, and performance reporting across your entire operation."
+      }
+    },
+    "howItWorks": {
+      "title": "Up and running in minutes",
+      "subtitle": "No lengthy onboarding. No IT project. Just a dealership that runs smarter from day one.",
+      "step1Title": "Add your inventory",
+      "step1Description": "Import vehicles from a marketplace CSV, connect a live feed, or add them by hand.",
+      "step2Title": "Let AI get to work",
+      "step2Description": "Your AI agent starts qualifying leads, pricing vehicles, and drafting marketing content immediately.",
+      "step3Title": "Manage every deal in one place",
+      "step3Description": "Track leads, quotations, and contracts through a single pipeline built for dealerships.",
+      "step4Title": "Grow with real numbers",
+      "step4Description": "Watch profit, inventory health, and team performance update in real time."
+    },
+    "screenshots": {
+      "title": "See it in action",
+      "subtitle": "A look at the workspace your team will actually use every day.",
+      "dashboardLabel": "Dashboard",
+      "dashboardCaption": "Every KPI that matters, in one view.",
+      "aiAgentLabel": "AI Car Agent",
+      "aiAgentCaption": "A conversational assistant with full context on your inventory and customers.",
+      "inventoryLabel": "Inventory",
+      "inventoryCaption": "Grid or table view, AI pricing badges, and one-click valuation."
+    },
+    "pricing": {
+      "title": "Simple, transparent pricing",
+      "subtitle": "Illustrative plans — final pricing is tailored to your dealership size and inventory volume.",
+      "priceLabel": "Custom pricing",
+      "mostPopular": "Most popular",
+      "cta": "Talk to sales",
+      "starter": {
+        "name": "Starter",
+        "tagline": "For independent dealers getting started with AI.",
+        "feature1": "Up to 50 vehicles",
+        "feature2": "AI Car Agent",
+        "feature3": "Lead pipeline & CRM",
+        "feature4": "Single dealership branch"
+      },
+      "growth": {
+        "name": "Growth",
+        "tagline": "For dealerships ready to scale with AI across every team.",
+        "feature1": "Unlimited vehicles",
+        "feature2": "AI Marketing & valuation tools",
+        "feature3": "Profit analytics & reporting",
+        "feature4": "Multi-branch support"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "For groups running multiple brands and locations.",
+        "feature1": "Everything in Growth",
+        "feature2": "Role-based permissions",
+        "feature3": "Dedicated onboarding",
+        "feature4": "Custom integrations"
+      }
+    },
+    "testimonials": {
+      "title": "Trusted by forward-thinking dealerships",
+      "subtitle": "Illustrative feedback — swap in real customer stories as you onboard your first dealerships.",
+      "quote1": "Our AI agent now handles the first response on every lead. Our team only steps in once a buyer is ready to talk numbers.",
+      "name1": "Layla Haddad",
+      "role1": "Operations Manager, Desert Line Motors",
+      "quote2": "The profit analytics alone paid for the platform. We finally see margin by vehicle, not just by month.",
+      "name2": "Marcus Webb",
+      "role2": "Sales Director, Coastal Auto Group",
+      "quote3": "Being able to serve customers in Arabic, Urdu, and Hindi from one system changed how our showroom operates.",
+      "name3": "Priya Nandakumar",
+      "role3": "Owner, Silverline Motors"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "subtitle": "Everything you need to know before getting started.",
+      "q1": "Which languages does the platform support?",
+      "a1": "English, Arabic, Urdu, and Hindi today, with full right-to-left support for Arabic and Urdu — more languages are on the roadmap.",
+      "q2": "Do I need to replace my existing tools?",
+      "a2": "No. AutoMind AI is designed to be your dealership's operating system, but it fits around marketplaces and tools you already use.",
+      "q3": "Which AI models power the platform?",
+      "a3": "AutoMind AI is built on a provider-agnostic AI layer, so your dealership benefits from the best available models without being locked to one provider.",
+      "q4": "Can I try it before committing?",
+      "a4": "Yes — start a free demo instantly, no credit card or setup required.",
+      "q5": "Is this built for UAE dealerships specifically?",
+      "a5": "AutoMind AI is built UAE-first — GCC/UAE specification fields, all seven emirates, and RTA-ready registration data — while remaining ready to scale internationally.",
+      "q6": "Who is AutoMind AI for?",
+      "a6": "Independent dealers, multi-branch groups, and brokers who want AI woven into every part of buying, selling, and managing vehicles."
+    },
+    "cta": {
+      "title": "Ready to run your dealership smarter?",
+      "subtitle": "Join the AI-native way to buy, sell, and manage vehicles.",
+      "button": "Start Free Demo"
+    },
+    "footer": {
+      "description": "The AI-powered operating system for modern car dealerships.",
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "about": "About",
+      "careers": "Careers",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "rights": "All rights reserved."
+    }
+  }
+}

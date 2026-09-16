@@ -1,0 +1,1185 @@
+{
+  "app": {
+    "name": "أوتومايند AI",
+    "tagline": "وكيل السيارات الذكي"
+  },
+  "nav": {
+    "groups": {
+      "overview": "نظرة عامة",
+      "ai": "الذكاء الاصطناعي",
+      "vehiclesInventory": "المركبات والمخزون",
+      "salesCrm": "المبيعات والعملاء",
+      "marketIntelligence": "ذكاء السوق",
+      "marketing": "التسويق",
+      "operations": "العمليات",
+      "system": "النظام"
+    },
+    "dashboard": "لوحة التحكم",
+    "aiCarAgent": "وكيل السيارات الذكي",
+    "vehicles": "المركبات",
+    "inventory": "المخزون",
+    "buyVehicles": "شراء مركبات",
+    "sellVehicles": "بيع مركبات",
+    "leads": "العملاء المحتملون",
+    "customers": "العملاء",
+    "deals": "الصفقات",
+    "marketIntelligence": "ذكاء السوق",
+    "priceAnalyzer": "محلل الأسعار",
+    "profitCalculator": "حاسبة الأرباح",
+    "vehicleValuation": "تقييم المركبة",
+    "aiMarketing": "التسويق بالذكاء الاصطناعي",
+    "contractsDocuments": "العقود والمستندات",
+    "tasks": "المهام",
+    "messages": "الرسائل",
+    "reports": "التقارير",
+    "settings": "الإعدادات",
+    "aiActivity": "نشاط الذكاء الاصطناعي"
+  },
+  "common": {
+    "search": "بحث",
+    "searchPlaceholder": "ابحث في المركبات والعملاء والعملاء المحتملين والصفقات والمستندات والمهام والرسائل...",
+    "viewAll": "عرض الكل",
+    "seeDetails": "عرض التفاصيل",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saveChanges": "حفظ التغييرات",
+    "create": "إنشاء",
+    "add": "إضافة",
+    "loading": "جارٍ التحميل...",
+    "noResults": "لا توجد نتائج",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "back": "رجوع",
+    "next": "التالي",
+    "filters": "التصفية",
+    "clearFilters": "مسح التصفية",
+    "send": "إرسال الرسالة",
+    "copy": "نسخ",
+    "openNavigation": "فتح قائمة التنقل",
+    "moreActions": "المزيد من الإجراءات",
+    "skipToContent": "تخطي إلى المحتوى الرئيسي",
+    "collapseSidebar": "طي الشريط الجانبي",
+    "expandSidebar": "توسيع الشريط الجانبي",
+    "comingSoon": "قريباً",
+    "comingSoonDescription": "هذه الميزة ضمن خطتنا القادمة وستتصل ببيانات الذكاء الاصطناعي والمعرض الحية.",
+    "whatItWillDo": "ما ستقوم به هذه الميزة",
+    "quickAdd": "إضافة سريعة",
+    "newVehicle": "مركبة جديدة",
+    "newLead": "عميل محتمل جديد",
+    "newDeal": "صفقة جديدة",
+    "notifications": "الإشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات جديدة",
+    "profile": "الملف الشخصي",
+    "signOut": "تسجيل الخروج",
+    "dealership": "المعرض",
+    "switchDealership": "تبديل المعرض",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "demoMode": "وضع العرض التوضيحي",
+    "demoModeTooltip": "تعمل مساحة العمل هذه ببيانات تجريبية واقعية — لا يوجد اتصال بخادم فعلي.",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "askAi": "اسأل الذكاء الاصطناعي",
+    "aed": "درهم",
+    "download": "تنزيل",
+    "aiConversations": "محادثات الذكاء الاصطناعي",
+    "permissionDeniedTitle": "ليس لديك صلاحية الوصول إلى هذا",
+    "permissionDeniedDescription": "دورك لا يتضمن صلاحية الوصول إلى هذا القسم. اطلب من مالك المعرض أو المسؤول منحك الصلاحية.",
+    "somethingWentWrong": "حدث خطأ ما",
+    "somethingWentWrongDescription": "تعذّر تحميل هذا المحتوى. يرجى المحاولة مرة أخرى.",
+    "retry": "إعادة المحاولة",
+    "previous": "السابق",
+    "next": "التالي",
+    "pageOf": "صفحة {page} من {total}",
+    "sortBy": "الترتيب حسب",
+    "signIn": "تسجيل الدخول",
+    "signingIn": "جارٍ تسجيل الدخول...",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور"
+  },
+  "theme": {
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "subtitle": "إليك أداء معرضك اليوم.",
+    "kpi": {
+      "totalVehicles": "إجمالي المركبات",
+      "availableVehicles": "المركبات المتوفرة",
+      "vehiclesSold": "المركبات المباعة",
+      "vehiclesPurchased": "المركبات المشتراة",
+      "totalInventoryValue": "إجمالي قيمة المخزون",
+      "expectedRevenue": "الإيراد المتوقع",
+      "grossProfit": "إجمالي الربح",
+      "monthlySales": "مبيعات الشهر",
+      "newLeads": "عملاء محتملون جدد",
+      "conversionRate": "معدل التحويل"
+    },
+    "salesTrend": "اتجاه المبيعات",
+    "recentLeads": "أحدث العملاء المحتملين",
+    "inventoryAging": "تقادم المخزون",
+    "upcomingFollowUps": "المتابعات القادمة",
+    "aiCopilotPrompt": "اسأل مساعدك الذكي عن أي شيء يخص معرضك",
+    "aiCopilotPlaceholder": "مثال: ما هي المركبات الأطول بقاءً في المخزون؟",
+    "aiInsights": {
+      "title": "رؤية السوق بالذكاء الاصطناعي"
+    }
+  },
+  "inventory": {
+    "title": "المخزون",
+    "subtitle": "إدارة كل مركبة في مخزون معرضك.",
+    "addVehicle": "إضافة مركبة",
+    "gridView": "عرض شبكي",
+    "tableView": "عرض جدولي",
+    "make": "الماركة",
+    "model": "الطراز",
+    "variant": "الفئة",
+    "year": "السنة",
+    "price": "سعر الطلب",
+    "status": "الحالة",
+    "daysInStock": "أيام في المخزون",
+    "condition": "الحالة الفنية",
+    "vin": "رقم الهيكل",
+    "mileage": "المسافة المقطوعة",
+    "location": "الموقع",
+    "getValuation": "احصل على تقييم السوق بالذكاء الاصطناعي",
+    "stockNumber": "رقم المخزون",
+    "engine": "المحرك",
+    "horsepower": "القوة الحصانية",
+    "transmission": "ناقل الحركة",
+    "fuelType": "نوع الوقود",
+    "exteriorColor": "اللون الخارجي",
+    "interiorColor": "اللون الداخلي",
+    "seats": "المقاعد",
+    "bodyType": "نوع الهيكل",
+    "importSpec": "المواصفات",
+    "emirate": "الإمارة",
+    "allEmirates": "جميع الإمارات",
+    "sourceType": "مصدر المركبة",
+    "accidentHistory": "تاريخ الحوادث",
+    "serviceHistory": "سجل الصيانة",
+    "owners": "عدد الملاك",
+    "purchasePrice": "سعر الشراء",
+    "repairCost": "تكلفة الإصلاح",
+    "transportCost": "تكلفة النقل",
+    "totalCost": "التكلفة الإجمالية",
+    "expectedSellingPrice": "سعر البيع المتوقع",
+    "estimatedMarketValue": "القيمة السوقية المقدرة",
+    "expectedProfit": "الربح المتوقع",
+    "profitMargin": "هامش الربح",
+    "tabs": {
+      "overview": "نظرة عامة",
+      "history": "التاريخ",
+      "documents": "المستندات",
+      "service": "سجل الصيانة",
+      "inspection": "الفحص",
+      "aiAnalysis": "تحليل الذكاء الاصطناعي",
+      "inquiries": "استفسارات العملاء",
+      "notes": "الملاحظات",
+      "tasks": "المهام",
+      "timeline": "الجدول الزمني",
+      "pricingMargin": "التسعير والهامش",
+      "activity": "النشاط"
+    },
+    "actions": {
+      "edit": "تعديل",
+      "sell": "بيع",
+      "reserve": "حجز",
+      "generateQuote": "إنشاء عرض سعر",
+      "generateContract": "إنشاء عقد",
+      "aiAnalyze": "تحليل بالذكاء الاصطناعي",
+      "compare": "مقارنة",
+      "share": "مشاركة",
+      "print": "طباعة",
+      "linkCopied": "تم نسخ الرابط",
+      "contractComingSoon": "سيتوفر إنشاء العقود عند الربط بخادم حقيقي"
+    },
+    "pricing": {
+      "aboveMarket": "أعلى من السوق",
+      "belowMarket": "أقل من السوق",
+      "reviewPricing": "مراجعة التسعير"
+    },
+    "inspection": {
+      "pass": "سليم",
+      "needsAttention": "يحتاج إلى مراجعة"
+    },
+    "statuses": {
+      "available": "متوفر",
+      "reserved": "محجوز",
+      "sold": "مباع",
+      "purchased": "تم شراؤه",
+      "in_transit": "قيد النقل",
+      "under_inspection": "قيد الفحص",
+      "under_repair": "تحت الإصلاح",
+      "archived": "مؤرشف"
+    },
+    "importSpecs": {
+      "GCC": "مواصفات خليجية",
+      "UAE": "مواصفات إماراتية",
+      "Imported": "مركبة مستوردة"
+    },
+    "emirates": {
+      "dubai": "دبي",
+      "abu_dhabi": "أبوظبي",
+      "sharjah": "الشارقة",
+      "ajman": "عجمان",
+      "ras_al_khaimah": "رأس الخيمة",
+      "fujairah": "الفجيرة",
+      "umm_al_quwain": "أم القيوين"
+    },
+    "sourceTypes": {
+      "export": "مركبة تصدير",
+      "import": "مركبة استيراد",
+      "auction": "مركبة مزاد",
+      "dealer": "مركبة تاجر",
+      "private": "مركبة فردية"
+    },
+    "registration": {
+      "title": "معلومات التسجيل وهيئة الطرق والمواصلات",
+      "status": "حالة التسجيل",
+      "statuses": {
+        "registered": "مسجّلة",
+        "not_registered": "غير مسجّلة",
+        "pending_transfer": "نقل الملكية قيد الإجراء"
+      },
+      "plateNumber": "رقم اللوحة",
+      "expiryDate": "تاريخ انتهاء التسجيل",
+      "rtaNotes": "معلومات هيئة الطرق والمواصلات",
+      "rtaNotesPlaceholder": "مثال: بطاقة سالك، رقم الملكية، الرقم المروري...",
+      "rtaNotesEmpty": "لا توجد معلومات مسجلة بعد.",
+      "placeholderNotice": "حقل مرجعي فقط — سيُربط بخدمات هيئة الطرق والمواصلات الرسمية عند توفرها."
+    },
+    "sort": {
+      "recent": "الأحدث إضافة",
+      "priceDesc": "السعر: من الأعلى إلى الأقل",
+      "priceAsc": "السعر: من الأقل إلى الأعلى",
+      "yearDesc": "الطراز الأحدث أولاً",
+      "daysDesc": "الأطول بقاءً في المخزون"
+    }
+  },
+  "leads": {
+    "title": "العملاء المحتملون",
+    "subtitle": "تتبع كل مشترٍ عبر مسار المبيعات.",
+    "newLead": "عميل محتمل جديد",
+    "newLeadDescription": "أنشئ عميلاً محتملاً وأسنده إلى أحد مندوبي المبيعات.",
+    "createdToast": "أُضيف كعميل محتمل جديد",
+    "viewCustomerProfile": "عرض ملف العميل",
+    "stages": {
+      "new": "جديد",
+      "contacted": "تم التواصل",
+      "qualified": "مؤهل",
+      "viewing": "معاينة",
+      "negotiation": "تفاوض",
+      "won": "تم الفوز",
+      "lost": "خسارة"
+    },
+    "sources": {
+      "website": "الموقع الإلكتروني",
+      "walk_in": "زيارة مباشرة",
+      "referral": "إحالة",
+      "social_media": "وسائل التواصل",
+      "marketplace": "سوق إلكتروني",
+      "phone": "هاتف"
+    },
+    "fields": {
+      "customer": "العميل",
+      "budget": "الميزانية",
+      "score": "التقييم",
+      "source": "المصدر",
+      "lastContact": "آخر تواصل",
+      "pipelineValue": "قيمة المسار"
+    },
+    "aiScoring": {
+      "title": "تقييم العميل المحتمل بالذكاء الاصطناعي",
+      "leadScore": "درجة التقييم",
+      "purchaseProbability": "احتمالية الشراء",
+      "recommendedAction": "الإجراء الموصى به",
+      "classifications": {
+        "hot": "عميل محتمل ساخن",
+        "warm": "عميل محتمل دافئ",
+        "cold": "عميل محتمل بارد"
+      },
+      "actions": {
+        "hot": "تواصل خلال 15 دقيقة.",
+        "warm": "تابع خلال ساعتين.",
+        "cold": "أضفه إلى حملة متابعة — تواصل خلال 3 أيام."
+      }
+    },
+    "nextFollowUp": "المتابعة القادمة",
+    "assignedTo": "مسند إلى",
+    "interactions": "التفاعلات",
+    "addNote": "إضافة ملاحظة",
+    "scheduleFollowUp": "جدولة متابعة",
+    "changeStage": "تغيير المرحلة",
+    "interestedIn": "مهتم بـ"
+  },
+  "customers": {
+    "title": "العملاء",
+    "subtitle": "ملف موحّد لكل مشترٍ أو بائع تعامل مع معرضك.",
+    "lifetimeValue": "القيمة الإجمالية",
+    "customerSince": "عميل منذ",
+    "newDeal": "صفقة جديدة",
+    "interestedVehicles": "المركبات محل الاهتمام",
+    "previousPurchases": "المشتريات السابقة",
+    "currentNegotiations": "المفاوضات الحالية",
+    "aiRecommendations": "توصيات الذكاء الاصطناعي",
+    "addNote": "إضافة ملاحظة",
+    "sendMessage": "اكتب رسالة...",
+    "taskAdded": "تمت إضافة المهمة",
+    "newTaskPlaceholder": "عنوان مهمة جديدة",
+    "due": "الاستحقاق",
+    "tabs": {
+      "overview": "نظرة عامة",
+      "messages": "الرسائل",
+      "calls": "المكالمات",
+      "notes": "الملاحظات",
+      "documents": "المستندات",
+      "tasks": "المهام",
+      "timeline": "السجل الزمني"
+    },
+    "channels": {
+      "whatsapp": "واتساب",
+      "email": "البريد الإلكتروني",
+      "sms": "رسالة نصية"
+    },
+    "callOutcomes": {
+      "connected": "تم الاتصال",
+      "no_answer": "لا يوجد رد",
+      "voicemail": "بريد صوتي"
+    },
+    "documentTypes": {
+      "id": "هوية",
+      "license": "رخصة",
+      "contract": "عقد",
+      "invoice": "فاتورة",
+      "other": "أخرى"
+    }
+  },
+  "aiAssistant": {
+    "title": "وكيل السيارات الذكي",
+    "subtitle": "مساعدك الافتراضي للمبيعات والاستقبال.",
+    "newThread": "محادثة جديدة",
+    "placeholder": "اسأل عن المخزون، العملاء المحتملين، التسعير، أو أي شيء آخر...",
+    "thinking": "جارٍ التفكير...",
+    "suggestions": {
+      "summarizeLeads": "لخّص عملاء اليوم المحتملين",
+      "draftFollowUp": "صياغة متابعة عبر واتساب",
+      "agingInventory": "ما هو أكثر مخزون تقادماً لدي؟",
+      "pricingAdvice": "كيف أسعّر هذه المركبة المستبدلة؟"
+    },
+    "marketplace": {
+      "fetchButton": "جلب مخزون دوبيزل و يلا موتور",
+      "prompt": "أرني أحدث المخزون من دوبيزل و يلا موتور",
+      "viewListing": "عرض الإعلان",
+      "addToInventory": "إضافة إلى المخزون",
+      "viewListingToast": "سيتم فتح الإعلان المباشر بمجرد ربط تكامل السوق",
+      "addedToInventory": "تمت الإضافة إلى قائمة شراء المركبات"
+    },
+    "composer": {
+      "attachFile": "إرفاق ملف",
+      "uploadPhoto": "رفع صورة المركبة",
+      "voiceInput": "إدخال صوتي",
+      "listening": "جارٍ الاستماع...",
+      "searchWeb": "البحث في الويب",
+      "fileAttached": "تم إرفاق الملف",
+      "photoAttached": "تم إرفاق الصورة"
+    },
+    "context": {
+      "vehicle": "سياق المركبة",
+      "selectVehicle": "اختر مركبة",
+      "removeVehicle": "إزالة سياق المركبة",
+      "customer": "سياق العميل",
+      "selectCustomer": "اختر عميلاً",
+      "removeCustomer": "إزالة سياق العميل",
+      "recommendations": "توصيات الذكاء الاصطناعي",
+      "actions": "الإجراءات",
+      "generateQuote": "إنشاء عرض سعر",
+      "estimateValue": "تقدير القيمة السوقية",
+      "compareVehicle": "مقارنة هذه المركبة"
+    }
+  },
+  "valuation": {
+    "title": "تقييم المركبة",
+    "subtitle": "احصل على قيمة سوقية تقديرية بالذكاء الاصطناعي لأي مركبة.",
+    "compareTitle": "مقارنة المركبات",
+    "form": {
+      "make": "الماركة",
+      "model": "الطراز",
+      "year": "السنة",
+      "mileage": "المسافة المقطوعة (كم)",
+      "condition": "الحالة",
+      "submit": "تقدير القيمة"
+    },
+    "estimatedValue": "القيمة السوقية التقديرية",
+    "confidence": "مستوى الثقة",
+    "comparables": "إعلانات مماثلة",
+    "compareVehicles": "مقارنة المركبات",
+    "addToCompare": "إضافة للمقارنة"
+  },
+  "aiMarketing": {
+    "title": "التسويق بالذكاء الاصطناعي",
+    "subtitle": "أنشئ إعلانات ومحتوى تواصل اجتماعي لأي مركبة خلال ثوانٍ.",
+    "vehicleAndPhotos": "المركبة والصور",
+    "selectVehicle": "اختر مركبة",
+    "selectVehiclePrompt": "اختر مركبة لبدء إنشاء محتوى تسويقي.",
+    "addPhotos": "إضافة صور",
+    "generateContent": "إنشاء محتوى",
+    "generatedHistory": "المحتوى الذي تم إنشاؤه",
+    "translate": "ترجمة",
+    "copied": "تم النسخ إلى الحافظة",
+    "includeInCampaign": "تضمين في الحملة",
+    "emptyState": "لم يتم إنشاء أي محتوى بعد",
+    "emptyStateDescription": "اختر إحدى الوظائف أعلاه لإنشاء أول قطعة محتوى.",
+    "createCampaign": "إنشاء حملة",
+    "campaignNamePlaceholder": "اسم الحملة",
+    "piecesSelected": "عناصر محددة",
+    "pastCampaigns": "الحملات",
+    "campaignCreatedToast": "تم إنشاء الحملة",
+    "types": {
+      "vehicleAd": "إعلان المركبة",
+      "instagramCaption": "تعليق إنستغرام",
+      "facebookPost": "منشور فيسبوك",
+      "tiktokScript": "نص تيك توك",
+      "whatsappMessage": "رسالة واتساب",
+      "email": "بريد إلكتروني",
+      "listingDescription": "وصف الإعلان",
+      "seoDescription": "وصف تحسين محركات البحث",
+      "translatedAd": "ترجمة الإعلان"
+    },
+    "channels": {
+      "advertisement": "إعلان",
+      "instagram": "إنستغرام",
+      "facebook": "فيسبوك",
+      "tiktok": "تيك توك",
+      "whatsapp": "واتساب",
+      "email": "بريد إلكتروني",
+      "listing": "إعلان مدرج",
+      "seo": "تحسين محركات البحث"
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "scheduled": "مجدولة",
+      "published": "منشورة"
+    }
+  },
+  "contractsDocuments": {
+    "title": "العقود والمستندات",
+    "subtitle": "أنشئ وأدر ووقّع كل مستند مرتبط بصفقة.",
+    "tabs": {
+      "documents": "المستندات",
+      "assistant": "مساعد الذكاء الاصطناعي"
+    },
+    "newDocument": "مستند جديد",
+    "editDocument": "تعديل المستند",
+    "formDescription": "سيتم ربط إنشاء المستندات والتوقيع الإلكتروني بخادم لاحقاً — هذا النموذج ينشئ سجلات المستندات ويتتبعها فقط.",
+    "allTypes": "كل الأنواع",
+    "createdToast": "تم إنشاء المستند",
+    "updatedToast": "تم تحديث المستند",
+    "previewDisclaimer": "هذه معاينة محاكاة. سيتوفر إنشاء ملفات PDF الفعلية عند الربط بخادم.",
+    "fields": {
+      "type": "نوع المستند",
+      "title": "العنوان",
+      "vehicle": "المركبة",
+      "customer": "العميل",
+      "preparedBy": "أُعدّ بواسطة"
+    },
+    "types": {
+      "purchaseAgreement": "اتفاقية شراء مركبة",
+      "salesAgreement": "اتفاقية بيع مركبة",
+      "quotation": "عرض سعر",
+      "invoice": "فاتورة",
+      "receipt": "إيصال",
+      "inspectionReport": "تقرير فحص",
+      "deliveryForm": "نموذج تسليم",
+      "customerAgreement": "اتفاقية عميل"
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "pending_signature": "بانتظار التوقيع",
+      "signed": "موقّع",
+      "completed": "مكتمل"
+    },
+    "actions": {
+      "edit": "تعديل",
+      "preview": "معاينة",
+      "download": "تنزيل",
+      "print": "طباعة",
+      "share": "مشاركة",
+      "sign": "توقيع",
+      "signedToast": "تم توقيع المستند",
+      "downloaded": "تم تنزيل المستند",
+      "linkCopied": "تم نسخ الرابط إلى الحافظة",
+      "copy": "نسخ",
+      "copied": "تم النسخ إلى الحافظة"
+    },
+    "aiAssistant": {
+      "intro": "اطلب مني إنشاء اتفاقية، إعداد عرض سعر، تلخيص تقرير، ترجمة مستند، أو التحقق من المعلومات الناقصة.",
+      "placeholder": "اسأل مساعد المستندات الذكي...",
+      "previewTitle": "معاينة المستند المُنشأ بالذكاء الاصطناعي",
+      "noPreview": "ستظهر المستندات المُنشأة هنا.",
+      "prompts": {
+        "createPurchaseAgreement": "أنشئ اتفاقية شراء مركبة.",
+        "prepareQuotation": "أعدّ عرض سعر لهذا العميل.",
+        "summarizeInspection": "لخّص تقرير الفحص هذا.",
+        "translateArabic": "ترجم هذا المستند إلى العربية.",
+        "findMissingInfo": "ابحث عن المعلومات الناقصة."
+      }
+    }
+  },
+  "tasks": {
+    "title": "المهام",
+    "subtitle": "تابع كل متابعة وفحص وتسليم أولاً بأول.",
+    "newTask": "مهمة جديدة",
+    "newTaskDescription": "أنشئ مهمة وأسندها إلى أحد أعضاء الفريق.",
+    "createdToast": "تم إنشاء المهمة",
+    "buckets": {
+      "today": "اليوم",
+      "upcoming": "القادمة",
+      "overdue": "متأخرة",
+      "completed": "مكتملة"
+    },
+    "categories": {
+      "followUp": "متابعة مع العميل",
+      "inspection": "فحص المركبة",
+      "photography": "تصوير المركبة",
+      "documents": "رفع المستندات",
+      "call": "اتصال بالعميل",
+      "quotation": "إرسال عرض سعر",
+      "service": "صيانة المركبة",
+      "delivery": "تسليم المركبة"
+    },
+    "priorities": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية"
+    },
+    "fields": {
+      "title": "عنوان المهمة",
+      "category": "الفئة",
+      "priority": "الأولوية",
+      "dueDate": "تاريخ الاستحقاق",
+      "assignee": "مسند إلى",
+      "vehicle": "المركبة",
+      "customer": "العميل"
+    }
+  },
+  "messages": {
+    "title": "الرسائل",
+    "subtitle": "صندوق وارد موحّد لواتساب والبريد الإلكتروني والرسائل النصية ودردشة الموقع ووكيل الذكاء الاصطناعي.",
+    "allChannels": "كل القنوات",
+    "replyPlaceholder": "اكتب ردًا...",
+    "channels": {
+      "whatsapp": "واتساب",
+      "email": "البريد الإلكتروني",
+      "sms": "رسالة نصية",
+      "websiteChat": "دردشة الموقع",
+      "aiAgent": "وكيل الذكاء الاصطناعي"
+    }
+  },
+  "deals": {
+    "title": "الصفقات",
+    "subtitle": "أنشئ عروض الأسعار، تابع الموافقات، وحوّلها إلى عقود.",
+    "newDeal": "صفقة جديدة",
+    "customer": "العميل",
+    "vehicle": "المركبة",
+    "lineItems": "بنود الفاتورة",
+    "vat": "ضريبة القيمة المضافة (٥٪)",
+    "subtotal": "المجموع الفرعي",
+    "total": "الإجمالي",
+    "convertToContract": "تحويل إلى عقد",
+    "statuses": {
+      "draft": "مسودة",
+      "sent": "مُرسلة",
+      "accepted": "مقبولة",
+      "converted_to_contract": "تم تحويلها لعقد",
+      "declined": "مرفوضة"
+    }
+  },
+  "aiActivity": {
+    "title": "نشاط الذكاء الاصطناعي",
+    "subtitle": "سجل تدقيق مباشر لكل إجراء اتخذه مساعدك الذكي.",
+    "allActions": "جميع الإجراءات",
+    "allStatuses": "جميع الحالات",
+    "kpi": {
+      "totalActions": "إجمالي الإجراءات",
+      "completed": "مكتملة",
+      "needsReview": "بحاجة إلى مراجعة",
+      "timeSaved": "الوقت الموفر"
+    },
+    "table": {
+      "time": "الوقت",
+      "action": "إجراء الذكاء الاصطناعي",
+      "vehicle": "المركبة",
+      "customer": "العميل",
+      "result": "النتيجة",
+      "status": "الحالة"
+    },
+    "actions": {
+      "valuation": "تقييم بالذكاء الاصطناعي",
+      "leadScoring": "تقييم العملاء المحتملين بالذكاء الاصطناعي",
+      "marketingContent": "تسويق بالذكاء الاصطناعي",
+      "documentGeneration": "إنشاء مستندات بالذكاء الاصطناعي",
+      "documentTranslation": "ترجمة مستندات بالذكاء الاصطناعي",
+      "documentSummary": "تلخيص مستندات بالذكاء الاصطناعي",
+      "priceAnalysis": "تحليل الأسعار بالذكاء الاصطناعي",
+      "chatResponse": "رد وكيل السيارات الذكي",
+      "followUpSuggestion": "اقتراح متابعة بالذكاء الاصطناعي"
+    },
+    "status": {
+      "completed": "مكتمل",
+      "in_progress": "قيد التنفيذ",
+      "needs_review": "بحاجة إلى مراجعة",
+      "failed": "فشل"
+    }
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "subtitle": "مرحبًا بعودتك إلى مساحة عمل وكيل معرض السيارات الذكي.",
+    "error": "تعذّر تسجيل دخولك. تحقق من بياناتك وحاول مرة أخرى.",
+    "placeholderNotice": "المصادقة هي عنصر نائب — سيؤدي ربط مزوّد هوية حقيقي إلى استبدال هذه الشاشة دون تغيير بقية التطبيق."
+  },
+  "reports": {
+    "title": "التقارير",
+    "subtitle": "افهم أداء معرضك بلمحة واحدة.",
+    "tabs": {
+      "sales": "تقرير المبيعات",
+      "purchase": "تقرير المشتريات",
+      "profit": "تقرير الأرباح",
+      "inventory": "تقرير المخزون",
+      "leads": "تقرير العملاء المحتملين",
+      "salesperson": "أداء مندوبي المبيعات",
+      "vehiclePerformance": "أداء المركبات",
+      "market": "تقرير السوق",
+      "aiPerformance": "أداء الذكاء الاصطناعي"
+    },
+    "export": {
+      "pdf": "تصدير PDF",
+      "excel": "تصدير Excel",
+      "csv": "تصدير CSV",
+      "comingSoon": "سيتوفر التصدير عند ربط التقارير بالبيانات الحية."
+    },
+    "kpi": {
+      "totalRevenue": "إجمالي الإيرادات",
+      "unitsSold": "الوحدات المباعة",
+      "avgSalePrice": "متوسط سعر البيع",
+      "avgDaysToSell": "متوسط أيام البيع",
+      "totalSpend": "إجمالي الإنفاق",
+      "unitsPurchased": "الوحدات المشتراة",
+      "avgCostPerUnit": "متوسط التكلفة لكل وحدة",
+      "grossProfit": "إجمالي الربح",
+      "netMargin": "هامش الربح الصافي",
+      "avgProfitPerUnit": "متوسط الربح لكل وحدة",
+      "totalUnits": "إجمالي الوحدات",
+      "totalValue": "القيمة الإجمالية",
+      "avgDaysInStock": "متوسط أيام التخزين",
+      "totalLeads": "إجمالي العملاء المحتملين",
+      "conversionRate": "معدل التحويل",
+      "avgResponseTime": "متوسط زمن الاستجابة",
+      "totalInteractions": "إجمالي التفاعلات",
+      "satisfaction": "معدل الرضا",
+      "timeSaved": "الوقت الموفر"
+    },
+    "charts": {
+      "salesTrend": "اتجاه المبيعات",
+      "revenueByMake": "الإيرادات حسب الماركة",
+      "purchaseTrend": "اتجاه المشتريات",
+      "purchasesBySource": "المشتريات حسب المصدر",
+      "profitTrend": "اتجاه الأرباح",
+      "profitByMake": "الأرباح حسب الماركة",
+      "inventoryAging": "تقادم المخزون",
+      "inventoryByStatus": "المخزون حسب الحالة",
+      "leadFunnel": "قمع العملاء المحتملين حسب المرحلة",
+      "leadsBySource": "العملاء المحتملون حسب المصدر",
+      "revenueByRep": "الإيرادات حسب مندوب المبيعات",
+      "dealsByRep": "الصفقات حسب مندوب المبيعات",
+      "topSellingModels": "الطرازات الأكثر مبيعًا",
+      "slowestMoving": "المخزون الأبطأ حركة",
+      "demandByCategory": "الطلب حسب الفئة",
+      "priceTrend": "اتجاه أسعار السوق",
+      "usageTrend": "اتجاه استخدام الذكاء الاصطناعي"
+    },
+    "table": {
+      "date": "التاريخ",
+      "reference": "المرجع",
+      "vehicle": "المركبة",
+      "customer": "العميل",
+      "salesperson": "مندوب المبيعات",
+      "salePrice": "سعر البيع",
+      "supplier": "المورّد",
+      "purchasePrice": "سعر الشراء",
+      "transportCost": "تكلفة النقل",
+      "totalCost": "التكلفة الإجمالية",
+      "costPrice": "سعر التكلفة",
+      "sellingPrice": "سعر البيع",
+      "grossProfit": "إجمالي الربح",
+      "margin": "الهامش",
+      "status": "الحالة",
+      "daysInStock": "أيام التخزين",
+      "currentPrice": "السعر الحالي",
+      "location": "الموقع",
+      "source": "المصدر",
+      "stage": "المرحلة",
+      "assignedTo": "المسؤول",
+      "score": "النقاط",
+      "leadsAssigned": "العملاء المحتملون المعينون",
+      "dealsWon": "الصفقات المُبرمة",
+      "conversionRate": "معدل التحويل",
+      "revenue": "الإيرادات",
+      "avgResponse": "متوسط الاستجابة",
+      "make": "الماركة",
+      "daysToSell": "أيام البيع",
+      "views": "المشاهدات",
+      "inquiries": "الاستفسارات",
+      "model": "الطراز",
+      "avgMarketPrice": "متوسط سعر السوق",
+      "yourAvgPrice": "متوسط سعرك",
+      "demandIndex": "مؤشر الطلب",
+      "trend": "الاتجاه",
+      "feature": "ميزة الذكاء الاصطناعي",
+      "interactions": "التفاعلات",
+      "successRate": "معدل النجاح",
+      "avgResponseTime": "متوسط زمن الاستجابة",
+      "timeSaved": "الوقت الموفر"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "إدارة ملفك الشخصي ومعرضك وتفضيلات المنصة.",
+    "nav": {
+      "profile": "الملف الشخصي",
+      "dealership": "المعرض",
+      "users": "المستخدمون",
+      "rolesPermissions": "الأدوار والصلاحيات",
+      "notifications": "الإشعارات",
+      "aiSettings": "إعدادات الذكاء الاصطناعي",
+      "integrations": "التكاملات",
+      "language": "اللغة",
+      "appearance": "المظهر",
+      "currency": "العملة",
+      "tax": "الضريبة",
+      "documentTemplates": "قوالب المستندات",
+      "marketplaceConnections": "اتصالات الأسواق",
+      "security": "الأمان",
+      "billing": "الفوترة",
+      "apiKeys": "مفاتيح API",
+      "dashboardAds": "إعلانات لوحة التحكم",
+      "demoData": "بيانات العرض التوضيحي"
+    },
+    "profile": {
+      "subtitle": "إدارة كيفية ظهور اسمك وبيانات الاتصال عبر المنصة.",
+      "avatarComingSoon": "سيتوفر رفع الصور عند ربط الحسابات بالتخزين الحي.",
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "saved": "تم تحديث الملف الشخصي"
+    },
+    "dealership": {
+      "subtitle": "هوية معرضك وبيانات الاتصال والفروع.",
+      "nameEn": "الاسم (بالإنجليزية)",
+      "nameAr": "الاسم (بالعربية)",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "address": "العنوان",
+      "saved": "تم تحديث بيانات المعرض",
+      "branches": "الفروع",
+      "branchesSubtitle": "المواقع التي يمكن لفريقك التبديل بينها عبر المنصة.",
+      "editComingSoon": "سيتوفر تعديل الفروع عند ربط الحسابات بالبيانات الحية.",
+      "hours": "ساعات العمل",
+      "hoursSubtitle": "تُعرض للعملاء الذين يسألون عن زيارة المعرض.",
+      "closed": "مغلق",
+      "days": {
+        "mon": "الاثنين",
+        "tue": "الثلاثاء",
+        "wed": "الأربعاء",
+        "thu": "الخميس",
+        "fri": "الجمعة",
+        "sat": "السبت",
+        "sun": "الأحد"
+      }
+    },
+    "users": {
+      "subtitle": "إدارة من لديه صلاحية الوصول إلى مساحة عمل معرضك.",
+      "invite": "دعوة مستخدم",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "removed": "تمت إزالة المستخدم",
+      "inviteTitle": "دعوة مستخدم",
+      "inviteDescription": "أرسل دعوة للانضمام إلى مساحة عمل معرضك.",
+      "sendInvite": "إرسال الدعوة",
+      "invited": "تم إرسال الدعوة إلى {name}",
+      "status": {
+        "active": "نشط",
+        "invited": "مدعو"
+      }
+    },
+    "rolesPermissions": {
+      "subtitle": "حدد الأدوار وتحكم في الوحدات التي يمكن لكل دور الوصول إليها.",
+      "matrixTitle": "مصفوفة الصلاحيات",
+      "matrixSubtitle": "بدّل صلاحية الوصول للوحدات حسب الدور. يمتلك المسؤولون صلاحية كاملة دائمًا.",
+      "module": "الوحدة",
+      "saved": "تم تحديث الصلاحيات",
+      "roles": {
+        "superAdmin": "مسؤول النظام",
+        "dealerOwner": "مالك المعرض",
+        "manager": "مدير",
+        "salesperson": "مندوب مبيعات",
+        "buyer": "مشترٍ",
+        "accountant": "محاسب",
+        "marketingManager": "مدير التسويق",
+        "viewer": "مشاهد"
+      },
+      "roleDescriptions": {
+        "superAdmin": "صلاحية كاملة عبر المنصة لجميع المعارض والوحدات والإعدادات — بما في ذلك الفوترة ومفاتيح API.",
+        "dealerOwner": "صلاحية كاملة لبيانات وإعدادات هذا المعرض، بما في ذلك الفوترة وإدارة المستخدمين.",
+        "manager": "يدير المخزون والعملاء المحتملين والصفقات وأداء الفريق.",
+        "salesperson": "يعمل على العملاء المحتملين والصفقات والمستندات المخصصة له.",
+        "buyer": "يبحث عن مركبات الشراء ويتفاوض عليها لإضافتها إلى المخزون.",
+        "accountant": "يدير الفوترة والفواتير والتقارير المالية.",
+        "marketingManager": "ينشئ ويدير حملات ومحتوى التسويق بالذكاء الاصطناعي.",
+        "viewer": "صلاحية قراءة فقط لأغراض التقارير والإشراف."
+      },
+      "modules": {
+        "inventory": "المخزون",
+        "purchasing": "شراء المركبات",
+        "leads": "العملاء المحتملون",
+        "deals": "الصفقات",
+        "documents": "العقود والمستندات",
+        "billing": "الفوترة",
+        "marketing": "التسويق بالذكاء الاصطناعي",
+        "reports": "التقارير",
+        "settings": "الإعدادات",
+        "aiActivity": "نشاط الذكاء الاصطناعي"
+      }
+    },
+    "notifications": {
+      "subtitle": "اختر كيف يتم إشعار فريقك بنشاط المعرض.",
+      "event": "الحدث",
+      "saved": "تم تحديث تفضيلات الإشعارات",
+      "channels": {
+        "email": "البريد الإلكتروني",
+        "sms": "رسالة نصية",
+        "push": "إشعار فوري"
+      },
+      "events": {
+        "newLead": "تعيين عميل محتمل جديد",
+        "taskDue": "مهمة مستحقة قريبًا",
+        "documentSigned": "تم توقيع المستند",
+        "aiNeedsReview": "إجراء ذكاء اصطناعي بحاجة إلى مراجعة",
+        "newMessage": "رسالة عميل جديدة",
+        "dealWon": "تم الفوز بالصفقة"
+      }
+    },
+    "aiSettings": {
+      "subtitle": "تحكم في كيفية عمل مساعد الذكاء الاصطناعي عبر معرضك.",
+      "tone": "أسلوب ردود الذكاء الاصطناعي",
+      "saved": "تم تحديث إعدادات الذكاء الاصطناعي",
+      "toggles": {
+        "autoReplyChat": {
+          "label": "الرد التلقائي على دردشة الموقع",
+          "description": "السماح لوكيل الذكاء الاصطناعي بالرد على العملاء في دردشة الموقع تلقائيًا."
+        },
+        "requireApproval": {
+          "label": "طلب الموافقة قبل إرسال المستندات",
+          "description": "تنتظر العقود وعروض الأسعار التي يصيغها الذكاء الاصطناعي موافقة الموظفين قبل إرسالها."
+        },
+        "autoLeadScoring": {
+          "label": "تقييم العملاء المحتملين تلقائيًا",
+          "description": "قيّم العملاء المحتملين الجدد بالذكاء الاصطناعي فور إنشائهم."
+        },
+        "autoFollowUps": {
+          "label": "اقتراحات متابعة تلقائية",
+          "description": "السماح للذكاء الاصطناعي باقتراح مهام متابعة للعملاء المحتملين بلا نشاط حديث."
+        }
+      },
+      "tones": {
+        "professional": "احترافي",
+        "friendly": "ودود",
+        "concise": "موجز"
+      },
+      "provider": "مزود الذكاء الاصطناعي",
+      "providerNote": "سيوجّه الخادم الطلبات إلى هذا المزود بمجرد ربطه — التطبيق لا يعتمد على مزود واحد بعينه.",
+      "providers": {
+        "openai": "OpenAI",
+        "anthropic": "Anthropic Claude",
+        "google": "Google Gemini",
+        "other": "أخرى / مخصص"
+      }
+    },
+    "integrations": {
+      "subtitle": "اربط الأدوات التي يستخدمها معرضك بالفعل.",
+      "connectedToast": "تم ربط التكامل",
+      "disconnectedToast": "تم إلغاء ربط التكامل",
+      "items": {
+        "whatsapp": "واجهة واتساب للأعمال",
+        "calendar": "تقويم جوجل",
+        "email": "البريد الإلكتروني / SMTP",
+        "zapier": "Zapier",
+        "accounting": "برنامج المحاسبة"
+      }
+    },
+    "language": {
+      "subtitle": "اختر لغة الواجهة. تُبدّل العربية والأردية اتجاه التخطيط تلقائيًا إلى اليمين لليسار."
+    },
+    "appearance": {
+      "subtitle": "اختر شكل تطبيق أوتومايند AI على هذا الجهاز."
+    },
+    "currency": {
+      "subtitle": "حدد العملة الافتراضية وكيفية عرض الأسعار.",
+      "defaultCurrency": "العملة الافتراضية",
+      "displayFormat": "تنسيق العرض",
+      "roundPrices": "تقريب الأسعار المعروضة",
+      "roundPricesDescription": "تقريب الأسعار إلى أقرب رقم صحيح عبر المنصة.",
+      "saved": "تم تحديث إعدادات العملة",
+      "primary": "أساسية",
+      "ready": "جاهزة",
+      "previewTitle": "معاينة تحويل الدولار الأمريكي",
+      "previewDescription": "الدرهم الإماراتي هو العملة الأساسية للمنصة. الدولار الأمريكي مدعوم بالكامل في نموذج البيانات وأدوات التسعير للمشترين الدوليين، باستخدام سعر الربط الثابت لمصرف الإمارات المركزي."
+    },
+    "tax": {
+      "subtitle": "تهيئة ضريبة القيمة المضافة وبيانات التسجيل الضريبي للمستندات والفواتير.",
+      "vatRate": "نسبة ضريبة القيمة المضافة (%)",
+      "trn": "الرقم الضريبي (TRN)",
+      "pricesIncludeTax": "الأسعار شاملة الضريبة",
+      "pricesIncludeTaxDescription": "عرض أسعار المركبات شاملة ضريبة القيمة المضافة عبر المنصة.",
+      "saved": "تم تحديث إعدادات الضريبة"
+    },
+    "documentTemplates": {
+      "subtitle": "خصص الصياغة والتنسيق المستخدمين لكل نوع مستند يتم إنشاؤه.",
+      "editTemplate": "تعديل القالب",
+      "editComingSoon": "سيتوفر تعديل القوالب عند ربط إنشاء المستندات بالبيانات الحية."
+    },
+    "security": {
+      "subtitle": "إدارة كلمة المرور والمصادقة الثنائية والجلسات النشطة.",
+      "currentPassword": "كلمة المرور الحالية",
+      "newPassword": "كلمة المرور الجديدة",
+      "updatePassword": "تحديث كلمة المرور",
+      "passwordChanged": "تم تحديث كلمة المرور",
+      "twoFactor": "المصادقة الثنائية",
+      "twoFactorDescription": "طلب رمز تحقق بالإضافة إلى كلمة المرور.",
+      "activeSessions": "الجلسات النشطة",
+      "activeSessionsSubtitle": "الأجهزة المسجلة دخولها حاليًا إلى حسابك.",
+      "thisDevice": "هذا الجهاز",
+      "signOut": "تسجيل الخروج",
+      "signedOut": "تم تسجيل خروج الجلسة"
+    },
+    "billing": {
+      "subtitle": "إدارة اشتراكك وطريقة الدفع والفواتير.",
+      "currentPlan": "الخطة الحالية",
+      "planName": "احترافية",
+      "planDescription": "999 درهم/شهريًا — حتى 10 مستخدمين وإجراءات ذكاء اصطناعي غير محدودة.",
+      "managePlan": "إدارة الخطة",
+      "managePlanComingSoon": "ستتوفر تغييرات الخطة عند ربط الفوترة بمزود دفع حي.",
+      "paymentMethod": "طريقة الدفع",
+      "updatePayment": "تحديث طريقة الدفع",
+      "updatePaymentComingSoon": "سيتوفر تحديث طريقة الدفع عند ربط الفوترة بمزود دفع حي.",
+      "invoiceHistory": "سجل الفواتير",
+      "invoiceHistorySubtitle": "تنزيل الفواتير السابقة لسجلاتك.",
+      "invoice": "الفاتورة",
+      "amount": "المبلغ",
+      "paid": "مدفوعة",
+      "downloadComingSoon": "سيتوفر تنزيل الفواتير عند ربط الفوترة بالبيانات الحية."
+    },
+    "apiKeys": {
+      "subtitle": "إدارة مفاتيح API المستخدمة لربط أدوات خارجية ببيانات معرضك.",
+      "generate": "إنشاء مفتاح جديد",
+      "newKeyName": "مفتاح جديد",
+      "generated": "تم إنشاء مفتاح API",
+      "copied": "تم نسخ مفتاح API إلى الحافظة",
+      "revoke": "إلغاء مفتاح API",
+      "revoked": "تم إلغاء مفتاح API",
+      "name": "الاسم",
+      "key": "المفتاح",
+      "created": "تاريخ الإنشاء",
+      "lastUsed": "آخر استخدام"
+    },
+    "dashboardAds": {
+      "title": "إعلانات لوحة التحكم",
+      "subtitle": "تحكم في البانر الترويجي الظاهر في لوحة التحكم. أضِف أو عدّل أو احذف في أي وقت.",
+      "addAd": "إضافة إعلان",
+      "editAd": "تعديل الإعلان",
+      "formHint": "يظهر هذا البانر أعلى لوحة التحكم لجميع مستخدمي هذا المعرض.",
+      "fieldTitle": "العنوان",
+      "fieldDescription": "الوصف",
+      "fieldCtaLabel": "نص الزر",
+      "fieldCtaUrl": "الرابط",
+      "fieldBadge": "شارة (اختياري)",
+      "fieldActive": "إظهار في لوحة التحكم",
+      "empty": "لا توجد إعلانات بعد",
+      "emptyDescription": "أضِف بانرًا ترويجيًا لإبراز العروض أو الميزات أو الإعلانات في لوحة التحكم.",
+      "confirmDeleteTitle": "هل تريد حذف هذا الإعلان؟",
+      "confirmDeleteDescription": "سيتم إزالة البانر من لوحة التحكم فورًا. لا يمكن التراجع عن هذا الإجراء.",
+      "deleted": "تم حذف الإعلان"
+    },
+    "demoData": {
+      "subtitle": "تم تحميل مساحة العمل هذه ببيانات نموذجية واقعية بحيث يمكن استكشاف كل ميزة دون الحاجة إلى خادم فعلي.",
+      "stats": {
+        "vehicles": "المركبات",
+        "customers": "العملاء",
+        "leads": "العملاء المحتملون",
+        "deals": "الصفقات",
+        "aiConversations": "محادثات الذكاء الاصطناعي",
+        "documents": "المستندات",
+        "tasks": "المهام",
+        "notifications": "الإشعارات"
+      },
+      "resetButton": "إعادة تعيين بيانات العرض التوضيحي",
+      "resetConfirmTitle": "إعادة تعيين بيانات العرض التوضيحي؟",
+      "resetConfirmDescription": "سيؤدي هذا إلى تجاهل أي تغييرات تم إجراؤها خلال هذه الجلسة — كنقل العملاء المحتملين أو إكمال المهام أو إنشاء المستندات — واستعادة البيانات النموذجية الأصلية.",
+      "resetConfirmAction": "إعادة التعيين"
+    },
+    "marketplaceConnections": {
+      "title": "ربط الأسواق الإلكترونية",
+      "subtitle": "اربط حسابات الأسواق الإلكترونية الخاصة بك حتى يتمكن وكيل الذكاء الاصطناعي من جلب المخزون الحي والصور والأسعار عند سؤال العميل.",
+      "connect": "ربط",
+      "connecting": "جارٍ الربط...",
+      "disconnect": "إلغاء الربط",
+      "connected": "متصل",
+      "notConnected": "غير متصل",
+      "dialogTitle": "ربط دوبيزل",
+      "dialogDescription": "الصق رابط صفحة معرضك أو وكالتك على دوبيزل. سيستخدم وكيل الذكاء الاصطناعي هذا الرابط لجلب مخزونك الحي.",
+      "fieldLabel": "رابط حساب دوبيزل",
+      "fieldPlaceholder": "https://dubizzle.com/en/motors/showroom/your-dealership",
+      "connectedToast": "تم ربط حساب دوبيزل",
+      "disconnectedToast": "تم إلغاء ربط حساب دوبيزل",
+      "fetchInventory": "جلب المخزون",
+      "fetchDialogTitle": "جلب مخزون دوبيزل",
+      "fetchDialogDescription": "هذا هو المخزون المباشر المرتبط بحساب دوبيزل الخاص بك. اختر الإعلانات التي تريد إضافتها إلى مخزونك — يمكنك تعديل التفاصيل بعد الاستيراد.",
+      "addToInventory": "إضافة إلى المخزون",
+      "importing": "جارٍ الإضافة إلى المخزون...",
+      "importedToast": "مركبات تمت إضافتها إلى مخزونك",
+      "csvRowTitle": "استيراد من ملف CSV مُصدَّر من دوبيزل",
+      "csvRowDescription": "صدّر إعلاناتك من دوبيزل كملف CSV وارفعه هنا — دون الحاجة لتسجيل الدخول.",
+      "csvButton": "استيراد ملف CSV",
+      "csvDialogTitle": "استيراد ملف CSV من دوبيزل",
+      "csvDialogDescription": "ارفع ملف CSV الذي صدّرته من لوحة تحكم البائع في دوبيزل. سنطابق الأعمدة الشائعة مثل الماركة والطراز والسنة والسعر والمسافة المقطوعة والموقع تلقائيًا.",
+      "csvChooseFile": "اختر ملف CSV",
+      "csvHint": "ملفات CSV المُصدَّرة من مدير الإعلانات في دوبيزل",
+      "csvChooseDifferent": "اختر ملفًا آخر",
+      "csvInvalidRows": "صفوف تفتقد إلى حقول مطلوبة ولا يمكن استيرادها"
+    }
+  },
+  "placeholder": {
+    "generic": {
+      "description": "هذه الميزة لم تُفعّل بعد — وهي جزء من خارطة طريق وكيل السيارات الذكي.",
+      "capabilities": [
+        "سير عمل كامل مدعوم بالذكاء الاصطناعي",
+        "متصلة ببيانات المعرض الحية",
+        "ستتوفر عند ربط النظام الخلفي"
+      ]
+    },
+    "vehicles": {
+      "title": "المركبات",
+      "description": "ابحث واكتشف المركبات عبر الأسواق المتصلة قبل إضافتها إلى مخزونك.",
+      "capabilities": [
+        "البحث في إعلانات الأسواق الإماراتية والدولية",
+        "مقارنة المركبات المكتشفة بأهداف هامش ربحك",
+        "إضافة بنقرة واحدة إلى مسار شراء المركبات"
+      ]
+    },
+    "buyVehicles": {
+      "title": "شراء مركبات",
+      "description": "إدارة مسار توريد وشراء المركبات التي تقوم باقتنائها.",
+      "capabilities": [
+        "تتبع عروض الشراء والمفاوضات",
+        "توصيات أسعار شراء مدعومة بالذكاء الاصطناعي",
+        "تحويل العروض المقبولة مباشرة إلى المخزون"
+      ]
+    },
+    "sellVehicles": {
+      "title": "بيع مركبات",
+      "description": "إدارة سير عمل البيع للمركبات الجاهزة لمغادرة مخزونك.",
+      "capabilities": [
+        "إدراج المركبات عبر قنوات البيع المتصلة",
+        "أوصاف إعلانات مولّدة بالذكاء الاصطناعي",
+        "تتبع اهتمام المشترين والعروض في مكان واحد"
+      ]
+    },
+    "customers": {
+      "title": "العملاء",
+      "description": "ملف موحّد لكل مشترٍ وبائع تعامل مع معرضك.",
+      "capabilities": [
+        "سجل كامل للشراء والتفاعلات",
+        "عملاء محتملون، صفقات، ومستندات مرتبطة",
+        "اقتراح الذكاء الاصطناعي لأفضل إجراء تالٍ لكل عميل"
+      ]
+    },
+    "marketIntelligence": {
+      "title": "ذكاء السوق",
+      "description": "افهم ظروف واتجاهات سوق السيارات الإماراتي في الوقت الفعلي.",
+      "capabilities": [
+        "اتجاهات الطلب والأسعار الإقليمية",
+        "مقارنة مخزون المنافسين",
+        "ملخصات سوقية مولّدة بالذكاء الاصطناعي"
+      ]
+    },
+    "priceAnalyzer": {
+      "title": "محلل الأسعار",
+      "description": "حلّل تسعير المركبات مقابل مقارنات السوق الحية.",
+      "capabilities": [
+        "تموضع الأسعار في الوقت الفعلي مقابل السوق",
+        "تعديلات سعرية مقترحة",
+        "رسوم بيانية لاتجاهات الأسعار التاريخية"
+      ]
+    },
+    "profitCalculator": {
+      "title": "حاسبة الأرباح",
+      "description": "نمذجة هوامش الربح عبر الاقتناء والتجهيز والبيع.",
+      "capabilities": [
+        "تفصيل الهامش لكل مركبة",
+        "نمذجة سيناريوهات لقرارات التسعير",
+        "عرض ربحية على مستوى المحفظة الكاملة"
+      ]
+    },
+    "aiMarketing": {
+      "title": "التسويق بالذكاء الاصطناعي",
+      "description": "أنشئ الإعلانات ومحتوى وسائل التواصل الاجتماعي بالذكاء الاصطناعي.",
+      "capabilities": [
+        "نصوص وتصاميم إعلانية مولّدة بالذكاء الاصطناعي",
+        "جدولة منشورات وسائل التواصل الاجتماعي",
+        "تتبع أداء الحملات"
+      ]
+    },
+    "contractsDocuments": {
+      "title": "العقود والمستندات",
+      "description": "أنشئ العقود وتتبع كل مستندات المركبات والعملاء.",
+      "capabilities": [
+        "عقود شراء وبيع مصاغة بالذكاء الاصطناعي",
+        "تتبع وتنبيهات انتهاء صلاحية المستندات",
+        "تخزين آمن لمستندات العملاء"
+      ]
+    },
+    "tasks": {
+      "title": "المهام",
+      "description": "إدارة المتابعات والمهام عبر فريقك بالكامل.",
+      "capabilities": [
+        "إسناد مهام على مستوى الفريق",
+        "تذكيرات متابعة آلية",
+        "اقتراحات الإجراء التالي بالذكاء الاصطناعي"
+      ]
+    },
+    "messages": {
+      "title": "الرسائل",
+      "description": "صندوق وارد موحّد لجميع تواصلات العملاء.",
+      "capabilities": [
+        "واتساب، البريد الإلكتروني، والرسائل النصية في مكان واحد",
+        "ردود مصاغة بالذكاء الاصطناعي",
+        "سجل محادثة كامل لكل عميل"
+      ]
+    },
+    "aiActivity": {
+      "title": "نشاط الذكاء الاصطناعي",
+      "description": "تدفق مباشر لكل ما أتمته مساعدك الذكي.",
+      "capabilities": [
+        "سجل تدقيق كامل لإجراءات الذكاء الاصطناعي",
+        "قواعد ومحفزات الأتمتة",
+        "الموافقة على إجراءات الذكاء الاصطناعي أو التراجع عنها"
+      ]
+    }
+  }
+}
