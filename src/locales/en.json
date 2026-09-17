@@ -410,9 +410,12 @@
     "form": {
       "make": "Make",
       "model": "Model",
+      "variant": "Variant / trim",
       "year": "Year",
       "mileage": "Mileage (km)",
       "condition": "Condition",
+      "specifications": "Specifications",
+      "specificationsPlaceholder": "Engine, features, or other details the customer wants to note",
       "submit": "Estimate value"
     },
     "estimatedValue": "Estimated market value",
@@ -420,15 +423,20 @@
     "comparables": "Comparable listings",
     "compareVehicles": "Compare vehicles",
     "addToCompare": "Add to comparison",
+    "vehicleSource": {
+      "inventory": "From inventory",
+      "customerOwned": "Customer's own vehicle",
+      "vehicle": "Vehicle",
+      "vehiclePlaceholder": "Select a vehicle"
+    },
     "bankFinancing": {
       "title": "Bank Financing Evaluation",
-      "subtitle": "Request an official valuation report for a customer's bank auto-finance application.",
+      "subtitle": "On-demand, at the customer's request: an official valuation report for a bank auto-finance application — for a vehicle in stock or the customer's own vehicle.",
       "feeNotice": "This evaluation costs AED {fee} per vehicle, payable by the customer at the time of request.",
       "form": {
-        "vehicle": "Vehicle",
-        "vehiclePlaceholder": "Select a vehicle",
         "bank": "Bank",
         "bankPlaceholder": "Select a bank",
+        "financeAmount": "Amount to finance from bank (AED)",
         "customerName": "Customer name",
         "notes": "Notes",
         "submit": "Request evaluation"
@@ -437,6 +445,7 @@
         "vehicle": "Vehicle",
         "bank": "Bank",
         "customer": "Customer",
+        "financeAmount": "Finance amount",
         "fee": "Fee",
         "status": "Status",
         "requested": "Requested"
@@ -449,6 +458,30 @@
       },
       "empty": "No bank evaluation requests yet.",
       "success": "Evaluation requested — AED 300 fee applies. We'll notify you once the report is ready."
+    },
+    "quotationRequest": {
+      "title": "Vehicle Quotation Request",
+      "subtitle": "On-demand, at the customer's request: a price quotation for a vehicle in stock, or for the customer's own vehicle.",
+      "form": {
+        "customerName": "Customer name",
+        "notes": "Notes",
+        "submit": "Request quotation"
+      },
+      "table": {
+        "vehicle": "Vehicle",
+        "customer": "Customer",
+        "quotedPrice": "Quoted price",
+        "status": "Status",
+        "requested": "Requested"
+      },
+      "status": {
+        "requested": "Requested",
+        "in_review": "In review",
+        "completed": "Completed",
+        "rejected": "Rejected"
+      },
+      "empty": "No quotation requests yet.",
+      "success": "Quotation requested — we'll notify you once it's ready."
     }
   },
   "aiMarketing": {

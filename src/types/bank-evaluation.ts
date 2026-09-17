@@ -1,4 +1,5 @@
 import type { ID, Money } from "./common";
+import type { CustomerVehicleDetails, VehicleSource } from "./vehicle-request";
 
 export type UaeBankCode = "adib" | "adcb" | "eib" | "enbd" | "dib" | "fab" | "al_hilal" | "al_mashreq";
 
@@ -12,11 +13,14 @@ export type BankEvaluationStatus = "requested" | "in_review" | "completed" | "re
 
 export interface BankEvaluationRequest {
   id: ID;
-  vehicleId: ID;
+  vehicleSource: VehicleSource;
+  vehicleId?: ID;
   vehicleLabel: string;
+  customerVehicle?: CustomerVehicleDetails;
   bankCode: UaeBankCode;
   bankName: string;
   customerName?: string;
+  financeAmount: Money;
   fee: Money;
   status: BankEvaluationStatus;
   requestedAt: string;
@@ -27,9 +31,12 @@ export interface BankEvaluationRequest {
 }
 
 export interface BankEvaluationInput {
-  vehicleId: ID;
+  vehicleSource: VehicleSource;
+  vehicleId?: ID;
   vehicleLabel: string;
+  customerVehicle?: CustomerVehicleDetails;
   bankCode: UaeBankCode;
+  financeAmount: Money;
   customerName?: string;
   notes?: string;
 }

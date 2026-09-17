@@ -18,11 +18,14 @@ export async function requestBankEvaluation(input: BankEvaluationInput): Promise
 
   const evaluation: BankEvaluationRequest = {
     id: `bev-${Math.random().toString(36).slice(2, 9)}`,
+    vehicleSource: input.vehicleSource,
     vehicleId: input.vehicleId,
     vehicleLabel: input.vehicleLabel,
+    customerVehicle: input.customerVehicle,
     bankCode: input.bankCode,
     bankName: bank.name,
     customerName: input.customerName,
+    financeAmount: input.financeAmount,
     fee: { amount: BANK_EVALUATION_FEE_AED, currency: "AED" },
     status: "requested",
     requestedAt: new Date().toISOString(),

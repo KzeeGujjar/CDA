@@ -12,12 +12,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FormField } from "@/components/forms/form-field";
 import { DataTable, type DataTableColumn } from "@/components/tables/data-table";
 import { StatusBadge, type StatusTone } from "@/components/shared/status-badge";
+import { VehicleSourceFields } from "@/components/vehicles/vehicle-source-fields";
 import { formatMoney } from "@/components/shared/currency";
 import { getVehicles } from "@/services/vehicles";
 import { getBankEvaluations, requestBankEvaluation } from "@/services/bank-evaluations";
 import { uaeBanks, BANK_EVALUATION_FEE_AED } from "@/lib/uae-banks";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { BankEvaluationRequest, BankEvaluationStatus, UaeBankCode } from "@/types/bank-evaluation";
+import type { CustomerVehicleDetails, VehicleSource } from "@/types/vehicle-request";
 
 const statusTone: Record<BankEvaluationStatus, StatusTone> = {
   requested: "info",
@@ -26,10 +28,20 @@ const statusTone: Record<BankEvaluationStatus, StatusTone> = {
   rejected: "danger",
 };
 
+const blankCustomerVehicle: CustomerVehicleDetails = {
+  make: "",
+  model: "",
+  variant: "",
+  year: new Date().getFullYear(),
+  mileageKm: 0,
+  condition: "used",
+  specifications: "",
+};
+
 interface FormValues {
-  vehicleId: string;
   bankCode: UaeBankCode | "";
   customerName: string;
+  financeAmount: number;
   notes: string;
 }
 
@@ -37,20 +49,30 @@ export function BankEvaluationSection() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [vehicleSource, setVehicleSource] = useState<VehicleSource>("inventory");
+  const [vehicleId, setVehicleId] = useState("");
+  const [customerVehicle, setCustomerVehicle] = useState<CustomerVehicleDetails>(blankCustomerVehicle);
 
   const vehiclesQuery = useQuery({ queryKey: ["vehicles", "bank-eval-options"], queryFn: () => getVehicles() });
   const evaluationsQuery = useQuery({ queryKey: ["bank-evaluations"], queryFn: getBankEvaluations });
 
   const { register, control, handleSubmit, reset } = useForm<FormValues>({
-    defaultValues: { vehicleId: "", bankCode: "", customerName: "", notes: "" },
+    defaultValues: { bankCode: "", customerName: "", financeAmount: 0, notes: "" },
   });
+
+  const resetAll = () => {
+    reset();
+    setVehicleSource("inventory");
+    setVehicleId("");
+    setCustomerVehicle(blankCustomerVehicle);
+  };
 
   const mutation = useMutation({
     mutationFn: requestBankEvaluation,
     onSuccess: () => {
       toast.success(t("valuation.bankFinancing.success"));
       queryClient.invalidateQueries({ queryKey: ["bank-evaluations"] });
-      reset();
+      resetAll();
       setOpen(false);
     },
   });
@@ -59,6 +81,11 @@ export function BankEvaluationSection() {
     { key: "vehicleLabel", header: t("valuation.bankFinancing.table.vehicle"), render: (r) => r.vehicleLabel },
     { key: "bankName", header: t("valuation.bankFinancing.table.bank"), render: (r) => r.bankName },
     { key: "customerName", header: t("valuation.bankFinancing.table.customer"), render: (r) => r.customerName ?? "—" },
+    {
+      key: "financeAmount",
+      header: t("valuation.bankFinancing.table.financeAmount"),
+      render: (r) => <span className="font-mono">{formatMoney(r.financeAmount)}</span>,
+    },
     { key: "fee", header: t("valuation.bankFinancing.table.fee"), render: (r) => <span className="font-mono">{formatMoney(r.fee)}</span> },
     {
       key: "status",
@@ -94,39 +121,45 @@ export function BankEvaluationSection() {
         {open && (
           <form
             onSubmit={handleSubmit((values) => {
-              const vehicle = vehiclesQuery.data?.find((v) => v.id === values.vehicleId);
-              if (!vehicle) return;
+              let vehicleLabel = "";
+              if (vehicleSource === "inventory") {
+                const vehicle = vehiclesQuery.data?.find((v) => v.id === vehicleId);
+                if (!vehicle) return;
+                vehicleLabel = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+              } else {
+                if (!customerVehicle.make.trim() || !customerVehicle.model.trim()) return;
+                vehicleLabel = [customerVehicle.year, customerVehicle.make, customerVehicle.model, customerVehicle.variant]
+                  .filter(Boolean)
+                  .join(" ");
+              }
+
               mutation.mutate({
-                vehicleId: vehicle.id,
-                vehicleLabel: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+                vehicleSource,
+                vehicleId: vehicleSource === "inventory" ? vehicleId : undefined,
+                vehicleLabel,
+                customerVehicle: vehicleSource === "customer_owned" ? customerVehicle : undefined,
                 bankCode: values.bankCode as UaeBankCode,
+                financeAmount: { amount: values.financeAmount, currency: "AED" },
                 customerName: values.customerName || undefined,
                 notes: values.notes || undefined,
               });
             })}
             className="grid grid-cols-1 gap-4 rounded-lg border border-border p-4 sm:grid-cols-2"
           >
-            <FormField label={t("valuation.bankFinancing.form.vehicle")} htmlFor="bev-vehicle">
-              <Controller
-                control={control}
-                name="vehicleId"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="bev-vehicle" className="w-full">
-                      <SelectValue placeholder={t("valuation.bankFinancing.form.vehiclePlaceholder")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {vehiclesQuery.data?.map((v) => (
-                        <SelectItem key={v.id} value={v.id}>
-                          {v.year} {v.make} {v.model} — {v.stockNumber}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </FormField>
+            <VehicleSourceFields
+              idPrefix="bev"
+              vehicles={vehiclesQuery.data ?? []}
+              source={vehicleSource}
+              onSourceChange={(source) => {
+                setVehicleSource(source);
+                setVehicleId("");
+                setCustomerVehicle(blankCustomerVehicle);
+              }}
+              vehicleId={vehicleId}
+              onVehicleIdChange={setVehicleId}
+              customerVehicle={customerVehicle}
+              onCustomerVehicleChange={(patch) => setCustomerVehicle((prev) => ({ ...prev, ...patch }))}
+            />
 
             <FormField label={t("valuation.bankFinancing.form.bank")} htmlFor="bev-bank">
               <Controller
@@ -147,6 +180,16 @@ export function BankEvaluationSection() {
                     </SelectContent>
                   </Select>
                 )}
+              />
+            </FormField>
+
+            <FormField label={t("valuation.bankFinancing.form.financeAmount")} htmlFor="bev-finance-amount">
+              <Input
+                id="bev-finance-amount"
+                type="number"
+                min={0}
+                step={1000}
+                {...register("financeAmount", { required: true, valueAsNumber: true, min: 1 })}
               />
             </FormField>
 
