@@ -36,6 +36,7 @@
     "aiActivity": "AI Activity"
   },
   "common": {
+    "name": "Name",
     "search": "Search",
     "searchPlaceholder": "Search vehicles, customers, leads, deals, documents, tasks, messages...",
     "viewAll": "View all",
@@ -704,7 +705,23 @@
     "title": "Sign in",
     "subtitle": "Welcome back to your AI Car Dealer Agent workspace.",
     "error": "We couldn't sign you in. Check your details and try again.",
-    "placeholderNotice": "Authentication is a placeholder — connecting a real identity provider will replace this screen without changing the rest of the app."
+    "placeholderNotice": "Authentication is a placeholder — connecting a real identity provider will replace this screen without changing the rest of the app.",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Reset your password",
+    "forgotPasswordSubtitle": "Enter your email and we'll send you instructions to reset your password.",
+    "sendResetLink": "Send reset link",
+    "backToSignIn": "Back to sign in",
+    "resetSentMessage": "If an account exists for {email}, we've sent password reset instructions.",
+    "resetDemoNotice": "Demo mode — no email is actually sent. Authentication is a placeholder for now.",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up",
+    "signUpTitle": "Create your account",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "createAccount": "Create account",
+    "confirmPassword": "Confirm password",
+    "passwordMismatch": "Passwords don't match.",
+    "signUpDemoNotice": "Demo mode — no account is actually created. Authentication is a placeholder for now."
   },
   "reports": {
     "title": "Reports",

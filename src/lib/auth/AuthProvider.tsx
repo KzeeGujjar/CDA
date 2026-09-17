@@ -1,15 +1,16 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import type { AuthUser, LoginCredentials } from "@/types/auth";
+import type { AuthUser, LoginCredentials, SignUpInput } from "@/types/auth";
 import { currentUserFixture } from "@/mock/auth";
-import { login as loginRequest, logout as logoutRequest } from "@/services/auth";
+import { login as loginRequest, logout as logoutRequest, signUp as signUpRequest } from "@/services/auth";
 
 interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isPending: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
+  signUp: (input: SignUpInput) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -37,6 +38,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const signUp = useCallback(async (input: SignUpInput) => {
+    setIsPending(true);
+    try {
+      const session = await signUpRequest(input);
+      setUser(session.user);
+    } finally {
+      setIsPending(false);
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     setIsPending(true);
     try {
@@ -48,8 +59,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isAuthenticated: user !== null, isPending, login, logout }),
-    [user, isPending, login, logout]
+    () => ({ user, isAuthenticated: user !== null, isPending, login, signUp, logout }),
+    [user, isPending, login, signUp, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
