@@ -1,7 +1,19 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Banknote, Car, CircleGauge, Handshake, LineChart, PackageCheck, TrendingUp, Truck, Users, Warehouse } from "lucide-react";
+import {
+  Banknote,
+  Car,
+  CircleGauge,
+  Handshake,
+  LineChart,
+  PackageCheck,
+  TrendingUp,
+  Truck,
+  Users,
+  Warehouse,
+  type LucideIcon,
+} from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { ChartWrapper } from "@/components/charts/chart-wrapper";
@@ -12,11 +24,38 @@ import { UpcomingFollowUpsCard } from "@/components/dashboard/upcoming-followups
 import { AiCopilotCard } from "@/components/dashboard/ai-copilot-card";
 import { AiInsightsCard } from "@/components/dashboard/ai-insights-card";
 import { DashboardAdBanner } from "@/components/dashboard/dashboard-ad-banner";
-import { getDealerPerformanceSummary, getAnalyticsSnapshot } from "@/services/analytics";
+import { getDealerPerformanceSummary, getAnalyticsSnapshot } from "@/services/dashboardService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { formatMoney } from "@/components/shared/currency";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
+import { EmptyState } from "@/components/shared/empty-state";
+import type { Currency } from "@/types/common";
+
+type KpiKey =
+  | "totalVehicles"
+  | "availableVehicles"
+  | "vehiclesSold"
+  | "vehiclesPurchased"
+  | "totalInventoryValue"
+  | "expectedRevenue"
+  | "grossProfit"
+  | "monthlySales"
+  | "newLeads"
+  | "conversionRate";
+
+const kpiCards: { key: KpiKey; icon: LucideIcon; kind: "count" | "money" | "percent" }[] = [
+  { key: "totalVehicles", icon: Car, kind: "count" },
+  { key: "availableVehicles", icon: PackageCheck, kind: "count" },
+  { key: "vehiclesSold", icon: Handshake, kind: "count" },
+  { key: "vehiclesPurchased", icon: Truck, kind: "count" },
+  { key: "totalInventoryValue", icon: Warehouse, kind: "money" },
+  { key: "expectedRevenue", icon: LineChart, kind: "money" },
+  { key: "grossProfit", icon: Banknote, kind: "money" },
+  { key: "monthlySales", icon: TrendingUp, kind: "money" },
+  { key: "newLeads", icon: Users, kind: "count" },
+  { key: "conversionRate", icon: CircleGauge, kind: "percent" },
+];
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -24,6 +63,7 @@ export default function DashboardPage() {
     data: summary,
     isLoading: summaryLoading,
     isError: summaryError,
+    error: summaryErr,
     refetch: refetchSummary,
   } = useQuery({
     queryKey: ["dealer-performance-summary"],
@@ -33,6 +73,7 @@ export default function DashboardPage() {
     data: snapshot,
     isLoading: snapshotLoading,
     isError: snapshotError,
+    error: snapshotErr,
     refetch: refetchSnapshot,
   } = useQuery({
     queryKey: ["analytics-snapshot"],
@@ -44,6 +85,7 @@ export default function DashboardPage() {
       <>
         <PageHeader title={t("dashboard.title")} subtitle={t("dashboard.subtitle")} />
         <ErrorState
+          error={summaryErr ?? snapshotErr}
           onRetry={() => {
             refetchSummary();
             refetchSnapshot();
@@ -69,66 +111,26 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-          <StatCard
-            label={t("dashboard.kpi.totalVehicles")}
-            value={String(summary.totalVehicles)}
-            delta={summary.totalVehiclesDelta}
-            icon={Car}
-          />
-          <StatCard
-            label={t("dashboard.kpi.availableVehicles")}
-            value={String(summary.availableVehicles)}
-            delta={summary.availableVehiclesDelta}
-            icon={PackageCheck}
-          />
-          <StatCard
-            label={t("dashboard.kpi.vehiclesSold")}
-            value={String(summary.vehiclesSold)}
-            delta={summary.vehiclesSoldDelta}
-            icon={Handshake}
-          />
-          <StatCard
-            label={t("dashboard.kpi.vehiclesPurchased")}
-            value={String(summary.vehiclesPurchased)}
-            delta={summary.vehiclesPurchasedDelta}
-            icon={Truck}
-          />
-          <StatCard
-            label={t("dashboard.kpi.totalInventoryValue")}
-            value={formatMoney({ amount: summary.totalInventoryValue, currency: "AED" })}
-            delta={summary.totalInventoryValueDelta}
-            icon={Warehouse}
-          />
-          <StatCard
-            label={t("dashboard.kpi.expectedRevenue")}
-            value={formatMoney({ amount: summary.expectedRevenue, currency: "AED" })}
-            delta={summary.expectedRevenueDelta}
-            icon={LineChart}
-          />
-          <StatCard
-            label={t("dashboard.kpi.grossProfit")}
-            value={formatMoney({ amount: summary.grossProfit, currency: "AED" })}
-            delta={summary.grossProfitDelta}
-            icon={Banknote}
-          />
-          <StatCard
-            label={t("dashboard.kpi.monthlySales")}
-            value={formatMoney({ amount: summary.monthlySales, currency: "AED" })}
-            delta={summary.monthlySalesDelta}
-            icon={TrendingUp}
-          />
-          <StatCard
-            label={t("dashboard.kpi.newLeads")}
-            value={String(summary.newLeads)}
-            delta={summary.newLeadsDelta}
-            icon={Users}
-          />
-          <StatCard
-            label={t("dashboard.kpi.conversionRate")}
-            value={`${summary.conversionRate}%`}
-            delta={summary.conversionRateDelta}
-            icon={CircleGauge}
-          />
+          {kpiCards.map(({ key, icon, kind }) => {
+            // A figure this user may not see (cost, profit) is left out, never shown as 0.
+            const amount = summary[key];
+            if (amount === null) return null;
+            const value =
+              kind === "money"
+                ? formatMoney({ amount, currency: (summary.currency ?? "AED") as Currency })
+                : kind === "percent"
+                  ? `${amount}%`
+                  : String(amount);
+            return (
+              <StatCard
+                key={key}
+                label={t(`dashboard.kpi.${key}`)}
+                value={value}
+                delta={summary[`${key}Delta`] ?? undefined}
+                icon={icon}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -138,6 +140,8 @@ export default function DashboardPage() {
         <ChartWrapper title={t("dashboard.salesTrend")} className="xl:col-span-2">
           {snapshotLoading || !snapshot ? (
             <Skeleton className="h-64 w-full" />
+          ) : snapshot.salesTrend.length === 0 ? (
+            <EmptyState icon={LineChart} title={t("common.noResults")} />
           ) : (
             <LineChartCard data={snapshot.salesTrend} />
           )}
@@ -145,6 +149,8 @@ export default function DashboardPage() {
         <ChartWrapper title={t("dashboard.inventoryAging")}>
           {snapshotLoading || !snapshot ? (
             <Skeleton className="h-64 w-full" />
+          ) : snapshot.inventoryAging.length === 0 ? (
+            <EmptyState icon={LineChart} title={t("common.noResults")} />
           ) : (
             <BarChartCard data={snapshot.inventoryAging} />
           )}

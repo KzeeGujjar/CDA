@@ -11,6 +11,17 @@ export function ProfitCard({ vehicle, className }: { vehicle: Vehicle; className
   const totalCost = getTotalCost(vehicle);
   const expectedProfit = getExpectedProfit(vehicle);
   const profitMarginPct = getProfitMarginPct(vehicle);
+  // Cost figures need profit:read; a role without it gets null, never a fabricated 0. Show a placeholder, not a blank card.
+  if (expectedProfit === null || totalCost === null || profitMarginPct === null) {
+    return (
+      <Card className={cn("border-0", className)}>
+        <CardContent className="flex flex-col gap-3">
+          <span className="text-sm text-muted-foreground">{t("inventory.expectedProfit")}</span>
+          <span className="text-sm text-muted-foreground">{t("common.restricted")}</span>
+        </CardContent>
+      </Card>
+    );
+  }
   const isPositive = expectedProfit >= 0;
   const Icon = isPositive ? TrendingUp : TrendingDown;
 
@@ -19,11 +30,21 @@ export function ProfitCard({ vehicle, className }: { vehicle: Vehicle; className
       <CardContent className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">{t("inventory.expectedProfit")}</span>
-          <div className={cn("flex size-7 items-center justify-center rounded-full", isPositive ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive")}>
+          <div
+            className={cn(
+              "flex size-7 items-center justify-center rounded-full",
+              isPositive ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
+            )}
+          >
             <Icon className="size-3.5" />
           </div>
         </div>
-        <span className={cn("font-mono text-2xl font-semibold tabular-nums", isPositive ? "text-primary" : "text-destructive")}>
+        <span
+          className={cn(
+            "font-mono text-2xl font-semibold tabular-nums",
+            isPositive ? "text-primary" : "text-destructive"
+          )}
+        >
           {formatMoney({ amount: expectedProfit, currency: vehicle.price.currency })}
         </span>
         <div className="flex items-center justify-between border-t border-border pt-2.5 text-xs">

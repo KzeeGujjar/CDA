@@ -16,19 +16,32 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { InlineError } from "@/components/shared/inline-state";
 import { formatMoney } from "@/components/shared/currency";
-import { getMarketplaceListingsBySource } from "@/services/marketplace";
-import { createVehicle } from "@/services/vehicles";
+import { getMarketplaceListingsBySource } from "@/services/marketplaceService";
+import { createVehicle } from "@/services/vehicleService";
 import { listingToVehicleInput } from "@/lib/marketplace-import";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { PackageSearch } from "lucide-react";
 
-export function FetchDubizzleInventoryDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function FetchDubizzleInventoryDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
 
-  const { data: listings, isLoading } = useQuery({
+  const {
+    data: listings,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["dubizzle-listings"],
     queryFn: () => getMarketplaceListingsBySource("dubizzle"),
     enabled: open,
@@ -66,6 +79,8 @@ export function FetchDubizzleInventoryDialog({ open, onOpenChange }: { open: boo
         <div className="flex max-h-96 flex-col gap-2 overflow-y-auto">
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
+          ) : isError ? (
+            <InlineError error={error} onRetry={() => refetch()} />
           ) : !listings || listings.length === 0 ? (
             <EmptyState icon={PackageSearch} title={t("common.noResults")} />
           ) : (
@@ -76,7 +91,13 @@ export function FetchDubizzleInventoryDialog({ open, onOpenChange }: { open: boo
               >
                 <Checkbox checked={!excludedIds.has(listing.id)} onCheckedChange={() => toggle(listing.id)} />
                 <div className="relative size-12 shrink-0 overflow-hidden rounded-md bg-muted">
-                  <Image src={listing.images[0]} alt={`${listing.make} ${listing.model}`} fill className="object-cover" unoptimized />
+                  <Image
+                    src={listing.images[0]}
+                    alt={`${listing.make} ${listing.model}`}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-sm font-medium text-foreground">

@@ -89,7 +89,9 @@ export function CurrencySection() {
           <div className="mt-1 flex flex-wrap items-center gap-3 font-mono text-sm">
             <span className="text-foreground">{formatMoney({ amount: sampleAedAmount, currency: "AED" })}</span>
             <span className="text-muted-foreground">≈</span>
-            <span className="text-primary">{formatMoney({ amount: convertFromAed(sampleAedAmount, "USD"), currency: "USD" })}</span>
+            <span className="text-primary">
+              {formatMoney({ amount: convertFromAed(sampleAedAmount, "USD"), currency: "USD" })}
+            </span>
           </div>
         </div>
         <div>

@@ -13,11 +13,12 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { StatusBadge, type StatusTone } from "@/components/shared/status-badge";
 import { VehicleSourceFields } from "@/components/vehicles/vehicle-source-fields";
 import { formatMoney } from "@/components/shared/currency";
-import { getVehicles } from "@/services/vehicles";
-import { getQuotationRequests, requestQuotation } from "@/services/quotation-requests";
+import { getVehicles } from "@/services/vehicleService";
+import { getQuotationRequests, requestQuotation } from "@/services/quotationRequestService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { QuotationRequest, QuotationRequestStatus } from "@/types/quotation-request";
 import type { CustomerVehicleDetails, VehicleSource } from "@/types/vehicle-request";
+import { InlineError } from "@/components/shared/inline-state";
 
 const statusTone: Record<QuotationRequestStatus, StatusTone> = {
   requested: "info",
@@ -49,7 +50,11 @@ export function QuotationRequestSection() {
   const [vehicleId, setVehicleId] = useState("");
   const [customerVehicle, setCustomerVehicle] = useState<CustomerVehicleDetails>(blankCustomerVehicle);
 
-  const vehiclesQuery = useQuery({ queryKey: ["vehicles", "quotation-options"], queryFn: () => getVehicles() });
+  const vehiclesQuery = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles", "quotation-options"],
+    queryFn: () => getVehicles(),
+  });
   const requestsQuery = useQuery({ queryKey: ["quotation-requests"], queryFn: getQuotationRequests });
 
   const { register, handleSubmit, reset } = useForm<FormValues>({
@@ -75,7 +80,11 @@ export function QuotationRequestSection() {
 
   const columns: DataTableColumn<QuotationRequest>[] = [
     { key: "vehicleLabel", header: t("valuation.quotationRequest.table.vehicle"), render: (r) => r.vehicleLabel },
-    { key: "customerName", header: t("valuation.quotationRequest.table.customer"), render: (r) => r.customerName ?? "—" },
+    {
+      key: "customerName",
+      header: t("valuation.quotationRequest.table.customer"),
+      render: (r) => r.customerName ?? "—",
+    },
     {
       key: "quotedPrice",
       header: t("valuation.quotationRequest.table.quotedPrice"),
@@ -84,7 +93,9 @@ export function QuotationRequestSection() {
     {
       key: "status",
       header: t("valuation.quotationRequest.table.status"),
-      render: (r) => <StatusBadge label={t(`valuation.quotationRequest.status.${r.status}`)} tone={statusTone[r.status]} />,
+      render: (r) => (
+        <StatusBadge label={t(`valuation.quotationRequest.status.${r.status}`)} tone={statusTone[r.status]} />
+      ),
     },
     {
       key: "requestedAt",
@@ -118,7 +129,12 @@ export function QuotationRequestSection() {
                 vehicleLabel = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
               } else {
                 if (!customerVehicle.make.trim() || !customerVehicle.model.trim()) return;
-                vehicleLabel = [customerVehicle.year, customerVehicle.make, customerVehicle.model, customerVehicle.variant]
+                vehicleLabel = [
+                  customerVehicle.year,
+                  customerVehicle.make,
+                  customerVehicle.model,
+                  customerVehicle.variant,
+                ]
                   .filter(Boolean)
                   .join(" ");
               }
@@ -165,12 +181,16 @@ export function QuotationRequestSection() {
           </form>
         )}
 
-        <DataTable
-          columns={columns}
-          rows={requestsQuery.data ?? []}
-          loading={requestsQuery.isPending}
-          emptyTitle={t("valuation.quotationRequest.empty")}
-        />
+        {requestsQuery.isError ? (
+          <InlineError error={requestsQuery.error} onRetry={() => requestsQuery.refetch()} />
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={requestsQuery.data ?? []}
+            loading={requestsQuery.isPending}
+            emptyTitle={t("valuation.quotationRequest.empty")}
+          />
+        )}
       </CardContent>
     </Card>
   );

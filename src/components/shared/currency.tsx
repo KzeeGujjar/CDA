@@ -12,3 +12,19 @@ export function formatMoney(money: Money): string {
 export function Currency({ money, className }: { money: Money; className?: string }) {
   return <span className={className}>{formatMoney(money)}</span>;
 }
+
+/**
+ * Like Currency, but for a figure that may be legitimately absent — a cost the signed-in role may not see
+ * (needs profit:read), rather than a loading or error state. Renders the placeholder instead of a blank cell.
+ */
+export function OptionalCurrency({
+  money,
+  placeholder = "—",
+  className,
+}: {
+  money: Money | null | undefined;
+  placeholder?: string;
+  className?: string;
+}) {
+  return <span className={className}>{money ? formatMoney(money) : placeholder}</span>;
+}

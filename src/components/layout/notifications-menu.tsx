@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NotificationPanel } from "@/components/layout/notification-panel";
-import { getNotifications, markAllNotificationsRead, markNotificationRead } from "@/services/notifications";
+import { getNotifications, markAllNotificationsRead, markNotificationRead } from "@/services/notificationService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { AppNotification } from "@/types/notification";
 
@@ -20,7 +20,11 @@ export function NotificationsMenu() {
   const { t, locale } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: notifications = [] } = useQuery({ queryKey: ["notifications"], queryFn: getNotifications });
+  const { data: notifications = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["notifications"],
+    queryFn: getNotifications,
+  });
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const readMutation = useMutation({

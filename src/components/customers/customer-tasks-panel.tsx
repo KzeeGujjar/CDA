@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { InlineError } from "@/components/shared/inline-state";
 import { cn } from "@/utils";
-import { createCustomerTask, getCustomerTasks, updateCustomerTaskStatus } from "@/services/customers";
+import { createCustomerTask, getCustomerTasks, updateCustomerTaskStatus } from "@/services/customerService";
 import { salespeople } from "@/lib/salespeople";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
@@ -21,7 +22,13 @@ export function CustomerTasksPanel({ customerId }: { customerId: string }) {
   const [title, setTitle] = useState("");
   const [assignedToName, setAssignedToName] = useState(salespeople[0]);
 
-  const { data: tasks, isLoading } = useQuery({
+  const {
+    data: tasks,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["customer-tasks", customerId],
     queryFn: () => getCustomerTasks(customerId),
   });
@@ -79,6 +86,8 @@ export function CustomerTasksPanel({ customerId }: { customerId: string }) {
             <Skeleton key={i} className="h-10 w-full" />
           ))}
         </div>
+      ) : isError ? (
+        <InlineError error={error} onRetry={() => refetch()} />
       ) : !tasks || tasks.length === 0 ? (
         <EmptyState icon={ListChecks} title={t("common.noResults")} />
       ) : (
@@ -87,10 +96,17 @@ export function CustomerTasksPanel({ customerId }: { customerId: string }) {
             <label key={task.id} className="flex items-center gap-3 rounded-lg border border-border px-3 py-2">
               <Checkbox
                 checked={task.status === "completed"}
-                onCheckedChange={(checked) => toggleMutation.mutate({ id: task.id, status: checked ? "completed" : "open" })}
+                onCheckedChange={(checked) =>
+                  toggleMutation.mutate({ id: task.id, status: checked ? "completed" : "open" })
+                }
               />
               <div className="flex flex-1 flex-col">
-                <span className={cn("text-sm text-foreground", task.status === "completed" && "text-muted-foreground line-through")}>
+                <span
+                  className={cn(
+                    "text-sm text-foreground",
+                    task.status === "completed" && "text-muted-foreground line-through"
+                  )}
+                >
                   {task.title}
                 </span>
                 <span className="text-xs text-muted-foreground">

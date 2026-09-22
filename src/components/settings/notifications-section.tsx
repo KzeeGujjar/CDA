@@ -59,7 +59,9 @@ export function NotificationsSection() {
             <TableBody>
               {notificationTypes.map((type) => (
                 <TableRow key={type}>
-                  <TableCell className="font-medium text-foreground">{t(`settings.notifications.events.${type}`)}</TableCell>
+                  <TableCell className="font-medium text-foreground">
+                    {t(`settings.notifications.events.${type}`)}
+                  </TableCell>
                   {channels.map((channel) => (
                     <TableCell key={channel} className="text-center">
                       <Switch size="sm" checked={prefs[type][channel]} onCheckedChange={() => toggle(type, channel)} />

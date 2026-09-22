@@ -19,7 +19,7 @@ import { BankEvaluationSection } from "@/components/vehicles/bank-evaluation-sec
 import { QuotationRequestSection } from "@/components/vehicles/quotation-request-section";
 import { ErrorState } from "@/components/shared/error-state";
 import { formatMoney } from "@/components/shared/currency";
-import { getMarketValuation } from "@/services/valuation";
+import { getMarketValuation } from "@/services/valuationService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { ComparableListing, ValuationQuery } from "@/types/valuation";
 
@@ -111,7 +111,7 @@ function ValuationForm() {
 
         <div className="flex flex-col gap-6 lg:col-span-2">
           {mutation.isPending && <Skeleton className="h-48 w-full" />}
-          {mutation.isError && <ErrorState onRetry={() => mutation.reset()} />}
+          {mutation.isError && <ErrorState error={mutation.error} onRetry={() => mutation.reset()} />}
           {mutation.data && (
             <>
               <ValuationGauge valuation={mutation.data} />

@@ -9,9 +9,9 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { formatMoney } from "@/components/shared/currency";
 import { EmptyState } from "@/components/shared/empty-state";
 import { leadStageTone } from "@/components/leads/lead-stage";
-import { getLeadsByCustomerId } from "@/services/leads";
-import { getDealsByCustomerId } from "@/services/deals";
-import { getVehicles } from "@/services/vehicles";
+import { getLeadsByCustomerId } from "@/services/leadService";
+import { getDealsByCustomerId } from "@/services/dealService";
+import { getVehicles } from "@/services/vehicleService";
 import { getProfitMarginPct } from "@/lib/vehicle-finance";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { DealStatus } from "@/types/deal";
@@ -21,14 +21,20 @@ const negotiationStatuses: DealStatus[] = ["draft", "sent", "accepted"];
 export function CustomerOverviewPanel({ customerId }: { customerId: string }) {
   const { t, locale } = useTranslation();
   const { data: leads = [] } = useQuery({
+    meta: { banner: true },
     queryKey: ["leads", "by-customer", customerId],
     queryFn: () => getLeadsByCustomerId(customerId),
   });
   const { data: deals = [] } = useQuery({
+    meta: { banner: true },
     queryKey: ["deals", "by-customer", customerId],
     queryFn: () => getDealsByCustomerId(customerId),
   });
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles() });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+  });
 
   const purchases = deals.filter((d) => d.status === "converted_to_contract");
   const negotiations = deals.filter((d) => negotiationStatuses.includes(d.status));
@@ -37,7 +43,8 @@ export function CustomerOverviewPanel({ customerId }: { customerId: string }) {
     () =>
       [...vehicles]
         .filter((v) => v.status === "available")
-        .sort((a, b) => getProfitMarginPct(b) - getProfitMarginPct(a))
+        // A vehicle whose margin is hidden (no profit:read) sorts last, never first as if it had a 0% margin.
+        .sort((a, b) => (getProfitMarginPct(b) ?? -Infinity) - (getProfitMarginPct(a) ?? -Infinity))
         .slice(0, 3),
     [vehicles]
   );
@@ -79,10 +86,15 @@ export function CustomerOverviewPanel({ customerId }: { customerId: string }) {
             <EmptyState icon={ShoppingBag} title={t("common.noResults")} />
           ) : (
             purchases.map((deal) => (
-              <div key={deal.id} className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm">
+              <div
+                key={deal.id}
+                className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              >
                 <div className="flex flex-col overflow-hidden">
                   <span className="truncate text-foreground">{deal.vehicleLabel}</span>
-                  <span className="text-xs text-muted-foreground">{new Date(deal.updatedAt).toLocaleDateString(locale)}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(deal.updatedAt).toLocaleDateString(locale)}
+                  </span>
                 </div>
                 <span className="shrink-0 font-mono text-foreground">{formatMoney(deal.total)}</span>
               </div>

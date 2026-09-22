@@ -3,7 +3,19 @@
 import { use } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Calendar, FileText, Handshake, ListChecks, Mail, MapPin, MessageSquare, Phone, Sparkles, StickyNote } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  FileText,
+  Handshake,
+  ListChecks,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
+  Sparkles,
+  StickyNote,
+} from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
-import { formatMoney } from "@/components/shared/currency";
+import { OptionalCurrency } from "@/components/shared/currency";
 import { CustomerOverviewPanel } from "@/components/customers/customer-overview-panel";
 import { CustomerMessagesPanel } from "@/components/customers/customer-messages-panel";
 import { CustomerCallsPanel } from "@/components/customers/customer-calls-panel";
@@ -21,7 +33,7 @@ import { CustomerNotesPanel } from "@/components/customers/customer-notes-panel"
 import { CustomerDocumentsPanel } from "@/components/customers/customer-documents-panel";
 import { CustomerTasksPanel } from "@/components/customers/customer-tasks-panel";
 import { CustomerTimelineList } from "@/components/customers/customer-timeline-list";
-import { getCustomerById } from "@/services/customers";
+import { getCustomerById } from "@/services/customerService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ customerId: string }> }) {
@@ -32,6 +44,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ custo
     data: customer,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["customer", customerId],
@@ -48,7 +61,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ custo
     );
   }
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   if (!customer) return <EmptyState icon={StickyNote} title={t("common.noResults")} />;
 
@@ -117,7 +130,12 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ custo
           <div className="flex flex-col items-start gap-0.5 sm:items-end">
             <span className="text-xs text-muted-foreground">{t("customers.lifetimeValue")}</span>
             <span className="font-mono text-lg font-semibold text-foreground">
-              {formatMoney({ amount: customer.lifetimeValue, currency: "AED" })}
+              <OptionalCurrency
+                money={
+                  customer.lifetimeValue !== undefined ? { amount: customer.lifetimeValue, currency: "AED" } : undefined
+                }
+                placeholder={t("common.restricted")}
+              />
             </span>
           </div>
         </CardContent>

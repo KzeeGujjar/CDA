@@ -4,12 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import { FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getCustomerDocuments } from "@/services/customers";
+import { InlineError } from "@/components/shared/inline-state";
+import { getCustomerDocuments } from "@/services/customerService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export function CustomerDocumentsPanel({ customerId }: { customerId: string }) {
   const { t, locale } = useTranslation();
-  const { data: documents, isLoading } = useQuery({
+  const {
+    data: documents,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["customer-documents", customerId],
     queryFn: () => getCustomerDocuments(customerId),
   });
@@ -24,6 +31,8 @@ export function CustomerDocumentsPanel({ customerId }: { customerId: string }) {
     );
   }
 
+  if (isError) return <InlineError error={error} onRetry={() => refetch()} />;
+
   if (!documents || documents.length === 0) return <EmptyState icon={FileText} title={t("common.noResults")} />;
 
   return (
@@ -36,7 +45,8 @@ export function CustomerDocumentsPanel({ customerId }: { customerId: string }) {
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="truncate text-sm font-medium text-foreground">{doc.name}</span>
             <span className="text-xs text-muted-foreground">
-              {t(`customers.documentTypes.${doc.type}`)} · {doc.sizeLabel} · {new Date(doc.uploadedAt).toLocaleDateString(locale)}
+              {t(`customers.documentTypes.${doc.type}`)} · {doc.sizeLabel} ·{" "}
+              {new Date(doc.uploadedAt).toLocaleDateString(locale)}
             </span>
           </div>
         </div>

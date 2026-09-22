@@ -18,7 +18,12 @@ export function FilterPanel({
     <div className="flex flex-wrap items-center gap-2">
       {children}
       {hasActiveFilters && onClear && (
-        <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs text-muted-foreground hover:text-foreground" onClick={onClear}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 gap-1 text-xs text-muted-foreground hover:text-foreground"
+          onClick={onClear}
+        >
           <X className="size-3.5" />
           {t("common.clearFilters")}
         </Button>

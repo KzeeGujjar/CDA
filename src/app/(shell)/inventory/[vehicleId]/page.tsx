@@ -4,7 +4,17 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, BadgeCheck, CalendarClock, FileText, Gauge, MapPin, MessageSquare, ShieldCheck, Wrench } from "lucide-react";
+import {
+  ArrowLeft,
+  BadgeCheck,
+  CalendarClock,
+  FileText,
+  Gauge,
+  MapPin,
+  MessageSquare,
+  ShieldCheck,
+  Wrench,
+} from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { Currency, formatMoney } from "@/components/shared/currency";
+import { Currency, formatMoney, OptionalCurrency } from "@/components/shared/currency";
 import { PriceBadge } from "@/components/shared/price-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
@@ -24,8 +34,9 @@ import { VehicleActionBar } from "@/components/vehicles/vehicle-action-bar";
 import { VehicleAiAnalysisCard } from "@/components/vehicles/vehicle-ai-analysis-card";
 import { ProfitCard } from "@/components/vehicles/profit-card";
 import { vehicleSourceMeta } from "@/lib/vehicle-source-meta";
-import { getVehicleById, updateVehicle } from "@/services/vehicles";
-import { getTasks, updateTaskStatus } from "@/services/tasks";
+import { emirateLabel, importSpecLabel, sourceTypeLabel as sourceTypeLabelOf } from "@/lib/vehicle-labels";
+import { getVehicleById, updateVehicle } from "@/services/vehicleService";
+import { getTasks, updateTaskStatus } from "@/services/taskService";
 import { getExpectedProfit, getProfitMarginPct, getTotalCost } from "@/lib/vehicle-finance";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { Vehicle } from "@/types/vehicle";
@@ -57,6 +68,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
     data: vehicle,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["vehicle", vehicleId],
@@ -94,7 +106,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
     );
   }
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   if (!vehicle) {
     return <EmptyState icon={Gauge} title={t("common.noResults")} />;
@@ -104,7 +116,9 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
   const expectedProfit = getExpectedProfit(vehicle);
   const profitMarginPct = getProfitMarginPct(vehicle);
   const currentNotes = notesValue ?? vehicle.notes ?? "";
-  const SourceIcon = vehicleSourceMeta[vehicle.sourceType].icon;
+  // sourceType is not always recorded (or not known to the seller of a customer-owned vehicle).
+  const SourceIcon = vehicle.sourceType ? vehicleSourceMeta[vehicle.sourceType].icon : Wrench;
+  const sourceTypeLabel = sourceTypeLabelOf(t, vehicle.sourceType);
 
   return (
     <>
@@ -157,9 +171,9 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                     [t("inventory.interiorColor"), vehicle.spec.interiorColor],
                     [t("inventory.seats"), String(vehicle.spec.seats)],
                     [t("inventory.bodyType"), vehicle.spec.bodyType],
-                    [t("inventory.importSpec"), t(`inventory.importSpecs.${vehicle.spec.importSpec}`)],
-                    [t("inventory.emirate"), t(`inventory.emirates.${vehicle.emirate}`)],
-                    [t("inventory.sourceType"), t(`inventory.sourceTypes.${vehicle.sourceType}`)],
+                    [t("inventory.importSpec"), importSpecLabel(t, vehicle.spec.importSpec)],
+                    [t("inventory.emirate"), emirateLabel(t, vehicle.emirate)],
+                    [t("inventory.sourceType"), sourceTypeLabel],
                   ].map(([label, value]) => (
                     <div key={label} className="flex flex-col gap-0.5">
                       <span className="text-xs text-muted-foreground">{label}</span>
@@ -175,20 +189,34 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                 <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.purchasePrice")}</span>
-                    <Currency money={vehicle.costPrice} className="font-mono font-medium text-foreground" />
+                    <OptionalCurrency
+                      money={vehicle.costPrice}
+                      placeholder={t("common.restricted")}
+                      className="font-mono font-medium text-foreground"
+                    />
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.repairCost")}</span>
-                    <Currency money={vehicle.repairCost} className="font-mono font-medium text-foreground" />
+                    <OptionalCurrency
+                      money={vehicle.repairCost}
+                      placeholder={t("common.restricted")}
+                      className="font-mono font-medium text-foreground"
+                    />
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.transportCost")}</span>
-                    <Currency money={vehicle.transportCost} className="font-mono font-medium text-foreground" />
+                    <OptionalCurrency
+                      money={vehicle.transportCost}
+                      placeholder={t("common.restricted")}
+                      className="font-mono font-medium text-foreground"
+                    />
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.totalCost")}</span>
                     <span className="font-mono font-medium text-foreground">
-                      {formatMoney({ amount: totalCost, currency: vehicle.price.currency })}
+                      {totalCost === null
+                        ? t("common.restricted")
+                        : formatMoney({ amount: totalCost, currency: vehicle.price.currency })}
                     </span>
                   </div>
                   <div className="flex flex-col gap-0.5">
@@ -205,14 +233,20 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.expectedProfit")}</span>
-                    <span className={`font-mono font-medium ${expectedProfit >= 0 ? "text-primary" : "text-destructive"}`}>
-                      {formatMoney({ amount: expectedProfit, currency: vehicle.price.currency })}
+                    <span
+                      className={`font-mono font-medium ${expectedProfit === null ? "text-muted-foreground" : expectedProfit >= 0 ? "text-primary" : "text-destructive"}`}
+                    >
+                      {expectedProfit === null
+                        ? t("common.restricted")
+                        : formatMoney({ amount: expectedProfit, currency: vehicle.price.currency })}
                     </span>
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.profitMargin")}</span>
-                    <span className={`font-mono font-medium ${profitMarginPct >= 0 ? "text-primary" : "text-destructive"}`}>
-                      {profitMarginPct.toFixed(1)}%
+                    <span
+                      className={`font-mono font-medium ${profitMarginPct === null ? "text-muted-foreground" : profitMarginPct >= 0 ? "text-primary" : "text-destructive"}`}
+                    >
+                      {profitMarginPct === null ? t("common.restricted") : `${profitMarginPct.toFixed(1)}%`}
                     </span>
                   </div>
                 </CardContent>
@@ -241,7 +275,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t("inventory.importSpec")}</span>
-                    <span className="font-medium text-foreground">{t(`inventory.importSpecs.${vehicle.spec.importSpec}`)}</span>
+                    <span className="font-medium text-foreground">{importSpecLabel(t, vehicle.spec.importSpec)}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -262,12 +296,16 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                     </div>
                     <div className="flex flex-col gap-0.5">
                       <span className="text-xs text-muted-foreground">{t("inventory.registration.plateNumber")}</span>
-                      <span className="font-mono font-medium text-foreground">{vehicle.registration.plateNumber ?? "—"}</span>
+                      <span className="font-mono font-medium text-foreground">
+                        {vehicle.registration.plateNumber ?? "—"}
+                      </span>
                     </div>
                     <div className="flex flex-col gap-0.5">
                       <span className="text-xs text-muted-foreground">{t("inventory.registration.expiryDate")}</span>
                       <span className="font-medium text-foreground">
-                        {vehicle.registration.expiryDate ? new Date(vehicle.registration.expiryDate).toLocaleDateString(locale) : "—"}
+                        {vehicle.registration.expiryDate
+                          ? new Date(vehicle.registration.expiryDate).toLocaleDateString(locale)
+                          : "—"}
                       </span>
                     </div>
                     <div className="flex flex-col gap-0.5">
@@ -280,7 +318,9 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                     <span className="text-sm text-muted-foreground">
                       {vehicle.registration.rtaNotes || t("inventory.registration.rtaNotesEmpty")}
                     </span>
-                    <span className="text-xs text-muted-foreground/80">{t("inventory.registration.placeholderNotice")}</span>
+                    <span className="text-xs text-muted-foreground/80">
+                      {t("inventory.registration.placeholderNotice")}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -303,7 +343,9 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
                         <span className="text-xs text-muted-foreground">
                           {new Date(vehicle.acquiredAt).toLocaleDateString(locale)}
                         </span>
-                        <span className="text-sm text-foreground">Pre-delivery inspection and reconditioning completed</span>
+                        <span className="text-sm text-foreground">
+                          Pre-delivery inspection and reconditioning completed
+                        </span>
                       </div>
                     )}
                     <div className="flex flex-col gap-0.5">
@@ -321,7 +363,10 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
               <Card>
                 <CardContent className="flex flex-col gap-3">
                   {inspectionChecklist(vehicle).map((item) => (
-                    <div key={item.label} className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
+                    <div
+                      key={item.label}
+                      className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0"
+                    >
                       <div className="flex items-center gap-2">
                         <Wrench className="size-3.5 text-muted-foreground" />
                         <span className="text-sm text-foreground">{item.label}</span>
@@ -337,11 +382,19 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
             </TabsContent>
 
             <TabsContent value="aiAnalysis">
-              <VehicleAiAnalysisCard vehicle={vehicle} analyzing={analyzing} onReviewPricing={() => setActiveTab("pricing")} />
+              <VehicleAiAnalysisCard
+                vehicle={vehicle}
+                analyzing={analyzing}
+                onReviewPricing={() => setActiveTab("pricing")}
+              />
             </TabsContent>
 
             <TabsContent value="documents">
-              <EmptyState icon={FileText} title={t("placeholder.contractsDocuments.title")} description={t("common.comingSoonDescription")} />
+              <EmptyState
+                icon={FileText}
+                title={t("placeholder.contractsDocuments.title")}
+                description={t("common.comingSoonDescription")}
+              />
             </TabsContent>
 
             <TabsContent value="inquiries">
@@ -441,20 +494,20 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">{t("inventory.location")}</span>
-                <span className="text-sm font-medium">{vehicle.location}</span>
+                <span className="text-sm font-medium">{vehicle.location ?? "—"}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">{t("inventory.emirate")}</span>
                 <span className="inline-flex items-center gap-1 text-sm font-medium">
                   <MapPin className="size-3.5 text-muted-foreground" />
-                  {t(`inventory.emirates.${vehicle.emirate}`)}
+                  {emirateLabel(t, vehicle.emirate)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">{t("inventory.sourceType")}</span>
                 <span className="inline-flex items-center gap-1 text-sm font-medium">
                   <SourceIcon className="size-3.5 text-muted-foreground" />
-                  {t(`inventory.sourceTypes.${vehicle.sourceType}`)}
+                  {sourceTypeLabel}
                 </span>
               </div>
               <div className="flex items-center justify-between">

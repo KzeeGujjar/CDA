@@ -16,7 +16,7 @@ import { ErrorState } from "@/components/shared/error-state";
 import { EmptyState } from "@/components/shared/empty-state";
 import { LoadingState } from "@/components/shared/loading-state";
 import { vehicleStatusOrder } from "@/components/vehicles/vehicle-status";
-import { getVehiclesPaginated } from "@/services/vehicles";
+import { getVehiclesPaginated } from "@/services/vehicleService";
 import { emirates } from "@/lib/emirates";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { cn } from "@/utils";
@@ -44,7 +44,7 @@ export default function InventoryPage() {
 
   const activeSort = sortOptions.find((s) => s.value === sort) ?? sortOptions[0];
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["vehicles", "paginated", search, status, emirate, sort, page],
     queryFn: () =>
       getVehiclesPaginated({
@@ -187,7 +187,7 @@ export default function InventoryPage() {
           ))}
         </div>
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data || data.items.length === 0 ? (
         <EmptyState icon={LayoutGrid} title={t("common.noResults")} />
       ) : (

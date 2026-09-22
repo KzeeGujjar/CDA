@@ -13,9 +13,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { FormField } from "@/components/forms/form-field";
-import { getCustomers } from "@/services/customers";
-import { getVehicles } from "@/services/vehicles";
-import { createDeal } from "@/services/deals";
+import { getCustomers } from "@/services/customerService";
+import { getVehicles } from "@/services/vehicleService";
+import { createDeal } from "@/services/dealService";
 import { formatMoney } from "@/components/shared/currency";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
@@ -29,8 +29,16 @@ export default function NewDealPage() {
   const [vehicleId, setVehicleId] = useState<string>(() => searchParams.get("vehicleId") ?? "");
   const [notes, setNotes] = useState("");
 
-  const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers() });
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles", "available"], queryFn: () => getVehicles() });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+  });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles", "available"],
+    queryFn: () => getVehicles(),
+  });
 
   const customer = customers.find((c) => c.id === customerId);
   const vehicle = vehicles.find((v) => v.id === vehicleId);
@@ -51,7 +59,11 @@ export default function NewDealPage() {
         status: "draft",
         vatRate,
         lineItems: [
-          { id: "li-1", label: `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`, amount: vehicle.price },
+          {
+            id: "li-1",
+            label: `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`,
+            amount: vehicle.price,
+          },
         ],
         notes,
       });
@@ -65,7 +77,10 @@ export default function NewDealPage() {
 
   const canSubmit = Boolean(customer && vehicle);
 
-  const vehicleOptions = useMemo(() => vehicles.filter((v) => v.status === "available" || v.status === "reserved"), [vehicles]);
+  const vehicleOptions = useMemo(
+    () => vehicles.filter((v) => v.status === "available" || v.status === "reserved"),
+    [vehicles]
+  );
 
   return (
     <>

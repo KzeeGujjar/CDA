@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { FormField } from "@/components/forms/form-field";
-import { getActiveAIProvider, setActiveAIProvider } from "@/lib/ai/ai-service";
+import { getActiveAIProvider, setActiveAIProvider } from "@/services/aiEngineService";
 import { aiProviders } from "@/types/ai";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { AIProvider } from "@/types/ai";
@@ -45,13 +45,14 @@ export function AiSettingsSection() {
           <div key={key}>
             <div className="flex items-center justify-between gap-4">
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium text-foreground">{t(`settings.aiSettings.toggles.${key}.label`)}</span>
-                <span className="text-xs text-muted-foreground">{t(`settings.aiSettings.toggles.${key}.description`)}</span>
+                <span className="text-sm font-medium text-foreground">
+                  {t(`settings.aiSettings.toggles.${key}.label`)}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {t(`settings.aiSettings.toggles.${key}.description`)}
+                </span>
               </div>
-              <Switch
-                checked={toggles[key]}
-                onCheckedChange={(v) => setToggles((prev) => ({ ...prev, [key]: v }))}
-              />
+              <Switch checked={toggles[key]} onCheckedChange={(v) => setToggles((prev) => ({ ...prev, [key]: v }))} />
             </div>
             {i < toggleKeys.length - 1 && <Separator className="mt-5" />}
           </div>

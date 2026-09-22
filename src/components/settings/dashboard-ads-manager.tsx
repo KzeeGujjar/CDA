@@ -35,10 +35,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import { FormField } from "@/components/forms/form-field";
 import { EmptyState } from "@/components/shared/empty-state";
-import { createDashboardAd, deleteDashboardAd, getDashboardAds, updateDashboardAd } from "@/services/dashboard-ads";
+import { InlineError } from "@/components/shared/inline-state";
+import {
+  createDashboardAd,
+  deleteDashboardAd,
+  getDashboardAds,
+  updateDashboardAd,
+} from "@/services/dashboardAdService";
 import { dashboardAdSchema, type DashboardAdValues } from "@/lib/validation/dashboard-ad-schema";
 import type { DashboardAd } from "@/types/dashboard-ad";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { applyFormError } from "@/lib/errors/form";
+import { notifyError } from "@/lib/errors/notify";
 
 const emptyValues: DashboardAdValues = {
   title: "",
@@ -63,18 +71,31 @@ function AdFormDialog({
   const {
     register,
     handleSubmit,
+    setError,
+    getValues,
     control,
     reset,
     formState: { errors },
   } = useForm<DashboardAdValues>({
     resolver: zodResolver(dashboardAdSchema),
     values: ad
-      ? { title: ad.title, description: ad.description, ctaLabel: ad.ctaLabel, ctaUrl: ad.ctaUrl, badge: ad.badge ?? "", active: ad.active }
+      ? {
+          title: ad.title,
+          description: ad.description,
+          ctaLabel: ad.ctaLabel,
+          ctaUrl: ad.ctaUrl,
+          badge: ad.badge ?? "",
+          active: ad.active,
+        }
       : emptyValues,
   });
 
   const mutation = useMutation({
     mutationFn: (values: DashboardAdValues) => (ad ? updateDashboardAd(ad.id, values) : createDashboardAd(values)),
+    // Server validation errors land next to their fields; anything else is reported by a notification.
+    onError: (error) => {
+      if (!applyFormError(error, { getValues, setError })) notifyError(error);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dashboard-ads"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard-ads-active"] });
@@ -97,18 +118,23 @@ function AdFormDialog({
           <DialogTitle>{ad ? t("settings.dashboardAds.editAd") : t("settings.dashboardAds.addAd")}</DialogTitle>
           <DialogDescription>{t("settings.dashboardAds.formHint")}</DialogDescription>
         </DialogHeader>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={handleSubmit((values) => mutation.mutate(values))}
-        >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit((values) => mutation.mutate(values))}>
           <FormField label={t("settings.dashboardAds.fieldTitle")} htmlFor="ad-title" error={errors.title?.message}>
             <Input id="ad-title" {...register("title")} />
           </FormField>
-          <FormField label={t("settings.dashboardAds.fieldDescription")} htmlFor="ad-description" error={errors.description?.message}>
+          <FormField
+            label={t("settings.dashboardAds.fieldDescription")}
+            htmlFor="ad-description"
+            error={errors.description?.message}
+          >
             <Textarea id="ad-description" rows={2} {...register("description")} />
           </FormField>
           <div className="grid grid-cols-2 gap-3">
-            <FormField label={t("settings.dashboardAds.fieldCtaLabel")} htmlFor="ad-cta-label" error={errors.ctaLabel?.message}>
+            <FormField
+              label={t("settings.dashboardAds.fieldCtaLabel")}
+              htmlFor="ad-cta-label"
+              error={errors.ctaLabel?.message}
+            >
               <Input id="ad-cta-label" {...register("ctaLabel")} />
             </FormField>
             <FormField label={t("settings.dashboardAds.fieldBadge")} htmlFor="ad-badge">
@@ -143,7 +169,13 @@ export function DashboardAdsManager() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAd, setEditingAd] = useState<DashboardAd | undefined>(undefined);
 
-  const { data: ads, isLoading } = useQuery({ queryKey: ["dashboard-ads"], queryFn: getDashboardAds });
+  const {
+    data: ads,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["dashboard-ads"], queryFn: getDashboardAds });
 
   const toggleMutation = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) => updateDashboardAd(id, { active }),
@@ -188,8 +220,14 @@ export function DashboardAdsManager() {
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
           </div>
+        ) : isError ? (
+          <InlineError error={error} onRetry={() => refetch()} />
         ) : !ads || ads.length === 0 ? (
-          <EmptyState icon={Megaphone} title={t("settings.dashboardAds.empty")} description={t("settings.dashboardAds.emptyDescription")} />
+          <EmptyState
+            icon={Megaphone}
+            title={t("settings.dashboardAds.empty")}
+            description={t("settings.dashboardAds.emptyDescription")}
+          />
         ) : (
           <Table>
             <TableHeader>
@@ -238,14 +276,21 @@ export function DashboardAdsManager() {
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon-sm" className="text-destructive" aria-label={t("common.delete")}>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-destructive"
+                            aria-label={t("common.delete")}
+                          >
                             <Trash2 className="size-3.5" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>{t("settings.dashboardAds.confirmDeleteTitle")}</AlertDialogTitle>
-                            <AlertDialogDescription>{t("settings.dashboardAds.confirmDeleteDescription")}</AlertDialogDescription>
+                            <AlertDialogDescription>
+                              {t("settings.dashboardAds.confirmDeleteDescription")}
+                            </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>

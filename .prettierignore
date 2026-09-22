@@ -5,3 +5,8 @@ build
 coverage
 *.tsbuildinfo
 next-env.d.ts
+src/generated
+prisma/migrations
+
+# Demo seed data: one record per line so the tables stay readable (see prisma/demo/data.ts)
+prisma/demo/data.ts

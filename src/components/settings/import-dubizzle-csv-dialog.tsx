@@ -18,10 +18,16 @@ import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/components/shared/currency";
 import { parseCsv } from "@/lib/csv";
 import { parseDubizzleRow, csvRowToVehicleInput, type CsvImportRow } from "@/lib/dubizzle-csv-import";
-import { createVehicle } from "@/services/vehicles";
+import { createVehicle } from "@/services/vehicleService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
-export function ImportDubizzleCsvDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function ImportDubizzleCsvDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -62,7 +68,8 @@ export function ImportDubizzleCsvDialog({ open, onOpenChange }: { open: boolean;
     .filter(({ row, index }) => row.valid && !excludedIndices.has(index));
 
   const importMutation = useMutation({
-    mutationFn: () => Promise.all(selectedRows.map(({ row, index }) => createVehicle(csvRowToVehicleInput(row, index)))),
+    mutationFn: () =>
+      Promise.all(selectedRows.map(({ row, index }) => createVehicle(csvRowToVehicleInput(row, index)))),
     onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
       toast.success(`${created.length} ${t("settings.marketplaceConnections.importedToast")}`);
@@ -95,7 +102,9 @@ export function ImportDubizzleCsvDialog({ open, onOpenChange }: { open: boolean;
             className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border p-8 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
           >
             <Upload className="size-6 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground">{t("settings.marketplaceConnections.csvChooseFile")}</span>
+            <span className="text-sm font-medium text-foreground">
+              {t("settings.marketplaceConnections.csvChooseFile")}
+            </span>
             <span className="text-xs text-muted-foreground">{t("settings.marketplaceConnections.csvHint")}</span>
           </button>
         ) : (
@@ -124,7 +133,9 @@ export function ImportDubizzleCsvDialog({ open, onOpenChange }: { open: boolean;
                 <label
                   key={index}
                   className={`flex items-center gap-3 rounded-lg border p-2.5 transition-colors ${
-                    row.valid ? "cursor-pointer border-border hover:bg-muted/50" : "border-destructive/20 bg-destructive/5 opacity-70"
+                    row.valid
+                      ? "cursor-pointer border-border hover:bg-muted/50"
+                      : "border-destructive/20 bg-destructive/5 opacity-70"
                   }`}
                 >
                   <Checkbox
@@ -168,7 +179,10 @@ export function ImportDubizzleCsvDialog({ open, onOpenChange }: { open: boolean;
 
         {rows && (
           <DialogFooter>
-            <Button disabled={selectedRows.length === 0 || importMutation.isPending} onClick={() => importMutation.mutate()}>
+            <Button
+              disabled={selectedRows.length === 0 || importMutation.isPending}
+              onClick={() => importMutation.mutate()}
+            >
               {importMutation.isPending
                 ? t("settings.marketplaceConnections.importing")
                 : `${t("settings.marketplaceConnections.addToInventory")} (${selectedRows.length})`}

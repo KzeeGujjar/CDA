@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/shared/error-state";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getLeads, updateLeadStage } from "@/services/leads";
+import { getLeads, updateLeadStage } from "@/services/leadService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { LeadStage } from "@/types/lead";
 
@@ -24,6 +24,7 @@ export default function LeadsPage() {
     data: leads,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["leads", search], queryFn: () => getLeads({ search: search || undefined }) });
 
@@ -60,7 +61,7 @@ export default function LeadsPage() {
       />
 
       {isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : !isLoading && (leads ?? []).length === 0 ? (
         <EmptyState icon={Users} title={t("common.noResults")} />
       ) : (

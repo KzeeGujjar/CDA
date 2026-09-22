@@ -12,8 +12,12 @@ import { MarketingFunctionGrid } from "@/components/marketing/marketing-function
 import { TranslateAdvertisementCard } from "@/components/marketing/translate-advertisement-card";
 import { GeneratedContentList } from "@/components/marketing/generated-content-list";
 import { CampaignBuilderCard } from "@/components/marketing/campaign-builder-card";
-import { getVehicles } from "@/services/vehicles";
-import { generateMarketingContent, translateAdvertisement, type TranslationTargetLanguage } from "@/lib/marketing-generator";
+import { getVehicles } from "@/services/vehicleService";
+import {
+  generateMarketingContent,
+  translateAdvertisement,
+  type TranslationTargetLanguage,
+} from "@/lib/marketing-generator";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { GeneratedMarketingContent, MarketingContentType, MarketingGeneratedType } from "@/types/marketing";
 
@@ -26,7 +30,11 @@ export default function AiMarketingPage() {
   const [selectedContentIds, setSelectedContentIds] = useState<Set<string>>(new Set());
   const [campaignName, setCampaignName] = useState("");
 
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles() });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+  });
   const vehicle = vehicles.find((v) => v.id === vehicleId);
 
   function toggleSelect(id: string) {

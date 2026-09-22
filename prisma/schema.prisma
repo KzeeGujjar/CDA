@@ -1,0 +1,1250 @@
+// CDA identity, access-control and audit schema.
+//
+// Conventions
+//  - Tables/columns are snake_case in Postgres (@@map/@map); models/fields are camelCase in TypeScript.
+//  - Every tenant-owned table carries a NOT NULL organization_id. Tenant integrity is enforced by the
+//    database, not just the app: child rows reference their parent through a composite key
+//    (parent_id, organization_id), so a row can never point at another tenant's parent.
+//  - Row-Level Security is layered on in migration `rls_and_constraints` (Prisma cannot express it).
+//  - The "platform" organization (type PLATFORM) owns the platform staff and the Super Admin role, so
+//    organization_id is never NULL anywhere.
+//  - ids are ULIDs (text). Timestamps are timestamptz, stored in UTC.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────── Enums ───────────────────────────────
+
+enum OrganizationType {
+  PLATFORM   @map("platform")
+  DEALERSHIP @map("dealership")
+  TRADER     @map("trader")
+  SALES_TEAM @map("sales_team")
+  INDIVIDUAL @map("individual")
+
+  @@map("organization_type")
+}
+
+enum OrganizationStatus {
+  ACTIVE    @map("active")
+  SUSPENDED @map("suspended")
+  CLOSED    @map("closed")
+
+  @@map("organization_status")
+}
+
+// UAE emirates (matches the frontend `Emirate` union). Nullable on Organization/Branch, so a
+// non-UAE tenant leaves it empty and uses `city`/`country` instead.
+enum Emirate {
+  DUBAI          @map("dubai")
+  ABU_DHABI      @map("abu_dhabi")
+  SHARJAH        @map("sharjah")
+  AJMAN          @map("ajman")
+  RAS_AL_KHAIMAH @map("ras_al_khaimah")
+  FUJAIRAH       @map("fujairah")
+  UMM_AL_QUWAIN  @map("umm_al_quwain")
+
+  @@map("emirate")
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION @map("pending_verification")
+  INVITED              @map("invited")
+  ACTIVE               @map("active")
+  SUSPENDED            @map("suspended")
+
+  @@map("user_status")
+}
+
+enum PermissionAction {
+  READ   @map("read")
+  CREATE @map("create")
+  UPDATE @map("update")
+  DELETE @map("delete")
+  EXPORT @map("export")
+  MANAGE @map("manage")
+
+  @@map("permission_action")
+}
+
+// How far a granted permission reaches. Ordered narrowest → widest.
+enum PermissionScope {
+  OWN          @map("own")
+  BRANCH       @map("branch")
+  ORGANIZATION @map("organization")
+
+  @@map("permission_scope")
+}
+
+enum AuthTokenPurpose {
+  EMAIL_VERIFICATION @map("email_verification")
+  PASSWORD_RESET     @map("password_reset")
+
+  @@map("auth_token_purpose")
+}
+
+enum InvitationStatus {
+  PENDING  @map("pending")
+  ACCEPTED @map("accepted")
+  REVOKED  @map("revoked")
+  EXPIRED  @map("expired")
+
+  @@map("invitation_status")
+}
+
+enum AuditOutcome {
+  SUCCESS @map("success")
+  DENIED  @map("denied")
+  FAILURE @map("failure")
+
+  @@map("audit_outcome")
+}
+
+enum VehicleStatus {
+  AVAILABLE        @map("available")
+  RESERVED         @map("reserved")
+  SOLD             @map("sold")
+  PURCHASED        @map("purchased") // bought, not yet received/listed
+  IN_TRANSIT       @map("in_transit")
+  UNDER_INSPECTION @map("under_inspection")
+  UNDER_REPAIR     @map("under_repair")
+  ARCHIVED         @map("archived")
+
+  @@map("vehicle_status")
+}
+
+enum VehicleCondition {
+  NEW                 @map("new")
+  USED                @map("used")
+  CERTIFIED_PRE_OWNED @map("certified_pre_owned")
+
+  @@map("vehicle_condition")
+}
+
+// The specification a car was built for. `uae` is a car specified for the UAE market; `imported` is any other
+// specification (US, Japan, Europe, ...). Nullable on vehicles: "not recorded".
+enum VehicleImportSpec {
+  GCC      @map("gcc")
+  UAE      @map("uae")
+  IMPORTED @map("imported")
+
+  @@map("vehicle_import_spec")
+}
+
+// Where the dealership got the car (or, for `export`, that it is being sold for export).
+enum VehicleSourceType {
+  EXPORT  @map("export")
+  IMPORT  @map("import")
+  AUCTION @map("auction")
+  DEALER  @map("dealer")
+  PRIVATE @map("private")
+
+  @@map("vehicle_source_type")
+}
+
+enum LeadStage {
+  NEW         @map("new")
+  CONTACTED   @map("contacted")
+  QUALIFIED   @map("qualified")
+  VIEWING     @map("viewing")
+  NEGOTIATION @map("negotiation")
+  WON         @map("won")
+  LOST        @map("lost")
+
+  @@map("lead_stage")
+}
+
+enum LeadSource {
+  WEBSITE      @map("website")
+  WALK_IN      @map("walk_in")
+  REFERRAL     @map("referral")
+  SOCIAL_MEDIA @map("social_media")
+  MARKETPLACE  @map("marketplace")
+  PHONE        @map("phone")
+
+  @@map("lead_source")
+}
+
+enum DealStatus {
+  DRAFT                 @map("draft")
+  SENT                  @map("sent")
+  ACCEPTED              @map("accepted")
+  CONVERTED_TO_CONTRACT @map("converted_to_contract")
+  COMPLETED             @map("completed") // the vehicle was sold (terminal, immutable)
+  DECLINED              @map("declined")
+  CANCELLED             @map("cancelled")
+
+  @@map("deal_status")
+}
+
+enum FileKind {
+  VEHICLE_PHOTO     @map("vehicle_photo")
+  VEHICLE_DOCUMENT  @map("vehicle_document")
+  CUSTOMER_DOCUMENT @map("customer_document")
+  DEAL_DOCUMENT     @map("deal_document")
+
+  @@map("file_kind")
+}
+
+// PENDING: an upload URL was issued, the object may not exist yet. ACTIVE: verified and usable.
+// DELETED: tombstone kept for the audit trail (the object itself is removed from storage).
+enum FileStatus {
+  PENDING @map("pending")
+  ACTIVE  @map("active")
+  DELETED @map("deleted")
+
+  @@map("file_status")
+}
+
+enum AiProviderId {
+  ANTHROPIC @map("anthropic")
+  OPENAI    @map("openai")
+  GOOGLE    @map("google")
+
+  @@map("ai_provider")
+}
+
+enum AiConversationStatus {
+  ACTIVE   @map("active")
+  ARCHIVED @map("archived")
+
+  @@map("ai_conversation_status")
+}
+
+enum AiMessageRole {
+  USER      @map("user")
+  ASSISTANT @map("assistant")
+  SYSTEM    @map("system")
+  TOOL      @map("tool")
+
+  @@map("ai_message_role")
+}
+
+// COMPLETE: normal. ERROR: the provider failed (the row keeps the error code, never the provider's raw text).
+enum AiMessageStatus {
+  COMPLETE @map("complete")
+  ERROR    @map("error")
+
+  @@map("ai_message_status")
+}
+
+// SUCCESS / ERROR: a provider call was made. BLOCKED: refused before calling any provider (disabled, budget, rate limit).
+enum AiUsageStatus {
+  SUCCESS @map("success")
+  ERROR   @map("error")
+  BLOCKED @map("blocked")
+
+  @@map("ai_usage_status")
+}
+
+// Matches the frontend AiActionType.
+enum AiActionType {
+  VALUATION            @map("valuation")
+  LEAD_SCORING         @map("lead_scoring")
+  MARKETING_CONTENT    @map("marketing_content")
+  DOCUMENT_GENERATION  @map("document_generation")
+  DOCUMENT_TRANSLATION @map("document_translation")
+  DOCUMENT_SUMMARY     @map("document_summary")
+  PRICE_ANALYSIS       @map("price_analysis")
+  CHAT_RESPONSE        @map("chat_response")
+  FOLLOW_UP_SUGGESTION @map("follow_up_suggestion")
+
+  @@map("ai_action_type")
+}
+
+enum AiActivityStatus {
+  COMPLETED    @map("completed")
+  IN_PROGRESS  @map("in_progress")
+  NEEDS_REVIEW @map("needs_review")
+  FAILED       @map("failed")
+
+  @@map("ai_activity_status")
+}
+
+enum TaskCategory {
+  FOLLOW_UP   @map("follow_up")
+  INSPECTION  @map("inspection")
+  PHOTOGRAPHY @map("photography")
+  DOCUMENTS   @map("documents")
+  CALL        @map("call")
+  QUOTATION   @map("quotation")
+  SERVICE     @map("service")
+  DELIVERY    @map("delivery")
+
+  @@map("task_category")
+}
+
+enum TaskStatus {
+  OPEN      @map("open")
+  COMPLETED @map("completed")
+
+  @@map("task_status")
+}
+
+enum TaskPriority {
+  LOW    @map("low")
+  MEDIUM @map("medium")
+  HIGH   @map("high")
+
+  @@map("task_priority")
+}
+
+enum PartnerRequestKind {
+  BANK_EVALUATION   @map("bank_evaluation")
+  COMPANY_QUOTATION @map("company_quotation")
+
+  @@map("partner_request_kind")
+}
+
+enum PartnerRequestStatus {
+  REQUESTED @map("requested")
+  IN_REVIEW @map("in_review")
+  COMPLETED @map("completed")
+  REJECTED  @map("rejected")
+
+  @@map("partner_request_status")
+}
+
+enum VehicleSourceKind {
+  INVENTORY      @map("inventory")
+  CUSTOMER_OWNED @map("customer_owned")
+
+  @@map("vehicle_source_kind")
+}
+
+// AWAITING_CONFIRMATION: the AI proposed a change and a person has not yet approved it. Nothing has happened.
+enum AiToolCallStatus {
+  OK                    @map("ok")
+  ERROR                 @map("error")
+  DENIED                @map("denied")
+  AWAITING_CONFIRMATION @map("awaiting_confirmation")
+  EXECUTED              @map("executed")
+  REJECTED              @map("rejected")
+  EXPIRED               @map("expired")
+
+  @@map("ai_tool_call_status")
+}
+
+// Matches the frontend NotificationKind.
+enum NotificationKind {
+  LEAD       @map("lead")
+  PRICE      @map("price")
+  AI         @map("ai")
+  DEAL       @map("deal")
+  INSPECTION @map("inspection")
+  DOCUMENT   @map("document")
+  INVENTORY  @map("inventory")
+  SYSTEM     @map("system")
+
+  @@map("notification_kind")
+}
+
+// ─────────────────────── Currencies (global reference data) ───────────────────────
+// Not tenant data: the same rows for every organization, so no organization_id and no RLS. The runtime role
+// can only READ them (see create-app-role.sql); they are maintained by migrations / the platform.
+//
+// Adding a currency later is a data change, not a code change: insert a row into `currencies` (is_enabled
+// = true) and the exchange rates that connect it. The one limit: money columns hold 2 decimals, so a
+// currency with 3 (KWD, BHD, OMR) needs a column change first; the catalog refuses minor_units > 2 (CHECK).
+
+model Currency {
+  code       String   @id @db.Char(3) // ISO 4217
+  name       String
+  symbol     String
+  /// decimal places of the smallest unit: 2 for AED / USD, 0 for JPY
+  minorUnits Int      @default(2) @map("minor_units") @db.SmallInt
+  /// only enabled currencies can be chosen for an organization or converted to / from
+  isEnabled  Boolean  @default(false) @map("is_enabled")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organizations   Organization[]
+  vehicles        Vehicle[]        @relation("VehiclePurchaseCurrency")
+  partnerRequests PartnerRequest[] @relation("PartnerRequestFeeCurrency")
+  ratesAsBase     ExchangeRate[]   @relation("RateBase")
+  ratesAsQuote    ExchangeRate[]   @relation("RateQuote")
+
+  @@map("currencies")
+}
+
+// 1 unit of base_currency = `rate` units of quote_currency, from effective_from onwards. History is kept
+// (a new rate is a new row), so an old conversion can be explained. Only one direction needs to be stored;
+// the inverse is derived. AED is pegged to USD at 3.6725 (UAE Central Bank, since 1997).
+model ExchangeRate {
+  baseCurrency  String   @map("base_currency") @db.Char(3)
+  quoteCurrency String   @map("quote_currency") @db.Char(3)
+  effectiveFrom DateTime @map("effective_from") @db.Timestamptz(3)
+  rate          Decimal  @db.Decimal(20, 10)
+  source        String
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  base  Currency @relation("RateBase", fields: [baseCurrency], references: [code], onDelete: Restrict)
+  quote Currency @relation("RateQuote", fields: [quoteCurrency], references: [code], onDelete: Restrict)
+
+  @@id([baseCurrency, quoteCurrency, effectiveFrom])
+  @@map("exchange_rates")
+}
+
+// ──────────────────────────── Organization ────────────────────────────
+
+model Organization {
+  id         String             @id @default(ulid())
+  type       OrganizationType   @default(DEALERSHIP)
+  status     OrganizationStatus @default(ACTIVE)
+  name       String
+  legalName  String?            @map("legal_name")
+  email      String
+  phone      String?
+  address    String?
+  city       String?
+  emirate    Emirate?
+  country    String             @default("AE") @db.Char(2) // ISO 3166-1 alpha-2
+  currency   String             @default("AED") @db.Char(3) // ISO 4217 base currency (must be in the currencies catalog)
+  timezone   String             @default("Asia/Dubai") // IANA zone
+  locale     String             @default("en") // default UI/content language
+  dataRegion String             @default("me-uae") @map("data_region") // regional cell hosting this tenant
+  taxNumber  String?            @map("tax_number") // e.g. UAE TRN
+  logo       String? // storage key or URL
+  // Preferences only (notification defaults, tax mode, AI autonomy…). Validated by a zod schema in
+  // the app. Anything relational or queryable gets a real column/table instead.
+  settings   Json               @default("{}") @db.JsonB
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt  DateTime?          @map("deleted_at") @db.Timestamptz(3)
+
+  branches            Branch[]
+  users               User[]
+  userBranches        UserBranch[]
+  roles               Role[]
+  rolePermissions     RolePermission[]
+  sessions            Session[]
+  authTokens          AuthToken[]
+  invitations         Invitation[]
+  apiKeys             ApiKey[]
+  auditLogs           AuditLog[]
+  customers           Customer[]
+  vehicles            Vehicle[]
+  vehicleStatusEvents VehicleStatusEvent[]
+  leads               Lead[]
+  deals               Deal[]
+  files               StoredFile[]
+
+  aiSettings      AiSettings?
+  aiConversations AiConversation[]
+  aiMessages      AiMessage[]
+  aiUsage         AiUsage[]
+  aiActivities    AiActivity[]
+
+  tasks           Task[]
+  partnerRequests PartnerRequest[]
+  aiToolCalls     AiToolCall[]
+  notifications   Notification[]
+
+  baseCurrency Currency @relation(fields: [currency], references: [code], onDelete: Restrict)
+
+  @@index([type, status])
+  @@map("organizations")
+}
+
+model Branch {
+  id             String   @id @default(ulid())
+  organizationId String   @map("organization_id")
+  name           String
+  code           String?
+  phone          String?
+  address        String?
+  city           String?
+  emirate        Emirate?
+  isPrimary      Boolean  @default(false) @map("is_primary")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  userBranches UserBranch[]
+  vehicles     Vehicle[]
+  leads        Lead[]
+  deals        Deal[]
+
+  @@unique([id, organizationId])
+  @@unique([organizationId, name])
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+  @@map("branches")
+}
+
+// ─────────────────────────── Identity & access ────────────────────────
+
+model User {
+  id                String     @id @default(ulid())
+  organizationId    String     @map("organization_id")
+  roleId            String     @map("role_id")
+  name              String
+  email             String     @unique // stored lowercase (CHECK in migration)
+  phone             String?
+  passwordHash      String?    @map("password_hash") // argon2id; null until an invitee sets one
+  status            UserStatus @default(PENDING_VERIFICATION)
+  avatar            String?
+  locale            String? // overrides the organization default
+  emailVerifiedAt   DateTime?  @map("email_verified_at") @db.Timestamptz(3)
+  lastLoginAt       DateTime?  @map("last_login_at") @db.Timestamptz(3)
+  passwordChangedAt DateTime?  @map("password_changed_at") @db.Timestamptz(3)
+  failedLoginCount  Int        @default(0) @map("failed_login_count")
+  lockedUntil       DateTime?  @map("locked_until") @db.Timestamptz(3)
+  createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt         DateTime?  @map("deleted_at") @db.Timestamptz(3)
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  // Composite FK: the role must belong to the same organization as the user.
+  role            Role         @relation(fields: [roleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  branches        UserBranch[]
+  sessions        Session[]
+  authTokens      AuthToken[]
+  invitationsSent Invitation[]
+  apiKeys         ApiKey[]
+  assignedLeads   Lead[]
+  deals           Deal[]
+  uploadedFiles   StoredFile[]
+
+  aiConversations      AiConversation[]
+  aiUsage              AiUsage[]
+  aiActivities         AiActivity[]     @relation("AiActivityUser")
+  aiReviewedActivities AiActivity[]     @relation("AiActivityReviewer")
+
+  assignedTasks   Task[]           @relation("TaskAssignee")
+  createdTasks    Task[]           @relation("TaskCreator")
+  partnerRequests PartnerRequest[]
+  aiToolCalls     AiToolCall[]
+  notifications   Notification[]
+
+  @@unique([id, organizationId])
+  @@index([organizationId, status])
+  @@index([organizationId, roleId])
+  @@map("users")
+}
+
+// Which branches a user works in (drives OWN/BRANCH permission scope). A user may span several.
+model UserBranch {
+  userId         String  @map("user_id")
+  branchId       String  @map("branch_id")
+  organizationId String  @map("organization_id")
+  isPrimary      Boolean @default(false) @map("is_primary")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Cascade)
+  branch       Branch       @relation(fields: [branchId, organizationId], references: [id, organizationId], onDelete: Cascade)
+
+  @@id([userId, branchId])
+  @@index([branchId])
+  @@index([organizationId])
+  @@map("user_branches")
+}
+
+// Roles are per organization. The 7 tenant built-in roles are created from code templates
+// (src/server/auth/role-templates.ts) when an organization is created, so each tenant edits its own
+// permission matrix and may add custom roles. `key` of a built-in role equals the frontend RoleKey;
+// the platform organization holds the Super Admin role.
+model Role {
+  id             String   @id @default(ulid())
+  organizationId String   @map("organization_id")
+  key            String // superAdmin | dealerOwner | manager | salesperson | buyer | accountant | marketingManager | viewer | custom
+  name           String
+  description    String?
+  isSystem       Boolean  @default(false) @map("is_system") // built-in: key/name locked, cannot be deleted
+  rank           Int      @default(0) // higher = more privileged; users cannot grant/assign a rank above their own
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  users        User[]
+  permissions  RolePermission[]
+  invitations  Invitation[]
+
+  @@unique([id, organizationId])
+  @@unique([organizationId, key])
+  @@map("roles")
+}
+
+// Global permission catalog: one row per (resource, action). Seeded from code
+// (src/server/auth/permission-catalog.ts); never edited per tenant.
+model Permission {
+  id          String           @id @default(ulid())
+  key         String           @unique // "vehicles:read"
+  resource    String // "vehicles"
+  action      PermissionAction
+  description String?
+
+  rolePermissions RolePermission[]
+
+  @@unique([resource, action])
+  @@map("permissions")
+}
+
+// A row means "this role is granted this permission" (deny by default). `scope` limits reach.
+model RolePermission {
+  roleId         String          @map("role_id")
+  permissionId   String          @map("permission_id")
+  organizationId String          @map("organization_id")
+  scope          PermissionScope @default(ORGANIZATION)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  role         Role         @relation(fields: [roleId, organizationId], references: [id, organizationId], onDelete: Cascade)
+  permission   Permission   @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  @@id([roleId, permissionId])
+  @@index([organizationId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model Session {
+  id             String    @id @default(ulid())
+  organizationId String    @map("organization_id")
+  userId         String    @map("user_id")
+  tokenHash      String    @unique @map("token_hash") // SHA-256 of the opaque cookie value
+  userAgent      String?   @map("user_agent")
+  ipAddress      String?   @map("ip_address") @db.Inet
+  device         String? // human label shown in Settings → Security
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  lastSeenAt     DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt      DateTime? @map("revoked_at") @db.Timestamptz(3)
+  revokedReason  String?   @map("revoked_reason")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId, expiresAt])
+  @@map("sessions")
+}
+
+// Single-use, expiring tokens for email verification and password reset (hash stored, never the token).
+model AuthToken {
+  id             String           @id @default(ulid())
+  organizationId String           @map("organization_id")
+  userId         String           @map("user_id")
+  purpose        AuthTokenPurpose
+  tokenHash      String           @unique @map("token_hash")
+  expiresAt      DateTime         @map("expires_at") @db.Timestamptz(3)
+  consumedAt     DateTime?        @map("consumed_at") @db.Timestamptz(3)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Cascade)
+
+  @@index([userId, purpose])
+  @@index([expiresAt])
+  @@map("auth_tokens")
+}
+
+// Staff invitation. Accepting creates the User (status ACTIVE) with `roleId` in `organizationId`.
+model Invitation {
+  id             String           @id @default(ulid())
+  organizationId String           @map("organization_id")
+  email          String
+  roleId         String           @map("role_id")
+  invitedById    String           @map("invited_by_id")
+  tokenHash      String           @unique @map("token_hash")
+  status         InvitationStatus @default(PENDING)
+  expiresAt      DateTime         @map("expires_at") @db.Timestamptz(3)
+  acceptedAt     DateTime?        @map("accepted_at") @db.Timestamptz(3)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  role         Role         @relation(fields: [roleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  invitedBy    User         @relation(fields: [invitedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@index([organizationId, status])
+  @@index([email])
+  @@map("invitations")
+}
+
+// Machine credentials. Only a hash is stored; the raw key is shown once at creation.
+model ApiKey {
+  id             String    @id @default(ulid())
+  organizationId String    @map("organization_id")
+  createdById    String    @map("created_by_id")
+  name           String
+  prefix         String // first characters of the key, for display/lookup
+  keyHash        String    @unique @map("key_hash")
+  scopes         String[] // permission keys, e.g. "vehicles:read"
+  lastUsedAt     DateTime? @map("last_used_at") @db.Timestamptz(3)
+  expiresAt      DateTime? @map("expires_at") @db.Timestamptz(3)
+  revokedAt      DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy    User         @relation(fields: [createdById, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@index([organizationId])
+  @@map("api_keys")
+}
+
+// ────────────────────────────── Audit ──────────────────────────────
+
+// Append-only. Deliberately denormalised: the actor is a snapshot with no foreign key so the record
+// survives user deletion, and UPDATE/DELETE are blocked by a trigger (see rls_and_constraints).
+model AuditLog {
+  id             String       @id @default(ulid())
+  organizationId String       @map("organization_id")
+  actorUserId    String?      @map("actor_user_id")
+  actorName      String?      @map("actor_name")
+  actorRole      String?      @map("actor_role")
+  action         String // "auth.login", "role.permissions.updated", "vehicle.deleted"…
+  entityType     String?      @map("entity_type")
+  entityId       String?      @map("entity_id")
+  outcome        AuditOutcome @default(SUCCESS)
+  ipAddress      String?      @map("ip_address") @db.Inet
+  userAgent      String?      @map("user_agent")
+  requestId      String?      @map("request_id")
+  metadata       Json         @default("{}") @db.JsonB // redacted before/after, never secrets
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([organizationId, entityType, entityId])
+  @@index([organizationId, actorUserId, createdAt(sort: Desc)])
+  @@index([organizationId, action])
+  @@map("audit_logs")
+}
+
+// ─────────────────────────── Customers, inventory, sales ───────────────────────────
+// Foundation tables the dashboard reads. The full Customers / Vehicles / Deals modules (specs, images,
+// documents, line items, contracts) extend them with later migrations.
+//  - Money is stored in the organization base currency (organizations.currency), NUMERIC(14,2).
+//  - Every foreign key to another tenant table is composite (id, organization_id), like the identity tables.
+//  - Rules the dashboard numbers depend on live in database triggers (migration core_rls_and_triggers):
+//    status history, "a vehicle becomes sold only by completing a deal", and the cost-of-sale snapshot.
+
+model Customer {
+  id             String    @id @default(ulid())
+  organizationId String    @map("organization_id")
+  name           String
+  email          String?
+  phone          String?
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt      DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  leads        Lead[]
+  deals        Deal[]
+  files        StoredFile[]
+
+  aiConversations AiConversation[]
+  aiActivities    AiActivity[]
+
+  tasks           Task[]
+  partnerRequests PartnerRequest[]
+
+  @@unique([id, organizationId])
+  @@index([organizationId, name])
+  @@map("customers")
+}
+
+model Vehicle {
+  id                     String             @id @default(ulid())
+  organizationId         String             @map("organization_id")
+  branchId               String?            @map("branch_id")
+  stockNumber            String             @map("stock_number")
+  vin                    String?
+  make                   String
+  model                  String
+  trim                   String?
+  year                   Int
+  condition              VehicleCondition   @default(USED)
+  mileageKm              Int?               @map("mileage_km")
+  status                 VehicleStatus      @default(AVAILABLE)
+  listPrice              Decimal            @map("list_price") @db.Decimal(14, 2)
+  expectedSellingPrice   Decimal?           @map("expected_selling_price") @db.Decimal(14, 2)
+  estimatedMarketValue   Decimal?           @map("estimated_market_value") @db.Decimal(14, 2)
+  purchasePrice          Decimal            @default(0) @map("purchase_price") @db.Decimal(14, 2)
+  repairCost             Decimal            @default(0) @map("repair_cost") @db.Decimal(14, 2)
+  transportCost          Decimal            @default(0) @map("transport_cost") @db.Decimal(14, 2)
+  otherCost              Decimal            @default(0) @map("other_cost") @db.Decimal(14, 2)
+  // UAE: which emirate the vehicle is in, what specification it is, and where it came from. All optional
+  // ("not recorded"); a non-UAE dealership simply leaves the emirate empty.
+  emirate                Emirate?
+  importSpec             VehicleImportSpec? @map("import_spec")
+  sourceType             VehicleSourceType? @map("source_type")
+  // The purchase price AS AGREED when it was not in the base currency (an auction or import bought in USD, say).
+  // purchase_price above stays the truth in the base currency; these keep what was entered and the rate that
+  // was applied (base-currency units per 1 unit of purchaseCurrency), so it can be shown and audited later.
+  // All three are set together or not at all (CHECK).
+  purchaseCurrency       String?            @map("purchase_currency") @db.Char(3)
+  purchaseAmountOriginal Decimal?           @map("purchase_amount_original") @db.Decimal(14, 2)
+  purchaseFxRate         Decimal?           @map("purchase_fx_rate") @db.Decimal(20, 10)
+  // Descriptive details the Vehicles screens collect (engine, colours, seats, fuel, accident and service history...;
+  // registration status, plate, expiry). Validated by zod in the API and bounded by CHECK constraints; nothing here is
+  // filtered or joined on. Anything queryable gets a real column instead.
+  spec                   Json               @default("{}") @db.JsonB
+  registration           Json               @default("{}") @db.JsonB
+  notes                  String?
+  featured               Boolean            @default(false)
+  /// Where the vehicle physically is when that is not just a branch (a yard, a workshop). Free text.
+  location               String?
+  acquiredAt             DateTime           @default(now()) @map("acquired_at") @db.Timestamptz(3)
+  createdAt              DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization        Organization         @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  purchaseCurrencyRef Currency?            @relation("VehiclePurchaseCurrency", fields: [purchaseCurrency], references: [code], onDelete: Restrict)
+  // Nullable branch: with MATCH SIMPLE a NULL branch_id skips the composite check; a non-null one must be this tenant.
+  branch              Branch?              @relation(fields: [branchId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  statusEvents        VehicleStatusEvent[]
+  leads               Lead[]
+  deals               Deal[]
+  files               StoredFile[]
+
+  aiConversations AiConversation[]
+  aiActivities    AiActivity[]
+
+  tasks           Task[]
+  partnerRequests PartnerRequest[]
+
+  @@unique([id, organizationId])
+  @@unique([organizationId, stockNumber])
+  @@unique([organizationId, vin])
+  @@index([organizationId, status])
+  @@index([organizationId, branchId])
+  @@index([organizationId, acquiredAt])
+  @@index([organizationId, emirate])
+  @@map("vehicles")
+}
+
+// Append-only history of every status a vehicle has been in. Written ONLY by a database trigger on
+// vehicles, so it cannot drift from the truth. It lets the dashboard answer "how many vehicles were
+// available on <date>?" exactly instead of guessing. seq gives a total order for events in the same instant.
+model VehicleStatusEvent {
+  seq            BigInt         @id @default(autoincrement())
+  organizationId String         @map("organization_id")
+  vehicleId      String         @map("vehicle_id")
+  fromStatus     VehicleStatus? @map("from_status")
+  toStatus       VehicleStatus  @map("to_status")
+  changedAt      DateTime       @map("changed_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  vehicle      Vehicle      @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Cascade)
+
+  @@index([organizationId, vehicleId, changedAt(sort: Desc)])
+  @@index([organizationId, changedAt])
+  @@map("vehicle_status_events")
+}
+
+model Lead {
+  id                  String     @id @default(ulid())
+  organizationId      String     @map("organization_id")
+  customerId          String     @map("customer_id")
+  branchId            String?    @map("branch_id")
+  assignedToId        String?    @map("assigned_to_id")
+  interestedVehicleId String?    @map("interested_vehicle_id")
+  stage               LeadStage  @default(NEW)
+  source              LeadSource @default(WEBSITE)
+  score               Int        @default(0)
+  budget              Decimal?   @db.Decimal(14, 2)
+  lastContactAt       DateTime?  @map("last_contact_at") @db.Timestamptz(3)
+  nextFollowUpAt      DateTime?  @map("next_follow_up_at") @db.Timestamptz(3)
+  createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  customer          Customer     @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  branch            Branch?      @relation(fields: [branchId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  assignedTo        User?        @relation(fields: [assignedToId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  interestedVehicle Vehicle?     @relation(fields: [interestedVehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  aiConversations AiConversation[]
+
+  tasks Task[]
+
+  @@unique([id, organizationId])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, stage])
+  @@index([organizationId, assignedToId])
+  @@index([organizationId, branchId])
+  @@map("leads")
+}
+
+// A sale (or a quotation on its way to one). status = COMPLETED means the vehicle was sold: the
+// database then snapshots cost_of_sale from the vehicle, stamps completed_at, marks the vehicle SOLD
+// and freezes the row. Revenue is salePrice (vehicle price, excluding VAT).
+model Deal {
+  id             String     @id @default(ulid())
+  organizationId String     @map("organization_id")
+  reference      String
+  customerId     String     @map("customer_id")
+  vehicleId      String     @map("vehicle_id")
+  branchId       String?    @map("branch_id")
+  salespersonId  String?    @map("salesperson_id")
+  status         DealStatus @default(DRAFT)
+  salePrice      Decimal    @map("sale_price") @db.Decimal(14, 2)
+  vatAmount      Decimal    @default(0) @map("vat_amount") @db.Decimal(14, 2)
+  costOfSale     Decimal?   @map("cost_of_sale") @db.Decimal(14, 2)
+  completedAt    DateTime?  @map("completed_at") @db.Timestamptz(3)
+  notes          String?
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  customer     Customer     @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle      Vehicle      @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  branch       Branch?      @relation(fields: [branchId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  salesperson  User?        @relation(fields: [salespersonId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  files        StoredFile[]
+
+  aiConversations AiConversation[]
+
+  tasks Task[]
+
+  @@unique([id, organizationId])
+  @@unique([organizationId, reference])
+  @@index([organizationId, status, completedAt])
+  @@index([organizationId, vehicleId])
+  @@index([organizationId, salespersonId])
+  @@index([organizationId, customerId])
+  @@map("deals")
+}
+
+// ─────────────────────────── Files (Supabase Storage) ───────────────────────────
+// One row per stored object. The bytes live in a PRIVATE Supabase Storage bucket; this table is what
+// authorizes access: the API looks the row up (tenant + permission + scope), then issues a short-lived
+// signed URL. Object paths are built by the server from ids, never from a client-supplied name, and
+// always start with the organization id (enforced by a CHECK), so a path can never point into another
+// tenant's folder. Exactly one parent is set, matching the kind (CHECK in core_rls migration).
+model StoredFile {
+  id             String     @id @default(ulid())
+  organizationId String     @map("organization_id")
+  kind           FileKind
+  status         FileStatus @default(PENDING)
+  bucket         String
+  objectPath     String     @map("object_path")
+  vehicleId      String?    @map("vehicle_id")
+  customerId     String?    @map("customer_id")
+  dealId         String?    @map("deal_id")
+  /// e.g. registration, inspection_report, emirates_id, contract, invoice, other (documents only)
+  documentType   String?    @map("document_type")
+  originalName   String     @map("original_name")
+  contentType    String     @map("content_type")
+  sizeBytes      Int        @map("size_bytes")
+  isPrimary      Boolean    @default(false) @map("is_primary")
+  sortOrder      Int        @default(0) @map("sort_order")
+  uploadedById   String?    @map("uploaded_by_id")
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  completedAt    DateTime?  @map("completed_at") @db.Timestamptz(3)
+  deletedAt      DateTime?  @map("deleted_at") @db.Timestamptz(3)
+  /// false while a deleted file's object could not be removed from storage yet (retried by the cleanup job)
+  objectRemoved  Boolean    @default(false) @map("object_removed")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  vehicle      Vehicle?     @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer     Customer?    @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  deal         Deal?        @relation(fields: [dealId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  uploadedBy   User?        @relation(fields: [uploadedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@unique([bucket, objectPath])
+  @@index([organizationId, vehicleId, kind, status])
+  @@index([organizationId, customerId, status])
+  @@index([organizationId, dealId, status])
+  @@index([status, createdAt])
+  @@index([organizationId, uploadedById, status])
+  @@map("files")
+}
+
+// ─────────────────────────── AI ───────────────────────────
+// AI runs on the server only. Provider API keys live in server environment variables and are never stored
+// in the database or sent to a browser. These tables hold what the AI was asked, what it answered, what it
+// cost, and what it did on the dealership's behalf.
+//  - ai_conversations / ai_messages: private to the user who started them.
+//  - ai_usage: an append-only ledger of every provider call (tokens, cost, latency) and every refusal.
+//  - ai_activity: the audit-style feed of AI actions shown on the AI Activity page, with a review step.
+//  - ai_settings: per-organization switches and limits (on/off, allowed providers, monthly budget).
+
+model AiSettings {
+  organizationId           String         @id @map("organization_id")
+  enabled                  Boolean        @default(true)
+  defaultProvider          AiProviderId?  @map("default_provider")
+  /// Empty = every configured provider is allowed.
+  allowedProviders         AiProviderId[] @default([]) @map("allowed_providers")
+  monthlyTokenLimit        BigInt?        @map("monthly_token_limit")
+  /// USD micro-dollars (1,000,000 = US$1). null = no cost cap.
+  monthlyCostLimitMicros   BigInt?        @map("monthly_cost_limit_micros")
+  requestsPerUserPerMinute Int            @default(20) @map("requests_per_user_per_minute")
+  maxOutputTokens          Int            @default(1024) @map("max_output_tokens")
+  updatedAt                DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedById              String?        @map("updated_by_id")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@map("ai_settings")
+}
+
+model AiConversation {
+  id             String               @id @default(ulid())
+  organizationId String               @map("organization_id")
+  userId         String               @map("user_id")
+  title          String
+  status         AiConversationStatus @default(ACTIVE)
+  /// Optional record the conversation is about (at most one; CHECK). The AI is given only the fields the user may see.
+  vehicleId      String?              @map("vehicle_id")
+  customerId     String?              @map("customer_id")
+  leadId         String?              @map("lead_id")
+  dealId         String?              @map("deal_id")
+  messageCount   Int                  @default(0) @map("message_count")
+  lastMessageAt  DateTime?            @map("last_message_at") @db.Timestamptz(3)
+  createdAt      DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle      Vehicle?     @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer     Customer?    @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  lead         Lead?        @relation(fields: [leadId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  deal         Deal?        @relation(fields: [dealId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  messages     AiMessage[]
+
+  @@unique([id, organizationId])
+  @@index([organizationId, userId, status, lastMessageAt(sort: Desc)])
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             String          @id @default(ulid())
+  organizationId String          @map("organization_id")
+  conversationId String          @map("conversation_id")
+  /// 1, 2, 3... within the conversation; unique, so concurrent sends cannot interleave.
+  position       Int
+  role           AiMessageRole
+  status         AiMessageStatus @default(COMPLETE)
+  content        String
+  provider       AiProviderId?
+  model          String?
+  inputTokens    Int?            @map("input_tokens")
+  outputTokens   Int?            @map("output_tokens")
+  finishReason   String?         @map("finish_reason")
+  errorCode      String?         @map("error_code")
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  conversation AiConversation @relation(fields: [conversationId, organizationId], references: [id, organizationId], onDelete: Cascade)
+
+  @@unique([conversationId, position])
+  @@index([organizationId, conversationId])
+  @@map("ai_messages")
+}
+
+// Append-only. conversation_id / message_id are plain columns (no foreign key) so the ledger survives a
+// user deleting a conversation.
+model AiUsage {
+  id             String        @id @default(ulid())
+  organizationId String        @map("organization_id")
+  userId         String?       @map("user_id")
+  conversationId String?       @map("conversation_id")
+  messageId      String?       @map("message_id")
+  feature        AiActionType
+  provider       AiProviderId
+  model          String
+  status         AiUsageStatus
+  errorCode      String?       @map("error_code")
+  inputTokens    Int           @default(0) @map("input_tokens")
+  outputTokens   Int           @default(0) @map("output_tokens")
+  /// USD micro-dollars; null when no price is configured for the model.
+  costMicros     BigInt?       @map("cost_micros")
+  latencyMs      Int?          @map("latency_ms")
+  requestId      String?       @map("request_id")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User?        @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([organizationId, userId, createdAt])
+  @@map("ai_usage")
+}
+
+model AiActivity {
+  id               String           @id @default(ulid())
+  organizationId   String           @map("organization_id")
+  userId           String?          @map("user_id")
+  action           AiActionType
+  status           AiActivityStatus @default(COMPLETED)
+  /// Short human-readable outcome (the frontend "result"). Never the full prompt or answer.
+  summary          String
+  conversationId   String?          @map("conversation_id")
+  usageId          String?          @map("usage_id")
+  vehicleId        String?          @map("vehicle_id")
+  customerId       String?          @map("customer_id")
+  /// Estimated time the action saved a person, for the "time saved" summary.
+  timeSavedSeconds Int              @default(0) @map("time_saved_seconds")
+  reviewedById     String?          @map("reviewed_by_id")
+  reviewedAt       DateTime?        @map("reviewed_at") @db.Timestamptz(3)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User?        @relation("AiActivityUser", fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  reviewedBy   User?        @relation("AiActivityReviewer", fields: [reviewedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle      Vehicle?     @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer     Customer?    @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([organizationId, status])
+  @@index([organizationId, action])
+  @@map("ai_activity")
+}
+
+// ─────────────────────────── Tasks, partner requests, AI tool calls ───────────────────────────
+
+model Task {
+  id             String       @id @default(ulid())
+  organizationId String       @map("organization_id")
+  title          String
+  description    String?
+  category       TaskCategory @default(FOLLOW_UP)
+  status         TaskStatus   @default(OPEN)
+  priority       TaskPriority @default(MEDIUM)
+  dueAt          DateTime     @map("due_at") @db.Timestamptz(3)
+  assignedToId   String?      @map("assigned_to_id")
+  createdById    String       @map("created_by_id")
+  /// "manual" or "ai_agent": tasks the AI created on a person's behalf are marked so they can be found.
+  source         String       @default("manual")
+  vehicleId      String?      @map("vehicle_id")
+  customerId     String?      @map("customer_id")
+  leadId         String?      @map("lead_id")
+  dealId         String?      @map("deal_id")
+  completedAt    DateTime?    @map("completed_at") @db.Timestamptz(3)
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  assignedTo   User?        @relation("TaskAssignee", fields: [assignedToId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  createdBy    User         @relation("TaskCreator", fields: [createdById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle      Vehicle?     @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer     Customer?    @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  lead         Lead?        @relation(fields: [leadId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  deal         Deal?        @relation(fields: [dealId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@index([organizationId, assignedToId, status, dueAt])
+  @@index([organizationId, status, dueAt])
+  @@map("tasks")
+}
+
+// A request sent to a partner: a bank asked to evaluate a vehicle for financing, or a company asked to
+// quote. Mirrors the frontend BankEvaluationRequest / QuotationRequest.
+model PartnerRequest {
+  id              String               @id @default(ulid())
+  organizationId  String               @map("organization_id")
+  kind            PartnerRequestKind
+  status          PartnerRequestStatus @default(REQUESTED)
+  vehicleSource   VehicleSourceKind    @map("vehicle_source")
+  vehicleId       String?              @map("vehicle_id")
+  /// make, model, year, mileage, condition... of a vehicle the customer owns (vehicle_source = customer_owned)
+  customerVehicle Json?                @map("customer_vehicle") @db.JsonB
+  vehicleLabel    String               @map("vehicle_label")
+  customerId      String?              @map("customer_id")
+  customerName    String?              @map("customer_name")
+  bankCode        String?              @map("bank_code")
+  financeAmount   Decimal?             @map("finance_amount") @db.Decimal(14, 2)
+  fee             Decimal?             @db.Decimal(14, 2)
+  feeCurrency     String?              @map("fee_currency") @db.Char(3)
+  notes           String?
+  estimatedValue  Decimal?             @map("estimated_value") @db.Decimal(14, 2)
+  quotedPrice     Decimal?             @map("quoted_price") @db.Decimal(14, 2)
+  reportReference String?              @map("report_reference")
+  requestedById   String               @map("requested_by_id")
+  /// "manual" or "ai_agent"
+  requestedVia    String               @default("manual") @map("requested_via")
+  requestedAt     DateTime             @default(now()) @map("requested_at") @db.Timestamptz(3)
+  completedAt     DateTime?            @map("completed_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  feeCurrencyRef Currency?    @relation("PartnerRequestFeeCurrency", fields: [feeCurrency], references: [code], onDelete: Restrict)
+  vehicle        Vehicle?     @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer       Customer?    @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  requestedBy    User         @relation(fields: [requestedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@index([organizationId, kind, status, requestedAt(sort: Desc)])
+  @@map("partner_requests")
+}
+
+// One row per tool the AI tried to use: what, for whom, whether it was allowed, and how it ended. This is
+// the audit trail of everything the agent did (or was stopped from doing). conversation_id / message_id are
+// plain columns so the record survives deleting the conversation.
+model AiToolCall {
+  id             String           @id @default(ulid())
+  organizationId String           @map("organization_id")
+  userId         String           @map("user_id")
+  conversationId String           @map("conversation_id")
+  messageId      String?          @map("message_id")
+  toolName       String           @map("tool_name")
+  /// The arguments the AI supplied (already validated, size-limited). May contain names the user typed.
+  arguments      Json             @db.JsonB
+  status         AiToolCallStatus
+  /// A short, content-free description of the outcome ("Found 3 vehicles", "Task created").
+  resultSummary  String?          @map("result_summary")
+  errorCode      String?          @map("error_code")
+  durationMs     Int?             @map("duration_ms")
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  /// When a person approved or rejected a proposed action.
+  decidedAt      DateTime?        @map("decided_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@index([organizationId, conversationId, createdAt])
+  @@index([organizationId, userId, status, createdAt])
+  @@index([organizationId, toolName, createdAt])
+  @@map("ai_tool_calls")
+}
+
+// ─────────────────────────── Notifications ───────────────────────────
+
+// In-app notifications, one row per recipient (the bell in the top bar). Private to the user they are for:
+// the tenant policy isolates organizations, and the service layer (not built yet) filters by user_id.
+model Notification {
+  id             String           @id @default(ulid())
+  organizationId String           @map("organization_id")
+  userId         String           @map("user_id")
+  kind           NotificationKind
+  title          String
+  description    String
+  /// An in-app path such as "/leads/<id>", never an external URL (CHECK).
+  link           String?
+  /// null = unread
+  readAt         DateTime?        @map("read_at") @db.Timestamptz(3)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@index([organizationId, userId, readAt, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+// ─────────────────────────── Abuse protection ───────────────────────────
+
+// Fixed-window counters for rate limiting (login, registration, reset...). Not tenant data: keys are
+// SHA-256 hashes of "<scope>:<identifier>" so the table holds no emails or IPs. Accessed only by the
+// platform client; the runtime app role has no privileges on it.
+model RateLimitBucket {
+  key         String   @id
+  count       Int
+  windowStart DateTime @map("window_start") @db.Timestamptz(3)
+
+  @@index([windowStart])
+  @@map("rate_limit_buckets")
+}

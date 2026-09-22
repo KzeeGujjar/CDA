@@ -4,12 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Phone, PhoneIncoming, PhoneMissed, PhoneOutgoing } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getCustomerCalls } from "@/services/customers";
+import { InlineError } from "@/components/shared/inline-state";
+import { getCustomerCalls } from "@/services/customerService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export function CustomerCallsPanel({ customerId }: { customerId: string }) {
   const { t, locale } = useTranslation();
-  const { data: calls, isLoading } = useQuery({
+  const {
+    data: calls,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["customer-calls", customerId],
     queryFn: () => getCustomerCalls(customerId),
   });
@@ -24,12 +31,15 @@ export function CustomerCallsPanel({ customerId }: { customerId: string }) {
     );
   }
 
+  if (isError) return <InlineError error={error} onRetry={() => refetch()} />;
+
   if (!calls || calls.length === 0) return <EmptyState icon={Phone} title={t("common.noResults")} />;
 
   return (
     <div className="flex flex-col gap-3">
       {calls.map((call) => {
-        const Icon = call.outcome === "no_answer" ? PhoneMissed : call.direction === "inbound" ? PhoneIncoming : PhoneOutgoing;
+        const Icon =
+          call.outcome === "no_answer" ? PhoneMissed : call.direction === "inbound" ? PhoneIncoming : PhoneOutgoing;
         return (
           <div key={call.id} className="flex items-start gap-3 border-b border-border pb-3 last:border-0">
             <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
@@ -37,8 +47,12 @@ export function CustomerCallsPanel({ customerId }: { customerId: string }) {
             </div>
             <div className="flex flex-1 flex-col gap-0.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-medium text-foreground">{t(`customers.callOutcomes.${call.outcome}`)}</span>
-                {call.durationMinutes > 0 && <span className="text-xs text-muted-foreground">{call.durationMinutes} min</span>}
+                <span className="text-sm font-medium text-foreground">
+                  {t(`customers.callOutcomes.${call.outcome}`)}
+                </span>
+                {call.durationMinutes > 0 && (
+                  <span className="text-xs text-muted-foreground">{call.durationMinutes} min</span>
+                )}
               </div>
               {call.summary && <span className="text-sm text-muted-foreground">{call.summary}</span>}
               <span className="text-xs text-muted-foreground">

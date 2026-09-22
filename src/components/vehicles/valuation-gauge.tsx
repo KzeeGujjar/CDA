@@ -16,9 +16,14 @@ export function ValuationGauge({ valuation }: { valuation: MarketValuation }) {
       <CardContent className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">{t("valuation.estimatedValue")}</span>
-          <StatusBadge label={`${t("valuation.confidence")}: ${valuation.confidence}`} tone={confidenceTone[valuation.confidence]} />
+          <StatusBadge
+            label={`${t("valuation.confidence")}: ${valuation.confidence}`}
+            tone={confidenceTone[valuation.confidence]}
+          />
         </div>
-        <span className="font-mono text-4xl font-semibold text-foreground">{formatMoney(valuation.estimatedValue)}</span>
+        <span className="font-mono text-4xl font-semibold text-foreground">
+          {formatMoney(valuation.estimatedValue)}
+        </span>
         <div className="flex flex-col gap-1.5">
           <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
             <div className="absolute inset-y-0 start-0 w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />

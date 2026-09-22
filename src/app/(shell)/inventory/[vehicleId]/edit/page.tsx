@@ -21,11 +21,13 @@ import { ErrorState } from "@/components/shared/error-state";
 import { vehicleFormSchema, type VehicleFormValues } from "@/lib/validation/vehicle-schema";
 import { vehicleStatusOrder } from "@/components/vehicles/vehicle-status";
 import { registrationStatusOrder } from "@/components/vehicles/registration-status";
-import { getVehicleById, updateVehicle } from "@/services/vehicles";
+import { getVehicleById, updateVehicle } from "@/services/vehicleService";
 import { emirates } from "@/lib/emirates";
 import { vehicleSourceTypes } from "@/lib/vehicle-source-meta";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { Gauge } from "lucide-react";
+import { applyFormError } from "@/lib/errors/form";
+import { notifyError } from "@/lib/errors/notify";
 
 export default function EditVehiclePage({ params }: { params: Promise<{ vehicleId: string }> }) {
   const { vehicleId } = use(params);
@@ -37,6 +39,7 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
     data: vehicle,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["vehicle", vehicleId],
@@ -47,6 +50,8 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
     register,
     control,
     handleSubmit,
+    setError,
+    getValues,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<VehicleFormValues>({ resolver: zodResolver(vehicleFormSchema) });
@@ -62,9 +67,11 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
       condition: vehicle.condition,
       status: vehicle.status,
       price: vehicle.price.amount,
-      costPrice: vehicle.costPrice.amount,
-      repairCost: vehicle.repairCost.amount,
-      transportCost: vehicle.transportCost.amount,
+      // Absent (not 0) when the signed-in role lacks profit:read. The fields still render (see the payload
+      // below, which omits them entirely in that case, rather than submitting a fabricated 0).
+      costPrice: vehicle.costPrice?.amount ?? 0,
+      repairCost: vehicle.repairCost?.amount ?? 0,
+      transportCost: vehicle.transportCost?.amount ?? 0,
       expectedSellingPrice: vehicle.expectedSellingPrice.amount,
       estimatedMarketValue: vehicle.estimatedMarketValue.amount,
       mileageKm: vehicle.spec.mileageKm,
@@ -102,9 +109,15 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
         condition: values.condition,
         status: values.status,
         price: { amount: values.price, currency: "AED" },
-        costPrice: { amount: values.costPrice, currency: "AED" },
-        repairCost: { amount: values.repairCost, currency: "AED" },
-        transportCost: { amount: values.transportCost, currency: "AED" },
+        // Omitted (not sent as 0) when the signed-in role could not see them in the first place: the API
+        // refuses a cost field from anyone without profit:read, and 0 would silently erase the real cost.
+        ...(vehicle?.costPrice
+          ? {
+              costPrice: { amount: values.costPrice, currency: "AED" },
+              repairCost: { amount: values.repairCost, currency: "AED" },
+              transportCost: { amount: values.transportCost, currency: "AED" },
+            }
+          : {}),
         expectedSellingPrice: { amount: values.expectedSellingPrice, currency: "AED" },
         estimatedMarketValue: { amount: values.estimatedMarketValue, currency: "AED" },
         location: values.location,
@@ -134,6 +147,10 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
           owners: values.owners,
         },
       }),
+    // Server validation errors land next to their fields; anything else is reported by a notification.
+    onError: (error) => {
+      if (!applyFormError(error, { getValues, setError })) notifyError(error);
+    },
     onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
       queryClient.invalidateQueries({ queryKey: ["vehicle", vehicleId] });
@@ -151,7 +168,7 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
     );
   }
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   if (!vehicle) {
     return <EmptyState icon={Gauge} title={t("common.noResults")} />;
@@ -329,7 +346,12 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
               htmlFor="rtaNotes"
               className="sm:col-span-2 lg:col-span-3"
             >
-              <Textarea id="rtaNotes" {...register("rtaNotes")} rows={2} placeholder={t("inventory.registration.rtaNotesPlaceholder")} />
+              <Textarea
+                id="rtaNotes"
+                {...register("rtaNotes")}
+                rows={2}
+                placeholder={t("inventory.registration.rtaNotesPlaceholder")}
+              />
               <span className="text-xs text-muted-foreground">{t("inventory.registration.placeholderNotice")}</span>
             </FormField>
           </CardContent>
@@ -352,11 +374,27 @@ export default function EditVehiclePage({ params }: { params: Promise<{ vehicleI
             <FormField label={t("inventory.price")} htmlFor="price" error={errors.price?.message}>
               <Input id="price" type="number" {...register("price", { valueAsNumber: true })} />
             </FormField>
-            <FormField label="Expected selling price" htmlFor="expectedSellingPrice" error={errors.expectedSellingPrice?.message}>
-              <Input id="expectedSellingPrice" type="number" {...register("expectedSellingPrice", { valueAsNumber: true })} />
+            <FormField
+              label="Expected selling price"
+              htmlFor="expectedSellingPrice"
+              error={errors.expectedSellingPrice?.message}
+            >
+              <Input
+                id="expectedSellingPrice"
+                type="number"
+                {...register("expectedSellingPrice", { valueAsNumber: true })}
+              />
             </FormField>
-            <FormField label="Estimated market value" htmlFor="estimatedMarketValue" error={errors.estimatedMarketValue?.message}>
-              <Input id="estimatedMarketValue" type="number" {...register("estimatedMarketValue", { valueAsNumber: true })} />
+            <FormField
+              label="Estimated market value"
+              htmlFor="estimatedMarketValue"
+              error={errors.estimatedMarketValue?.message}
+            >
+              <Input
+                id="estimatedMarketValue"
+                type="number"
+                {...register("estimatedMarketValue", { valueAsNumber: true })}
+              />
             </FormField>
           </CardContent>
         </Card>

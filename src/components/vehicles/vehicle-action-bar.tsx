@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Bookmark, Copy, FileSignature, FileText, GitCompare, Pencil, Printer, Sparkles, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { updateVehicle } from "@/services/vehicles";
+import { updateVehicle } from "@/services/vehicleService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { Vehicle } from "@/types/vehicle";
 

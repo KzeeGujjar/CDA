@@ -30,7 +30,9 @@ export function DocumentTemplatesSection() {
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon className="size-4.5" />
                   </div>
-                  <span className="text-sm font-medium text-foreground">{t(`contractsDocuments.types.${meta.labelKey}`)}</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {t(`contractsDocuments.types.${meta.labelKey}`)}
+                  </span>
                 </div>
                 <Button
                   variant="outline"

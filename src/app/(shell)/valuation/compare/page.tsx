@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { VehicleComparisonTable } from "@/components/vehicles/vehicle-comparison-table";
-import { getVehicles } from "@/services/vehicles";
+import { getVehicles } from "@/services/vehicleService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { GitCompare } from "lucide-react";
 import type { Vehicle } from "@/types/vehicle";
@@ -24,6 +24,7 @@ export default function CompareVehiclesPage() {
     data: vehicles,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["vehicles", "compare"], queryFn: () => getVehicles() });
   const [selectedIds, setSelectedIds] = useState<string[]>(() => {
@@ -57,7 +58,7 @@ export default function CompareVehiclesPage() {
       {isLoading ? (
         <Skeleton className="h-96 w-full" />
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : (
         <>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

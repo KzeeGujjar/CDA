@@ -9,14 +9,28 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getRolePermissions, updateRolePermissions } from "@/services/permissions";
-import { fullAccessRoles, moduleKeys, roleKeys, type ModuleKey, type PermissionMatrix, type RoleKey } from "@/lib/settings-roles";
+import { getRolePermissions, updateRolePermissions } from "@/services/permissionService";
+import {
+  fullAccessRoles,
+  moduleKeys,
+  roleKeys,
+  type ModuleKey,
+  type PermissionMatrix,
+  type RoleKey,
+} from "@/lib/settings-roles";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
 
 export function RolesPermissionsSection() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { data: savedMatrix, isLoading } = useQuery({ queryKey: ["role-permissions"], queryFn: getRolePermissions });
+  const {
+    data: savedMatrix,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["role-permissions"], queryFn: getRolePermissions });
   const [matrix, setMatrix] = useState<PermissionMatrix | null>(null);
   const active = matrix ?? savedMatrix;
 
@@ -45,8 +59,12 @@ export function RolesPermissionsSection() {
         <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {roleKeys.map((role) => (
             <div key={role} className="flex flex-col gap-1 rounded-lg border border-border p-4">
-              <span className="text-sm font-medium text-foreground">{t(`settings.rolesPermissions.roles.${role}`)}</span>
-              <span className="text-xs text-muted-foreground">{t(`settings.rolesPermissions.roleDescriptions.${role}`)}</span>
+              <span className="text-sm font-medium text-foreground">
+                {t(`settings.rolesPermissions.roles.${role}`)}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {t(`settings.rolesPermissions.roleDescriptions.${role}`)}
+              </span>
             </div>
           ))}
         </CardContent>
@@ -58,8 +76,12 @@ export function RolesPermissionsSection() {
           <CardDescription>{t("settings.rolesPermissions.matrixSubtitle")}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {isLoading || !active ? (
+          {isLoading ? (
             <Skeleton className="h-64 w-full" />
+          ) : isError ? (
+            <InlineError error={error} onRetry={() => refetch()} />
+          ) : !active ? (
+            <InlineEmpty />
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">
               <Table>
@@ -76,7 +98,9 @@ export function RolesPermissionsSection() {
                 <TableBody>
                   {moduleKeys.map((module) => (
                     <TableRow key={module}>
-                      <TableCell className="font-medium text-foreground">{t(`settings.rolesPermissions.modules.${module}`)}</TableCell>
+                      <TableCell className="font-medium text-foreground">
+                        {t(`settings.rolesPermissions.modules.${module}`)}
+                      </TableCell>
                       {roleKeys.map((role) => (
                         <TableCell key={role} className="text-center">
                           <Checkbox

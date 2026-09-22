@@ -10,8 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AiSuggestionChip } from "@/components/ai/ai-suggestion-chip";
 import { useMockStream } from "@/hooks/use-mock-stream";
-import { getVehicles } from "@/services/vehicles";
-import { getCustomers } from "@/services/customers";
+import { getVehicles } from "@/services/vehicleService";
+import { getCustomers } from "@/services/customerService";
 import { getDocumentAssistantResponse } from "@/lib/document-assistant";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { cn } from "@/utils";
@@ -81,8 +81,16 @@ export function DocumentAssistantPanel() {
   const [lastDocument, setLastDocument] = useState<GeneratedDoc | null>(null);
   const [streamingId, setStreamingId] = useState<string | null>(null);
 
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles() });
-  const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers() });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+  });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+  });
 
   const vehicle = vehicles.find((v) => v.id === vehicleId);
   const customer = customers.find((c) => c.id === customerId);
@@ -101,7 +109,11 @@ export function DocumentAssistantPanel() {
     setInput("");
 
     setTimeout(() => {
-      const result = getDocumentAssistantResponse(trimmed, { vehicle, customer, lastDocument: lastDocument ?? undefined });
+      const result = getDocumentAssistantResponse(trimmed, {
+        vehicle,
+        customer,
+        lastDocument: lastDocument ?? undefined,
+      });
       const assistantMessage: AssistantMessage = {
         id: nextMessageId(),
         role: "assistant",
@@ -146,7 +158,12 @@ export function DocumentAssistantPanel() {
             </Select>
           </div>
 
-          <div className="flex flex-1 flex-col gap-3 overflow-y-auto" role="log" aria-live="polite" aria-relevant="additions">
+          <div
+            className="flex flex-1 flex-col gap-3 overflow-y-auto"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
             {messages.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
                 <div className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -215,7 +232,9 @@ export function DocumentAssistantPanel() {
                   variant="outline"
                   className="gap-1.5"
                   onClick={() =>
-                    navigator.clipboard?.writeText(lastDocument.content).then(() => toast.success(t("contractsDocuments.actions.copied")))
+                    navigator.clipboard
+                      ?.writeText(lastDocument.content)
+                      .then(() => toast.success(t("contractsDocuments.actions.copied")))
                   }
                 >
                   <Copy className="size-3.5" /> {t("contractsDocuments.actions.copy")}

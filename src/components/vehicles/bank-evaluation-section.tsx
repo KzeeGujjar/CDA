@@ -14,12 +14,13 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { StatusBadge, type StatusTone } from "@/components/shared/status-badge";
 import { VehicleSourceFields } from "@/components/vehicles/vehicle-source-fields";
 import { formatMoney } from "@/components/shared/currency";
-import { getVehicles } from "@/services/vehicles";
-import { getBankEvaluations, requestBankEvaluation } from "@/services/bank-evaluations";
+import { getVehicles } from "@/services/vehicleService";
+import { getBankEvaluations, requestBankEvaluation } from "@/services/bankEvaluationService";
 import { uaeBanks, BANK_EVALUATION_FEE_AED } from "@/lib/uae-banks";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { BankEvaluationRequest, BankEvaluationStatus, UaeBankCode } from "@/types/bank-evaluation";
 import type { CustomerVehicleDetails, VehicleSource } from "@/types/vehicle-request";
+import { InlineError } from "@/components/shared/inline-state";
 
 const statusTone: Record<BankEvaluationStatus, StatusTone> = {
   requested: "info",
@@ -53,7 +54,11 @@ export function BankEvaluationSection() {
   const [vehicleId, setVehicleId] = useState("");
   const [customerVehicle, setCustomerVehicle] = useState<CustomerVehicleDetails>(blankCustomerVehicle);
 
-  const vehiclesQuery = useQuery({ queryKey: ["vehicles", "bank-eval-options"], queryFn: () => getVehicles() });
+  const vehiclesQuery = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles", "bank-eval-options"],
+    queryFn: () => getVehicles(),
+  });
   const evaluationsQuery = useQuery({ queryKey: ["bank-evaluations"], queryFn: getBankEvaluations });
 
   const { register, control, handleSubmit, reset } = useForm<FormValues>({
@@ -86,11 +91,17 @@ export function BankEvaluationSection() {
       header: t("valuation.bankFinancing.table.financeAmount"),
       render: (r) => <span className="font-mono">{formatMoney(r.financeAmount)}</span>,
     },
-    { key: "fee", header: t("valuation.bankFinancing.table.fee"), render: (r) => <span className="font-mono">{formatMoney(r.fee)}</span> },
+    {
+      key: "fee",
+      header: t("valuation.bankFinancing.table.fee"),
+      render: (r) => <span className="font-mono">{formatMoney(r.fee)}</span>,
+    },
     {
       key: "status",
       header: t("valuation.bankFinancing.table.status"),
-      render: (r) => <StatusBadge label={t(`valuation.bankFinancing.status.${r.status}`)} tone={statusTone[r.status]} />,
+      render: (r) => (
+        <StatusBadge label={t(`valuation.bankFinancing.status.${r.status}`)} tone={statusTone[r.status]} />
+      ),
     },
     {
       key: "requestedAt",
@@ -128,7 +139,12 @@ export function BankEvaluationSection() {
                 vehicleLabel = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
               } else {
                 if (!customerVehicle.make.trim() || !customerVehicle.model.trim()) return;
-                vehicleLabel = [customerVehicle.year, customerVehicle.make, customerVehicle.model, customerVehicle.variant]
+                vehicleLabel = [
+                  customerVehicle.year,
+                  customerVehicle.make,
+                  customerVehicle.model,
+                  customerVehicle.variant,
+                ]
                   .filter(Boolean)
                   .join(" ");
               }
@@ -209,12 +225,16 @@ export function BankEvaluationSection() {
           </form>
         )}
 
-        <DataTable
-          columns={columns}
-          rows={evaluationsQuery.data ?? []}
-          loading={evaluationsQuery.isPending}
-          emptyTitle={t("valuation.bankFinancing.empty")}
-        />
+        {evaluationsQuery.isError ? (
+          <InlineError error={evaluationsQuery.error} onRetry={() => evaluationsQuery.refetch()} />
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={evaluationsQuery.data ?? []}
+            loading={evaluationsQuery.isPending}
+            emptyTitle={t("valuation.bankFinancing.empty")}
+          />
+        )}
       </CardContent>
     </Card>
   );

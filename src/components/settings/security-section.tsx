@@ -11,14 +11,21 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormField } from "@/components/forms/form-field";
-import { getSecuritySessions, signOutSession } from "@/services/security";
+import { getSecuritySessions, signOutSession } from "@/services/securityService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
 
 export function SecuritySection() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [twoFactor, setTwoFactor] = useState(false);
-  const { data: sessions = [], isLoading } = useQuery({ queryKey: ["security-sessions"], queryFn: getSecuritySessions });
+  const {
+    data: sessions = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["security-sessions"], queryFn: getSecuritySessions });
 
   const signOutMutation = useMutation({
     mutationFn: (id: string) => signOutSession(id),
@@ -76,13 +83,18 @@ export function SecuritySection() {
         <CardContent className="flex flex-col gap-2">
           {isLoading ? (
             <Skeleton className="h-16 w-full" />
+          ) : isError ? (
+            <InlineError error={error} onRetry={() => refetch()} />
+          ) : sessions.length === 0 ? (
+            <InlineEmpty />
           ) : (
             sessions.map((s, i) => (
               <div key={s.id}>
                 <div className="flex items-center justify-between py-2">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium text-foreground">
-                      {s.device} {s.current && <span className="text-primary">({t("settings.security.thisDevice")})</span>}
+                      {s.device}{" "}
+                      {s.current && <span className="text-primary">({t("settings.security.thisDevice")})</span>}
                     </span>
                     <span className="text-xs text-muted-foreground">{s.location}</span>
                   </div>

@@ -1,9 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { AuthUser, LoginCredentials, SignUpInput } from "@/types/auth";
-import { currentUserFixture } from "@/mock/auth";
-import { login as loginRequest, logout as logoutRequest, signUp as signUpRequest } from "@/services/auth";
+import {
+  getBackendUser,
+  getDemoUser,
+  login as loginRequest,
+  logout as logoutRequest,
+  signUp as signUpRequest,
+} from "@/services/authService";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -21,12 +26,23 @@ const AuthContext = createContext<AuthContextValue | null>(null);
  * app starts pre-authenticated as the dealership's default user — every
  * existing page keeps working unchanged. The seam (login/logout, the
  * AuthUser shape, the /login route) is real: swapping in a real identity
- * provider means editing lib/data/auth.ts, not any component that reads
+ * provider means editing services/authService.ts, not any component that reads
  * useAuth().
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(currentUserFixture);
+  const [user, setUser] = useState<AuthUser | null>(getDemoUser);
   const [isPending, setIsPending] = useState(false);
+
+  // When a real session exists (server cookie), show that person instead of the demo user. No session: demo user stays.
+  useEffect(() => {
+    let cancelled = false;
+    getBackendUser().then((real) => {
+      if (real && !cancelled) setUser(real);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     setIsPending(true);

@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { getRolePermissions, roleCanAccessModule } from "@/services/permissions";
+import { getRolePermissions, roleCanAccessModule } from "@/services/permissionService";
 import type { ModuleKey } from "@/lib/settings-roles";
 
 export function usePermissions() {

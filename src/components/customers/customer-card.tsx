@@ -5,7 +5,7 @@ import { Mail, Phone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { formatMoney } from "@/components/shared/currency";
+import { OptionalCurrency } from "@/components/shared/currency";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { Customer } from "@/types/customer";
 
@@ -50,7 +50,14 @@ export function CustomerCard({ customer }: { customer: Customer }) {
 
           <div className="flex items-center justify-between border-t border-border pt-2 text-xs">
             <span className="text-muted-foreground">{t("customers.lifetimeValue")}</span>
-            <span className="font-medium text-foreground">{formatMoney({ amount: customer.lifetimeValue, currency: "AED" })}</span>
+            <span className="font-medium text-foreground">
+              <OptionalCurrency
+                money={
+                  customer.lifetimeValue !== undefined ? { amount: customer.lifetimeValue, currency: "AED" } : undefined
+                }
+                placeholder={t("common.restricted")}
+              />
+            </span>
           </div>
         </CardContent>
       </Card>

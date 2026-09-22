@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { CustomerCard } from "@/components/customers/customer-card";
-import { getCustomers } from "@/services/customers";
+import { getCustomers } from "@/services/customerService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export default function CustomersPage() {
@@ -19,6 +19,7 @@ export default function CustomersPage() {
     data: customers,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["customers", search],
@@ -50,7 +51,7 @@ export default function CustomersPage() {
           ))}
         </div>
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : !customers || customers.length === 0 ? (
         <EmptyState icon={Contact} title={t("common.noResults")} />
       ) : (

@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Bot,
-  Briefcase,
-  Car,
-  Bell,
-  CheckSquare,
-  FileStack,
-  RotateCcw,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { Bot, Briefcase, Car, Bell, CheckSquare, FileStack, RotateCcw, Users, type LucideIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getDemoStats, type DemoStat } from "@/lib/demo-stats";
+import { getDemoStats, type DemoStat } from "@/services/demoDataService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 const statIcon: Record<DemoStat["key"], LucideIcon> = {

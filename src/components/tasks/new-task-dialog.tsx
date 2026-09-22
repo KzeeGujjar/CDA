@@ -19,9 +19,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { FormField } from "@/components/forms/form-field";
 import { taskCategories, taskCategoryMeta } from "@/lib/task-category-meta";
-import { createTask } from "@/services/tasks";
-import { getVehicles } from "@/services/vehicles";
-import { getCustomers } from "@/services/customers";
+import { createTask } from "@/services/taskService";
+import { getVehicles } from "@/services/vehicleService";
+import { getCustomers } from "@/services/customerService";
 import { salespeople } from "@/lib/salespeople";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { TaskCategory, TaskPriority } from "@/types/task";
@@ -38,8 +38,18 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   const [vehicleId, setVehicleId] = useState("");
   const [customerId, setCustomerId] = useState("");
 
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles(), enabled: open });
-  const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers(), enabled: open });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+    enabled: open,
+  });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+    enabled: open,
+  });
 
   function reset() {
     setTitle("");
@@ -129,7 +139,12 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
           <FormField label={t("tasks.fields.dueDate")} htmlFor="task-due">
             <Popover>
               <PopoverTrigger asChild>
-                <Button id="task-due" type="button" variant="outline" className="w-full justify-start gap-2 font-normal">
+                <Button
+                  id="task-due"
+                  type="button"
+                  variant="outline"
+                  className="w-full justify-start gap-2 font-normal"
+                >
                   <CalendarIcon className="size-3.5" />
                   {dueDate ? dueDate.toLocaleDateString(locale, { dateStyle: "medium" }) : t("tasks.fields.dueDate")}
                 </Button>

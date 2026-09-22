@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { TaskCard } from "@/components/tasks/task-card";
 import { NewTaskDialog } from "@/components/tasks/new-task-dialog";
-import { getTasks, updateTaskStatus } from "@/services/tasks";
+import { getTasks, updateTaskStatus } from "@/services/taskService";
 import { groupTasksByBucket } from "@/lib/task-buckets";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { TaskStatus } from "@/types/task";
@@ -27,6 +27,7 @@ export default function TasksPage() {
     data: tasks,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["tasks"], queryFn: () => getTasks() });
 
@@ -57,7 +58,7 @@ export default function TasksPage() {
           ))}
         </div>
       ) : isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : (
         <Tabs defaultValue="today">
           <TabsList>

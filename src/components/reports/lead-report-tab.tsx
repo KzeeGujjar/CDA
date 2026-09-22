@@ -9,7 +9,7 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { getLeadReport } from "@/services/reports";
+import { getLeadReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
 import type { ReportLeadRow } from "@/types/report";
@@ -25,9 +25,9 @@ const leadStageTone: Record<string, StatusTone> = {
 
 export function LeadReportTab() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useQuery({ queryKey: ["reports", "leads"], queryFn: getLeadReport });
+  const { data, isLoading, isError, error, refetch } = useQuery({ queryKey: ["reports", "leads"], queryFn: getLeadReport });
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const columns: DataTableColumn<ReportLeadRow>[] = [
     { key: "customer", header: t("reports.table.customer"), render: (r) => r.customerName },

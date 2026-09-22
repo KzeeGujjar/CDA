@@ -34,4 +34,10 @@ export interface ApiError {
   message: string;
   code?: string;
   status?: number;
+  /** Which fields were wrong (a validation error). `path` is the field, for example "password" or "context.id". */
+  fieldErrors?: { path: string; message: string }[];
+  /** The server's reference for this request, to quote to support. */
+  requestId?: string;
+  /** From the Retry-After header, when the server asks the client to wait. */
+  retryAfterSeconds?: number;
 }

@@ -7,13 +7,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { getLeads } from "@/services/leads";
+import { getLeads } from "@/services/leadService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { leadStageTone } from "@/components/leads/lead-stage";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
 
 export function RecentLeadsCard() {
   const { t } = useTranslation();
-  const { data: leads, isLoading } = useQuery({ queryKey: ["leads", "recent"], queryFn: () => getLeads() });
+  const {
+    data: leads,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["leads", "recent"], queryFn: () => getLeads() });
   const recent = [...(leads ?? [])].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 5);
 
   return (
@@ -25,8 +32,9 @@ export function RecentLeadsCard() {
         </Button>
       </CardHeader>
       <CardContent className="flex flex-col gap-1">
-        {isLoading &&
-          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+        {isLoading && Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+        {isError && <InlineError error={error} onRetry={() => refetch()} />}
+        {!isLoading && !isError && recent.length === 0 && <InlineEmpty />}
         {recent.map((lead) => (
           <Link
             key={lead.id}

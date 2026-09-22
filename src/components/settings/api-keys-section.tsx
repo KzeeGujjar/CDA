@@ -7,13 +7,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { generateApiKey, getApiKeys, revokeApiKey } from "@/services/api-keys";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
+import { generateApiKey, getApiKeys, revokeApiKey } from "@/services/apiKeyService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export function ApiKeysSection() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { data: keys = [], isLoading } = useQuery({ queryKey: ["api-keys"], queryFn: getApiKeys });
+  const {
+    data: keys = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["api-keys"], queryFn: getApiKeys });
 
   const generateMutation = useMutation({
     mutationFn: () => generateApiKey(t("settings.apiKeys.newKeyName")),
@@ -44,7 +51,12 @@ export function ApiKeysSection() {
           </CardTitle>
           <CardDescription>{t("settings.apiKeys.subtitle")}</CardDescription>
         </div>
-        <Button size="sm" className="gap-1.5" disabled={generateMutation.isPending} onClick={() => generateMutation.mutate()}>
+        <Button
+          size="sm"
+          className="gap-1.5"
+          disabled={generateMutation.isPending}
+          onClick={() => generateMutation.mutate()}
+        >
           <Plus className="size-3.5" />
           {t("settings.apiKeys.generate")}
         </Button>
@@ -56,6 +68,10 @@ export function ApiKeysSection() {
               <Skeleton key={i} className="h-10 w-full" />
             ))}
           </div>
+        ) : isError ? (
+          <InlineError error={error} onRetry={() => refetch()} />
+        ) : keys.length === 0 ? (
+          <InlineEmpty />
         ) : (
           <div className="overflow-x-auto rounded-lg border border-border">
             <Table>

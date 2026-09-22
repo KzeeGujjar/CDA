@@ -6,7 +6,10 @@ export function VehicleComparisonTable({ vehicles }: { vehicles: Vehicle[] }) {
   const { t } = useTranslation();
 
   const rows: { label: string; render: (v: Vehicle) => React.ReactNode }[] = [
-    { label: t("inventory.price"), render: (v) => <Currency money={v.price} className="font-mono font-semibold text-foreground" /> },
+    {
+      label: t("inventory.price"),
+      render: (v) => <Currency money={v.price} className="font-mono font-semibold text-foreground" />,
+    },
     { label: t("inventory.year"), render: (v) => v.year },
     { label: t("inventory.condition"), render: (v) => v.condition.replace(/_/g, " ") },
     { label: t("inventory.mileage"), render: (v) => `${v.spec.mileageKm.toLocaleString()} km` },
@@ -43,7 +46,11 @@ export function VehicleComparisonTable({ vehicles }: { vehicles: Vehicle[] }) {
               <td className="p-3 text-xs font-medium text-muted-foreground">{row.label}</td>
               {vehicles.map((v) => (
                 <td key={v.id} className="p-3 text-foreground">
-                  <span className={row.label === t("inventory.price") && v.price.amount === lowestPrice ? "text-primary" : undefined}>
+                  <span
+                    className={
+                      row.label === t("inventory.price") && v.price.amount === lowestPrice ? "text-primary" : undefined
+                    }
+                  >
                     {row.render(v)}
                   </span>
                 </td>

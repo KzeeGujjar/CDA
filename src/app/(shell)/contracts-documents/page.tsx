@@ -16,9 +16,9 @@ import { DocumentFormDialog } from "@/components/documents/document-form-dialog"
 import { DocumentPreviewDialog } from "@/components/documents/document-preview-dialog";
 import { DocumentAssistantPanel } from "@/components/documents/document-assistant-panel";
 import { documentTypeMeta, documentTypes } from "@/lib/document-type-meta";
-import { getDocuments } from "@/services/documents";
-import { getVehicles } from "@/services/vehicles";
-import { getCustomers } from "@/services/customers";
+import { getDocuments } from "@/services/documentService";
+import { getVehicles } from "@/services/vehicleService";
+import { getCustomers } from "@/services/customerService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { ContractDocument, DocumentType } from "@/types/document";
 
@@ -35,6 +35,7 @@ export default function ContractsDocumentsPage() {
     data: documents,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["documents", search, typeFilter],
@@ -100,7 +101,7 @@ export default function ContractsDocumentsPage() {
               ))}
             </div>
           ) : isError ? (
-            <ErrorState onRetry={() => refetch()} />
+            <ErrorState error={error} onRetry={() => refetch()} />
           ) : !documents || documents.length === 0 ? (
             <EmptyState icon={FileText} title={t("common.noResults")} />
           ) : (

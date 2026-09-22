@@ -8,16 +8,16 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { formatMoney } from "@/components/shared/currency";
-import { getMarketReport } from "@/services/reports";
+import { getMarketReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
 import type { MarketTrendRow } from "@/types/report";
 
 export function MarketReportTab() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useQuery({ queryKey: ["reports", "market"], queryFn: getMarketReport });
+  const { data, isLoading, isError, error, refetch } = useQuery({ queryKey: ["reports", "market"], queryFn: getMarketReport });
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const columns: DataTableColumn<MarketTrendRow>[] = [
     { key: "make", header: t("reports.table.make"), render: (r) => r.make },

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
-import { getAiActivityLog, getAiActivitySummary } from "@/services/ai-activity";
+import { getAiActivityLog, getAiActivitySummary } from "@/services/aiActivityService";
 import { aiActionMeta, aiActionTypes } from "@/lib/ai-action-meta";
 import { activityStatusOrder, activityStatusTone } from "@/components/ai-activity/activity-status";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
@@ -27,6 +27,7 @@ export default function AiActivityPage() {
     data: summary,
     isLoading: summaryLoading,
     isError: summaryError,
+    error: summaryErr,
     refetch: refetchSummary,
   } = useQuery({
     queryKey: ["ai-activity-summary"],
@@ -37,6 +38,7 @@ export default function AiActivityPage() {
     data: entries,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["ai-activity", search, statusFilter, actionFilter],
@@ -52,7 +54,7 @@ export default function AiActivityPage() {
     return (
       <>
         <PageHeader title={t("aiActivity.title")} subtitle={t("aiActivity.subtitle")} />
-        <ErrorState onRetry={() => refetchSummary()} />
+        <ErrorState error={summaryErr} onRetry={() => refetchSummary()} />
       </>
     );
   }
@@ -83,7 +85,11 @@ export default function AiActivityPage() {
     },
     { key: "vehicle", header: t("aiActivity.table.vehicle"), render: (e) => e.vehicleLabel ?? "—" },
     { key: "customer", header: t("aiActivity.table.customer"), render: (e) => e.customerName ?? "—" },
-    { key: "result", header: t("aiActivity.table.result"), render: (e) => <span className="text-muted-foreground">{e.result}</span> },
+    {
+      key: "result",
+      header: t("aiActivity.table.result"),
+      render: (e) => <span className="text-muted-foreground">{e.result}</span>,
+    },
     {
       key: "status",
       header: t("aiActivity.table.status"),
@@ -113,7 +119,12 @@ export default function AiActivityPage() {
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
           <Search className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("common.search")} className="w-56 ps-8" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t("common.search")}
+            className="w-56 ps-8"
+          />
         </div>
         <Select value={actionFilter} onValueChange={(v) => setActionFilter(v as AiActionType | "all")}>
           <SelectTrigger className="w-52">
@@ -144,7 +155,7 @@ export default function AiActivityPage() {
       </div>
 
       {isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : (
         <DataTable columns={columns} rows={entries ?? []} loading={isLoading} emptyTitle={t("common.noResults")} />
       )}

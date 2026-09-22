@@ -14,7 +14,7 @@ import { DealStatusBadge } from "@/components/deals/deal-status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { formatMoney } from "@/components/shared/currency";
-import { getDealById, updateDealStatus } from "@/services/deals";
+import { getDealById, updateDealStatus } from "@/services/dealService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { DealStatus } from "@/types/deal";
 
@@ -27,6 +27,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ dealId: s
     data: deal,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["deal", dealId], queryFn: () => getDealById(dealId) });
 
@@ -48,7 +49,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ dealId: s
     );
   }
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   if (!deal) return <EmptyState icon={FileCheck2} title={t("common.noResults")} />;
 

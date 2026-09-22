@@ -31,7 +31,9 @@ export function LanguageProvider({
     setLocaleState(next);
     applyDocumentLocale(next);
     if (typeof document !== "undefined") {
-      document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}`;
+      // Only a language preference, but still not sent on cross-site requests, and Secure where the site is https.
+      const secure = window.location.protocol === "https:" ? "; Secure" : "";
+      document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax${secure}`;
     }
   }, []);
 

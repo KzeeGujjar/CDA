@@ -9,12 +9,19 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatMoney } from "@/components/shared/currency";
-import { getInvoices } from "@/services/billing";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
+import { getInvoices } from "@/services/billingService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
 export function BillingSection() {
   const { t } = useTranslation();
-  const { data: invoices = [], isLoading } = useQuery({ queryKey: ["invoices"], queryFn: getInvoices });
+  const {
+    data: invoices = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["invoices"], queryFn: getInvoices });
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,7 +52,11 @@ export function BillingSection() {
               <span className="text-sm font-medium text-foreground">{t("settings.billing.paymentMethod")}</span>
               <span className="font-mono text-xs text-muted-foreground">•••• •••• •••• 4242</span>
             </div>
-            <Button variant="outline" size="sm" onClick={() => toast.info(t("settings.billing.updatePaymentComingSoon"))}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => toast.info(t("settings.billing.updatePaymentComingSoon"))}
+            >
               {t("settings.billing.updatePayment")}
             </Button>
           </div>
@@ -64,6 +75,10 @@ export function BillingSection() {
                 <Skeleton key={i} className="h-10 w-full" />
               ))}
             </div>
+          ) : isError ? (
+            <InlineError error={error} onRetry={() => refetch()} />
+          ) : invoices.length === 0 ? (
+            <InlineEmpty />
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">
               <Table>
@@ -81,14 +96,21 @@ export function BillingSection() {
                     <TableRow key={inv.id}>
                       <TableCell className="font-mono">{inv.id}</TableCell>
                       <TableCell>{inv.date}</TableCell>
-                      <TableCell className="font-mono">{formatMoney({ amount: inv.amount, currency: "AED" })}</TableCell>
+                      <TableCell className="font-mono">
+                        {formatMoney({ amount: inv.amount, currency: "AED" })}
+                      </TableCell>
                       <TableCell>
                         <Badge className="border-0 bg-primary/10 text-primary" variant="secondary">
                           {t("settings.billing.paid")}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => toast.info(t("settings.billing.downloadComingSoon"))}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1.5"
+                          onClick={() => toast.info(t("settings.billing.downloadComingSoon"))}
+                        >
                           <Download className="size-3.5" />
                           {t("common.download")}
                         </Button>

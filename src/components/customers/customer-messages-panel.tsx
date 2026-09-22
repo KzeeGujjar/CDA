@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { InlineError } from "@/components/shared/inline-state";
 import { cn } from "@/utils";
-import { addCustomerMessage, getCustomerMessages } from "@/services/customers";
+import { addCustomerMessage, getCustomerMessages } from "@/services/customerService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { CustomerMessageChannel } from "@/types/customer";
 
@@ -21,7 +22,13 @@ export function CustomerMessagesPanel({ customerId }: { customerId: string }) {
   const [channel, setChannel] = useState<CustomerMessageChannel>("whatsapp");
   const [body, setBody] = useState("");
 
-  const { data: messages, isLoading } = useQuery({
+  const {
+    data: messages,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["customer-messages", customerId],
     queryFn: () => getCustomerMessages(customerId),
   });
@@ -42,6 +49,8 @@ export function CustomerMessagesPanel({ customerId }: { customerId: string }) {
             <Skeleton key={i} className="h-12 w-2/3" />
           ))}
         </div>
+      ) : isError ? (
+        <InlineError error={error} onRetry={() => refetch()} />
       ) : !messages || messages.length === 0 ? (
         <EmptyState icon={MessageSquare} title={t("common.noResults")} />
       ) : (
@@ -51,12 +60,15 @@ export function CustomerMessagesPanel({ customerId }: { customerId: string }) {
               key={m.id}
               className={cn(
                 "flex max-w-[80%] flex-col gap-0.5 rounded-lg px-3 py-2 text-sm",
-                m.direction === "outbound" ? "self-end bg-primary/10 text-foreground" : "self-start bg-muted text-foreground"
+                m.direction === "outbound"
+                  ? "self-end bg-primary/10 text-foreground"
+                  : "self-start bg-muted text-foreground"
               )}
             >
               <span>{m.body}</span>
               <span className="text-[11px] text-muted-foreground">
-                {t(`customers.channels.${m.channel}`)} · {new Date(m.createdAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
+                {t(`customers.channels.${m.channel}`)} ·{" "}
+                {new Date(m.createdAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
               </span>
             </div>
           ))}

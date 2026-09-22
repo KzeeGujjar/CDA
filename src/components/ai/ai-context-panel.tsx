@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatMoney } from "@/components/shared/currency";
-import { getVehicles } from "@/services/vehicles";
-import { getCustomers } from "@/services/customers";
+import { getVehicles } from "@/services/vehicleService";
+import { getCustomers } from "@/services/customerService";
 import { getProfitMarginPct } from "@/lib/vehicle-finance";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
@@ -26,14 +26,26 @@ export function AiContextPanel({
   onCustomerChange: (id: string) => void;
 }) {
   const { t } = useTranslation();
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles() });
-  const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers() });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+  });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+  });
 
   const vehicle = vehicles.find((v) => v.id === vehicleId);
   const customer = customers.find((c) => c.id === customerId);
 
   const topProfitVehicles = useMemo(
-    () => [...vehicles].sort((a, b) => getProfitMarginPct(b) - getProfitMarginPct(a)).slice(0, 3),
+    () =>
+      // A vehicle whose margin is hidden (no profit:read) sorts last, never first as if it had a 0% margin.
+      [...vehicles]
+        .sort((a, b) => (getProfitMarginPct(b) ?? -Infinity) - (getProfitMarginPct(a) ?? -Infinity))
+        .slice(0, 3),
     [vehicles]
   );
 
@@ -141,7 +153,12 @@ export function AiContextPanel({
               <span className="text-foreground">
                 {v.year} {v.make} {v.model}
               </span>
-              <span className="font-mono font-medium text-primary">{getProfitMarginPct(v).toFixed(1)}%</span>
+              <span className="font-mono font-medium text-primary">
+                {(() => {
+                  const pct = getProfitMarginPct(v);
+                  return pct === null ? t("common.restricted") : `${pct.toFixed(1)}%`;
+                })()}
+              </span>
             </button>
           ))}
         </CardContent>

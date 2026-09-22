@@ -17,10 +17,12 @@ import { FormField } from "@/components/forms/form-field";
 import { vehicleFormSchema, type VehicleFormValues } from "@/lib/validation/vehicle-schema";
 import { vehicleStatusOrder } from "@/components/vehicles/vehicle-status";
 import { registrationStatusOrder } from "@/components/vehicles/registration-status";
-import { createVehicle } from "@/services/vehicles";
+import { createVehicle } from "@/services/vehicleService";
 import { emirates } from "@/lib/emirates";
 import { vehicleSourceTypes } from "@/lib/vehicle-source-meta";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { applyFormError } from "@/lib/errors/form";
+import { notifyError } from "@/lib/errors/notify";
 
 export default function NewVehiclePage() {
   const { t } = useTranslation();
@@ -31,6 +33,8 @@ export default function NewVehiclePage() {
     register,
     control,
     handleSubmit,
+    setError,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<VehicleFormValues>({
     resolver: zodResolver(vehicleFormSchema),
@@ -96,6 +100,10 @@ export default function NewVehiclePage() {
           owners: values.owners,
         },
       }),
+    // Server validation errors land next to their fields; anything else is reported by a notification.
+    onError: (error) => {
+      if (!applyFormError(error, { getValues, setError })) notifyError(error);
+    },
     onSuccess: (vehicle) => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
       toast.success(`${vehicle.year} ${vehicle.make} ${vehicle.model} added to inventory`);
@@ -275,7 +283,12 @@ export default function NewVehiclePage() {
               htmlFor="rtaNotes"
               className="sm:col-span-2 lg:col-span-3"
             >
-              <Textarea id="rtaNotes" {...register("rtaNotes")} rows={2} placeholder={t("inventory.registration.rtaNotesPlaceholder")} />
+              <Textarea
+                id="rtaNotes"
+                {...register("rtaNotes")}
+                rows={2}
+                placeholder={t("inventory.registration.rtaNotesPlaceholder")}
+              />
               <span className="text-xs text-muted-foreground">{t("inventory.registration.placeholderNotice")}</span>
             </FormField>
           </CardContent>
@@ -298,11 +311,27 @@ export default function NewVehiclePage() {
             <FormField label={t("inventory.price")} htmlFor="price" error={errors.price?.message}>
               <Input id="price" type="number" {...register("price", { valueAsNumber: true })} />
             </FormField>
-            <FormField label="Expected selling price" htmlFor="expectedSellingPrice" error={errors.expectedSellingPrice?.message}>
-              <Input id="expectedSellingPrice" type="number" {...register("expectedSellingPrice", { valueAsNumber: true })} />
+            <FormField
+              label="Expected selling price"
+              htmlFor="expectedSellingPrice"
+              error={errors.expectedSellingPrice?.message}
+            >
+              <Input
+                id="expectedSellingPrice"
+                type="number"
+                {...register("expectedSellingPrice", { valueAsNumber: true })}
+              />
             </FormField>
-            <FormField label="Estimated market value" htmlFor="estimatedMarketValue" error={errors.estimatedMarketValue?.message}>
-              <Input id="estimatedMarketValue" type="number" {...register("estimatedMarketValue", { valueAsNumber: true })} />
+            <FormField
+              label="Estimated market value"
+              htmlFor="estimatedMarketValue"
+              error={errors.estimatedMarketValue?.message}
+            >
+              <Input
+                id="estimatedMarketValue"
+                type="number"
+                {...register("estimatedMarketValue", { valueAsNumber: true })}
+              />
             </FormField>
           </CardContent>
         </Card>

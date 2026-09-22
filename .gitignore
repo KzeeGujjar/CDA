@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,6 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma generated client (rebuilt by `prisma generate` / postinstall)
+/src/generated
 
 # claude code (local/personal settings only — launch.json is shared project config)
 .claude/settings.local.json

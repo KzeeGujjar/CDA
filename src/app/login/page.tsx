@@ -9,7 +9,15 @@ import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/forms/form-field";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
-import { requestPasswordReset } from "@/services/auth";
+import { requestPasswordReset } from "@/services/authService";
+import { errorMessage } from "@/lib/errors/message";
+import type { ApiError } from "@/types/common";
+
+/** Why sign-in failed, in words that help: wrong details, account not confirmed, too many attempts, or a service problem. */
+function signInMessage(error: unknown, t: (key: string) => string): string {
+  if ((error as Partial<ApiError> | null)?.code === "invalid_credentials") return t("login.error");
+  return errorMessage(error, t, { showServerText: ["forbidden"], overrides: { unauthenticated: t("login.error") } });
+}
 
 function SignInForm({
   onForgotPassword,
@@ -21,7 +29,7 @@ function SignInForm({
   const { t } = useTranslation();
   const router = useRouter();
   const { login, isPending } = useAuth();
-  const [email, setEmail] = useState("manager@autodesk.ae");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -31,8 +39,8 @@ function SignInForm({
     try {
       await login({ email, password });
       router.push("/dashboard");
-    } catch {
-      setError(t("login.error"));
+    } catch (e) {
+      setError(signInMessage(e, t));
     }
   }
 
@@ -45,6 +53,7 @@ function SignInForm({
             <Input
               id="login-email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="ps-8"
@@ -88,13 +97,7 @@ function SignInForm({
   );
 }
 
-function ForgotPasswordForm({
-  initialEmail,
-  onBack,
-}: {
-  initialEmail: string;
-  onBack: () => void;
-}) {
+function ForgotPasswordForm({ initialEmail, onBack }: { initialEmail: string; onBack: () => void }) {
   const { t } = useTranslation();
   const [email, setEmail] = useState(initialEmail);
   const [isPending, setIsPending] = useState(false);
@@ -108,8 +111,8 @@ function ForgotPasswordForm({
     try {
       await requestPasswordReset(email);
       setSent(true);
-    } catch {
-      setError(t("login.error"));
+    } catch (e) {
+      setError(errorMessage(e, t));
     } finally {
       setIsPending(false);
     }
@@ -176,8 +179,8 @@ function SignUpForm({ onBack }: { onBack: () => void }) {
     try {
       await signUp({ name, email, password });
       router.push("/dashboard");
-    } catch {
-      setError(t("login.error"));
+    } catch (e) {
+      setError(errorMessage(e, t));
     }
   }
 

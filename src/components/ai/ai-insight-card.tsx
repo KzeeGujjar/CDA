@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
 
 export interface AIInsightItem {
   id: string;
@@ -16,6 +17,8 @@ export function AIInsightCard({
   loading,
   loadingRows = 4,
   action,
+  error,
+  onRetry,
 }: {
   title: string;
   icon?: LucideIcon;
@@ -23,6 +26,9 @@ export function AIInsightCard({
   loading?: boolean;
   loadingRows?: number;
   action?: React.ReactNode;
+  /** The query failed: show why instead of an empty card. */
+  error?: unknown;
+  onRetry?: () => void;
 }) {
   return (
     <Card className="border-primary/20 bg-primary/5">
@@ -35,6 +41,10 @@ export function AIInsightCard({
       <CardContent className="flex flex-col gap-3">
         {loading ? (
           Array.from({ length: loadingRows }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)
+        ) : error ? (
+          <InlineError error={error} onRetry={onRetry} />
+        ) : items.length === 0 ? (
+          <InlineEmpty />
         ) : (
           items.map((item) => {
             const ItemIcon = item.icon;
@@ -52,7 +62,7 @@ export function AIInsightCard({
             );
           })
         )}
-        {!loading && action}
+        {!loading && !error && action}
       </CardContent>
     </Card>
   );

@@ -16,9 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FormField } from "@/components/forms/form-field";
 import { documentTypeMeta, documentTypes } from "@/lib/document-type-meta";
-import { createDocument, updateDocument } from "@/services/documents";
-import { getVehicles } from "@/services/vehicles";
-import { getCustomers } from "@/services/customers";
+import { createDocument, updateDocument } from "@/services/documentService";
+import { getVehicles } from "@/services/vehicleService";
+import { getCustomers } from "@/services/customerService";
 import { salespeople } from "@/lib/salespeople";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { ContractDocument, DocumentType } from "@/types/document";
@@ -42,8 +42,18 @@ export function DocumentFormDialog({
   const [customerId, setCustomerId] = useState(doc?.customerId ?? "");
   const [assignedToName, setAssignedToName] = useState(doc?.createdByName ?? salespeople[0]);
 
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles(), enabled: open });
-  const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers(), enabled: open });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+    enabled: open,
+  });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+    enabled: open,
+  });
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -73,7 +83,9 @@ export function DocumentFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEdit ? t("contractsDocuments.editDocument") : t("contractsDocuments.newDocument")}</DialogTitle>
+          <DialogTitle>
+            {isEdit ? t("contractsDocuments.editDocument") : t("contractsDocuments.newDocument")}
+          </DialogTitle>
           <DialogDescription>{t("contractsDocuments.formDescription")}</DialogDescription>
         </DialogHeader>
 

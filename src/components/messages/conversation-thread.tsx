@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { messageChannelMeta } from "@/lib/message-channel-meta";
-import { getConversationMessages, sendConversationMessage } from "@/services/messages";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
+import { getConversationMessages, sendConversationMessage } from "@/services/messageService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { cn } from "@/utils";
 import type { Conversation } from "@/types/message";
@@ -20,7 +21,13 @@ export function ConversationThread({ conversation }: { conversation: Conversatio
   const meta = messageChannelMeta[conversation.channel];
   const Icon = meta.icon;
 
-  const { data: messages, isLoading } = useQuery({
+  const {
+    data: messages,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["conversation-messages", conversation.id],
     queryFn: () => getConversationMessages(conversation.id),
   });
@@ -53,17 +60,28 @@ export function ConversationThread({ conversation }: { conversation: Conversatio
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-2/3" />)
+        ) : isError ? (
+          <InlineError error={error} onRetry={() => refetch()} />
+        ) : !messages || messages.length === 0 ? (
+          <InlineEmpty />
         ) : (
-          messages?.map((m) => (
+          messages.map((m) => (
             <div
               key={m.id}
               className={cn(
                 "max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
-                m.direction === "outbound" ? "self-end bg-primary text-primary-foreground" : "self-start bg-muted text-foreground"
+                m.direction === "outbound"
+                  ? "self-end bg-primary text-primary-foreground"
+                  : "self-start bg-muted text-foreground"
               )}
             >
               <span>{m.body}</span>
-              <div className={cn("mt-1 text-[11px]", m.direction === "outbound" ? "text-primary-foreground/70" : "text-muted-foreground")}>
+              <div
+                className={cn(
+                  "mt-1 text-[11px]",
+                  m.direction === "outbound" ? "text-primary-foreground/70" : "text-muted-foreground"
+                )}
+              >
                 {new Date(m.createdAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
               </div>
             </div>

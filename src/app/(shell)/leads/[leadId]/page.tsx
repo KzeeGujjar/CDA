@@ -27,7 +27,7 @@ import { ErrorState } from "@/components/shared/error-state";
 import { formatMoney } from "@/components/shared/currency";
 import { LeadAiScoringCard } from "@/components/leads/lead-ai-scoring-card";
 import { leadScoreTone, leadStageOrder, leadStageTone } from "@/components/leads/lead-stage";
-import { getLeadById, updateLeadStage, updateLeadFollowUp, addLeadInteraction } from "@/services/leads";
+import { getLeadById, updateLeadStage, updateLeadFollowUp, addLeadInteraction } from "@/services/leadService";
 import { leadNoteSchema, type LeadNoteValues } from "@/lib/validation/lead-schema";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
@@ -43,6 +43,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ leadId: s
     data: lead,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["lead", leadId], queryFn: () => getLeadById(leadId) });
 
@@ -87,7 +88,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ leadId: s
     );
   }
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   if (!lead) return <EmptyState icon={StickyNote} title={t("common.noResults")} />;
 

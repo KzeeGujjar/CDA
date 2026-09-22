@@ -7,19 +7,19 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { formatMoney } from "@/components/shared/currency";
-import { getSalespersonPerformanceReport } from "@/services/reports";
+import { getSalespersonPerformanceReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
 import type { SalespersonPerformanceRow } from "@/types/report";
 
 export function SalespersonPerformanceTab() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["reports", "salesperson"],
     queryFn: getSalespersonPerformanceReport,
   });
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const columns: DataTableColumn<SalespersonPerformanceRow>[] = [
     { key: "name", header: t("reports.table.salesperson"), render: (r) => r.name },

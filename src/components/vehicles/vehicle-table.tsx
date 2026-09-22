@@ -3,6 +3,7 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { PriceBadge } from "@/components/shared/price-badge";
 import { VehicleStatusBadge } from "@/components/vehicles/vehicle-status-badge";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
+import { emirateLabel } from "@/lib/vehicle-labels";
 import type { Vehicle } from "@/types/vehicle";
 
 export function VehicleTable({
@@ -33,11 +34,17 @@ export function VehicleTable({
     },
     { key: "status", header: t("inventory.status"), render: (v) => <VehicleStatusBadge status={v.status} /> },
     { key: "days", header: t("inventory.daysInStock"), render: (v) => `${v.daysInStock}d` },
-    { key: "location", header: t("inventory.location"), render: (v) => v.location },
-    { key: "emirate", header: t("inventory.emirate"), render: (v) => t(`inventory.emirates.${v.emirate}`) },
+    { key: "location", header: t("inventory.location"), render: (v) => v.location ?? "—" },
+    { key: "emirate", header: t("inventory.emirate"), render: (v) => emirateLabel(t, v.emirate) },
   ];
 
   return (
-    <DataTable columns={columns} rows={vehicles} loading={loading} emptyTitle={t("common.noResults")} onRowClick={onRowClick} />
+    <DataTable
+      columns={columns}
+      rows={vehicles}
+      loading={loading}
+      emptyTitle={t("common.noResults")}
+      onRowClick={onRowClick}
+    />
   );
 }

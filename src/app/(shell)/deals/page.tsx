@@ -9,7 +9,7 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { DealStatusBadge } from "@/components/deals/deal-status-badge";
 import { Currency } from "@/components/shared/currency";
 import { ErrorState } from "@/components/shared/error-state";
-import { getDeals } from "@/services/deals";
+import { getDeals } from "@/services/dealService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { Deal } from "@/types/deal";
 
@@ -19,6 +19,7 @@ export default function DealsPage() {
     data: deals,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["deals"], queryFn: getDeals });
 
@@ -58,7 +59,7 @@ export default function DealsPage() {
         }
       />
       {isError ? (
-        <ErrorState onRetry={() => refetch()} />
+        <ErrorState error={error} onRetry={() => refetch()} />
       ) : (
         <DataTable columns={columns} rows={deals ?? []} loading={isLoading} emptyTitle={t("common.noResults")} />
       )}

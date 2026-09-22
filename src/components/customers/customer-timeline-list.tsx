@@ -6,12 +6,13 @@ import type { LucideIcon } from "lucide-react";
 import { Calendar, FileText, Handshake, ListChecks, MessageCircle, Phone, StickyNote, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
-import { getLeadsByCustomerId } from "@/services/leads";
-import { getDealsByCustomerId } from "@/services/deals";
-import { getCustomerCalls, getCustomerMessages, getCustomerNotes, getCustomerTasks } from "@/services/customers";
+import { getLeadsByCustomerId } from "@/services/leadService";
+import { getDealsByCustomerId } from "@/services/dealService";
+import { getCustomerCalls, getCustomerMessages, getCustomerNotes, getCustomerTasks } from "@/services/customerService";
 import { buildCustomerTimeline } from "@/lib/customer-timeline";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { CustomerTimelineEventType } from "@/types/customer";
+import { InlineError } from "@/components/shared/inline-state";
 
 const eventIcon: Record<CustomerTimelineEventType, LucideIcon> = {
   lead_created: Users,
@@ -28,32 +29,64 @@ const eventIcon: Record<CustomerTimelineEventType, LucideIcon> = {
 
 export function CustomerTimelineList({ customerId }: { customerId: string }) {
   const { t, locale } = useTranslation();
-  const { data: leads = [], isLoading: l1 } = useQuery({
+  const {
+    data: leads = [],
+    isLoading: l1,
+    error: x1,
+    refetch: r1,
+  } = useQuery({
     queryKey: ["leads", "by-customer", customerId],
     queryFn: () => getLeadsByCustomerId(customerId),
   });
-  const { data: deals = [], isLoading: l2 } = useQuery({
+  const {
+    data: deals = [],
+    isLoading: l2,
+    error: x2,
+    refetch: r2,
+  } = useQuery({
     queryKey: ["deals", "by-customer", customerId],
     queryFn: () => getDealsByCustomerId(customerId),
   });
-  const { data: notes = [], isLoading: l3 } = useQuery({
+  const {
+    data: notes = [],
+    isLoading: l3,
+    error: x3,
+    refetch: r3,
+  } = useQuery({
     queryKey: ["customer-notes", customerId],
     queryFn: () => getCustomerNotes(customerId),
   });
-  const { data: tasks = [], isLoading: l4 } = useQuery({
+  const {
+    data: tasks = [],
+    isLoading: l4,
+    error: x4,
+    refetch: r4,
+  } = useQuery({
     queryKey: ["customer-tasks", customerId],
     queryFn: () => getCustomerTasks(customerId),
   });
-  const { data: messages = [], isLoading: l5 } = useQuery({
+  const {
+    data: messages = [],
+    isLoading: l5,
+    error: x5,
+    refetch: r5,
+  } = useQuery({
     queryKey: ["customer-messages", customerId],
     queryFn: () => getCustomerMessages(customerId),
   });
-  const { data: calls = [], isLoading: l6 } = useQuery({
+  const {
+    data: calls = [],
+    isLoading: l6,
+    error: x6,
+    refetch: r6,
+  } = useQuery({
     queryKey: ["customer-calls", customerId],
     queryFn: () => getCustomerCalls(customerId),
   });
 
   const isLoading = l1 || l2 || l3 || l4 || l5 || l6;
+  const failure = x1 ?? x2 ?? x3 ?? x4 ?? x5 ?? x6;
+  const retryAll = () => [r1, r2, r3, r4, r5, r6].forEach((r) => r());
 
   const events = useMemo(
     () => buildCustomerTimeline({ customerId, leads, deals, notes, tasks, messages, calls }),
@@ -69,6 +102,8 @@ export function CustomerTimelineList({ customerId }: { customerId: string }) {
       </div>
     );
   }
+
+  if (failure) return <InlineError error={failure} onRetry={retryAll} />;
 
   if (events.length === 0) return <EmptyState icon={Calendar} title={t("common.noResults")} />;
 

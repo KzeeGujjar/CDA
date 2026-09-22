@@ -58,12 +58,16 @@ export function IntegrationsSection() {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-medium text-foreground">{t(`settings.integrations.items.${key}`)}</span>
                   <span className={`text-xs ${isConnected ? "text-primary" : "text-muted-foreground"}`}>
-                    {isConnected ? t("settings.marketplaceConnections.connected") : t("settings.marketplaceConnections.notConnected")}
+                    {isConnected
+                      ? t("settings.marketplaceConnections.connected")
+                      : t("settings.marketplaceConnections.notConnected")}
                   </span>
                 </div>
               </div>
               <Button variant={isConnected ? "outline" : "default"} size="sm" onClick={() => toggle(key)}>
-                {isConnected ? t("settings.marketplaceConnections.disconnect") : t("settings.marketplaceConnections.connect")}
+                {isConnected
+                  ? t("settings.marketplaceConnections.disconnect")
+                  : t("settings.marketplaceConnections.connect")}
               </Button>
             </div>
           );

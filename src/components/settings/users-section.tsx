@@ -19,15 +19,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DataTable, type DataTableColumn } from "@/components/tables/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { FormField } from "@/components/forms/form-field";
-import { getDealershipUsers, inviteDealershipUser, removeDealershipUser } from "@/services/dealership-users";
+import { getDealershipUsers, inviteDealershipUser, removeDealershipUser } from "@/services/dealershipUserService";
 import { roleKeys, type RoleKey } from "@/lib/settings-roles";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { DealershipUser } from "@/types/settings";
+import { InlineError } from "@/components/shared/inline-state";
 
 export function UsersSection() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { data: users = [] } = useQuery({ queryKey: ["dealership-users"], queryFn: getDealershipUsers });
+  const {
+    data: users = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["dealership-users"], queryFn: getDealershipUsers });
   const [inviteOpen, setInviteOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -60,13 +67,23 @@ export function UsersSection() {
     {
       key: "status",
       header: t("common.status"),
-      render: (u) => <StatusBadge label={t(`settings.users.status.${u.status}`)} tone={u.status === "active" ? "success" : "warning"} />,
+      render: (u) => (
+        <StatusBadge
+          label={t(`settings.users.status.${u.status}`)}
+          tone={u.status === "active" ? "success" : "warning"}
+        />
+      ),
     },
     {
       key: "actions",
       header: t("common.actions"),
       render: (u) => (
-        <Button variant="ghost" size="sm" disabled={removeMutation.isPending} onClick={() => removeMutation.mutate(u.id)}>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={removeMutation.isPending}
+          onClick={() => removeMutation.mutate(u.id)}
+        >
           {t("common.delete")}
         </Button>
       ),
@@ -88,7 +105,11 @@ export function UsersSection() {
         </Button>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} rows={users} />
+        {isError ? (
+          <InlineError error={error} onRetry={() => refetch()} />
+        ) : (
+          <DataTable columns={columns} rows={users} loading={isLoading} emptyTitle={t("common.noResults")} />
+        )}
       </CardContent>
 
       <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
@@ -123,7 +144,10 @@ export function UsersSection() {
             <Button variant="outline" onClick={() => setInviteOpen(false)}>
               {t("common.cancel")}
             </Button>
-            <Button onClick={() => inviteMutation.mutate()} disabled={!name.trim() || !email.trim() || inviteMutation.isPending}>
+            <Button
+              onClick={() => inviteMutation.mutate()}
+              disabled={!name.trim() || !email.trim() || inviteMutation.isPending}
+            >
               {t("settings.users.sendInvite")}
             </Button>
           </DialogFooter>

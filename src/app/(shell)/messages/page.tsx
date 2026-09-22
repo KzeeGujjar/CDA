@@ -11,7 +11,7 @@ import { LoadingState } from "@/components/shared/loading-state";
 import { ChannelSidebar } from "@/components/messages/channel-sidebar";
 import { ConversationList } from "@/components/messages/conversation-list";
 import { ConversationThread } from "@/components/messages/conversation-thread";
-import { getConversations, markConversationRead } from "@/services/messages";
+import { getConversations, markConversationRead } from "@/services/messageService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { Conversation, MessageChannel } from "@/types/message";
 
@@ -26,6 +26,7 @@ export default function MessagesPage() {
     data: allConversations = [],
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({ queryKey: ["conversations"], queryFn: () => getConversations() });
 
@@ -61,7 +62,7 @@ export default function MessagesPage() {
       <div className="flex h-[calc(100svh-8rem)] flex-col gap-4">
         <PageHeader title={t("messages.title")} subtitle={t("messages.subtitle")} />
         <div className="flex flex-1 items-center justify-center">
-          <ErrorState onRetry={() => refetch()} />
+          <ErrorState error={error} onRetry={() => refetch()} />
         </div>
       </div>
     );

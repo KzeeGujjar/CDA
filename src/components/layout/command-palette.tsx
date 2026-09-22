@@ -16,14 +16,14 @@ import {
 } from "@/components/ui/command";
 import { navGroups } from "@/constants";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
-import { getVehicles } from "@/services/vehicles";
-import { getCustomers } from "@/services/customers";
-import { getLeads } from "@/services/leads";
-import { getDeals } from "@/services/deals";
-import { getDocuments } from "@/services/documents";
-import { getTasks } from "@/services/tasks";
-import { getConversations } from "@/services/messages";
-import { getChatThreads } from "@/services/ai-assistant";
+import { getVehicles } from "@/services/vehicleService";
+import { getCustomers } from "@/services/customerService";
+import { getLeads } from "@/services/leadService";
+import { getDeals } from "@/services/dealService";
+import { getDocuments } from "@/services/documentService";
+import { getTasks } from "@/services/taskService";
+import { getConversations } from "@/services/messageService";
+import { getChatThreads } from "@/services/aiService";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -34,14 +34,54 @@ export function CommandPalette() {
   const searching = query.trim().length > 0;
   const queryOpts = { enabled: open && searching };
 
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles", "palette"], queryFn: () => getVehicles(), ...queryOpts });
-  const { data: customers = [] } = useQuery({ queryKey: ["customers", "palette"], queryFn: () => getCustomers(), ...queryOpts });
-  const { data: leads = [] } = useQuery({ queryKey: ["leads", "palette"], queryFn: () => getLeads(), ...queryOpts });
-  const { data: deals = [] } = useQuery({ queryKey: ["deals", "palette"], queryFn: () => getDeals(), ...queryOpts });
-  const { data: documents = [] } = useQuery({ queryKey: ["documents", "palette"], queryFn: () => getDocuments(), ...queryOpts });
-  const { data: tasks = [] } = useQuery({ queryKey: ["tasks", "palette"], queryFn: () => getTasks(), ...queryOpts });
-  const { data: conversations = [] } = useQuery({ queryKey: ["conversations", "palette"], queryFn: () => getConversations(), ...queryOpts });
-  const { data: chatThreads = [] } = useQuery({ queryKey: ["chat-threads", "palette"], queryFn: () => getChatThreads(), ...queryOpts });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles", "palette"],
+    queryFn: () => getVehicles(),
+    ...queryOpts,
+  });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers", "palette"],
+    queryFn: () => getCustomers(),
+    ...queryOpts,
+  });
+  const { data: leads = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["leads", "palette"],
+    queryFn: () => getLeads(),
+    ...queryOpts,
+  });
+  const { data: deals = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["deals", "palette"],
+    queryFn: () => getDeals(),
+    ...queryOpts,
+  });
+  const { data: documents = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["documents", "palette"],
+    queryFn: () => getDocuments(),
+    ...queryOpts,
+  });
+  const { data: tasks = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["tasks", "palette"],
+    queryFn: () => getTasks(),
+    ...queryOpts,
+  });
+  const { data: conversations = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["conversations", "palette"],
+    queryFn: () => getConversations(),
+    ...queryOpts,
+  });
+  const { data: chatThreads = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["chat-threads", "palette"],
+    queryFn: () => getChatThreads(),
+    ...queryOpts,
+  });
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -78,7 +118,13 @@ export function CommandPalette() {
         </span>
         <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium">⌘K</kbd>
       </Button>
-      <Button variant="ghost" size="icon" onClick={() => setOpen(true)} className="sm:hidden" aria-label={t("common.search")}>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setOpen(true)}
+        className="sm:hidden"
+        aria-label={t("common.search")}
+      >
         <Search className="size-4.5" />
       </Button>
       <CommandDialog open={open} onOpenChange={handleOpenChange} title={t("common.search")}>
@@ -88,12 +134,14 @@ export function CommandPalette() {
 
           {!searching && (
             <CommandGroup heading={t("nav.groups.overview")}>
-              {navGroups.flatMap((g) => g.items).map((item) => (
-                <CommandItem key={item.key} value={t(item.labelKey)} onSelect={() => go(item.href)}>
-                  <item.icon className="size-4" />
-                  {t(item.labelKey)}
-                </CommandItem>
-              ))}
+              {navGroups
+                .flatMap((g) => g.items)
+                .map((item) => (
+                  <CommandItem key={item.key} value={t(item.labelKey)} onSelect={() => go(item.href)}>
+                    <item.icon className="size-4" />
+                    {t(item.labelKey)}
+                  </CommandItem>
+                ))}
             </CommandGroup>
           )}
 
@@ -120,7 +168,11 @@ export function CommandPalette() {
               <CommandSeparator />
               <CommandGroup heading={t("nav.customers")}>
                 {customers.map((c) => (
-                  <CommandItem key={c.id} value={`${c.name} ${c.email} ${c.phone}`} onSelect={() => go(`/customers/${c.id}`)}>
+                  <CommandItem
+                    key={c.id}
+                    value={`${c.name} ${c.email} ${c.phone}`}
+                    onSelect={() => go(`/customers/${c.id}`)}
+                  >
                     <UserRound className="size-4" />
                     {c.name} <span className="text-muted-foreground">{c.email}</span>
                   </CommandItem>
@@ -141,7 +193,9 @@ export function CommandPalette() {
                   >
                     <Target className="size-4" />
                     {l.customerName}
-                    {l.interestedVehicleLabel && <span className="text-muted-foreground">{l.interestedVehicleLabel}</span>}
+                    {l.interestedVehicleLabel && (
+                      <span className="text-muted-foreground">{l.interestedVehicleLabel}</span>
+                    )}
                   </CommandItem>
                 ))}
               </CommandGroup>

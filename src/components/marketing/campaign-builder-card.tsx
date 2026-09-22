@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge, type StatusTone } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { marketingTypeToChannel } from "@/lib/marketing-content-meta";
-import { createCampaign, getCampaigns } from "@/services/marketing";
+import { InlineError } from "@/components/shared/inline-state";
+import { createCampaign, getCampaigns } from "@/services/marketingService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { CampaignStatus, GeneratedMarketingContent, MarketingChannel } from "@/types/marketing";
 import type { Vehicle } from "@/types/vehicle";
@@ -32,7 +33,13 @@ export function CampaignBuilderCard({
   const { t, locale } = useTranslation();
   const queryClient = useQueryClient();
 
-  const { data: campaigns, isLoading } = useQuery({ queryKey: ["marketing-campaigns"], queryFn: getCampaigns });
+  const {
+    data: campaigns,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({ queryKey: ["marketing-campaigns"], queryFn: getCampaigns });
 
   const channels: MarketingChannel[] = Array.from(new Set(selectedContent.map((c) => marketingTypeToChannel[c.type])));
 
@@ -70,7 +77,11 @@ export function CampaignBuilderCard({
             onChange={(e) => onCampaignNameChange(e.target.value)}
             className="flex-1"
           />
-          <Button disabled={!canCreate || mutation.isPending} onClick={() => mutation.mutate()} className="shrink-0 gap-1.5">
+          <Button
+            disabled={!canCreate || mutation.isPending}
+            onClick={() => mutation.mutate()}
+            className="shrink-0 gap-1.5"
+          >
             <Rocket className="size-3.5" />
             {t("aiMarketing.createCampaign")}
           </Button>
@@ -88,12 +99,19 @@ export function CampaignBuilderCard({
         )}
 
         <div className="flex flex-col gap-2 border-t border-border pt-4">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("aiMarketing.pastCampaigns")}</span>
-          {isLoading ? null : !campaigns || campaigns.length === 0 ? (
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {t("aiMarketing.pastCampaigns")}
+          </span>
+          {isLoading ? null : isError ? (
+            <InlineError error={error} onRetry={() => refetch()} />
+          ) : !campaigns || campaigns.length === 0 ? (
             <EmptyState icon={Rocket} title={t("common.noResults")} />
           ) : (
             campaigns.map((c) => (
-              <div key={c.id} className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm">
+              <div
+                key={c.id}
+                className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              >
                 <div className="flex flex-col overflow-hidden">
                   <span className="truncate text-foreground">{c.name}</span>
                   <span className="truncate text-xs text-muted-foreground">

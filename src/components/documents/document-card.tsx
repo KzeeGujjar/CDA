@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { documentStatusTone } from "./document-status";
 import { documentTypeMeta } from "@/lib/document-type-meta";
 import { generateDocumentContent } from "@/lib/document-generator";
-import { updateDocumentStatus } from "@/services/documents";
+import { updateDocumentStatus } from "@/services/documentService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { ContractDocument } from "@/types/document";
 import type { Vehicle } from "@/types/vehicle";

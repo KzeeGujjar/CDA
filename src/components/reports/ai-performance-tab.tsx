@@ -8,19 +8,19 @@ import { LineChartCard } from "@/components/charts/line-chart-card";
 import { DataTable, type DataTableColumn } from "@/components/tables/data-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
-import { getAiPerformanceReport } from "@/services/reports";
+import { getAiPerformanceReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
 import type { AiPerformanceRow } from "@/types/report";
 
 export function AiPerformanceTab() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["reports", "ai-performance"],
     queryFn: getAiPerformanceReport,
   });
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const columns: DataTableColumn<AiPerformanceRow>[] = [
     { key: "feature", header: t("reports.table.feature"), render: (r) => r.feature },

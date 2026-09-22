@@ -15,9 +15,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FormField } from "@/components/forms/form-field";
-import { getCustomers } from "@/services/customers";
-import { getVehicles } from "@/services/vehicles";
-import { createLead } from "@/services/leads";
+import { getCustomers } from "@/services/customerService";
+import { getVehicles } from "@/services/vehicleService";
+import { createLead } from "@/services/leadService";
 import { salespeople } from "@/lib/salespeople";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { LeadSource } from "@/types/lead";
@@ -34,8 +34,18 @@ export function NewLeadDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   const [source, setSource] = useState<LeadSource | "">("");
   const [assignedToName, setAssignedToName] = useState("");
 
-  const { data: customers = [] } = useQuery({ queryKey: ["customers"], queryFn: () => getCustomers(), enabled: open });
-  const { data: vehicles = [] } = useQuery({ queryKey: ["vehicles"], queryFn: () => getVehicles(), enabled: open });
+  const { data: customers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["customers"],
+    queryFn: () => getCustomers(),
+    enabled: open,
+  });
+  const { data: vehicles = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles(),
+    enabled: open,
+  });
 
   function reset() {
     setCustomerId("");

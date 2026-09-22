@@ -21,8 +21,16 @@ import {
 import { FormField } from "@/components/forms/form-field";
 import { FetchDubizzleInventoryDialog } from "./fetch-dubizzle-inventory-dialog";
 import { ImportDubizzleCsvDialog } from "./import-dubizzle-csv-dialog";
-import { connectMarketplace, disconnectMarketplace, getMarketplaceConnections } from "@/services/marketplace-connections";
-import { marketplaceConnectionSchema, type MarketplaceConnectionValues } from "@/lib/validation/marketplace-connection-schema";
+import { InlineEmpty, InlineError } from "@/components/shared/inline-state";
+import {
+  connectMarketplace,
+  disconnectMarketplace,
+  getMarketplaceConnections,
+} from "@/services/marketplaceConnectionService";
+import {
+  marketplaceConnectionSchema,
+  type MarketplaceConnectionValues,
+} from "@/lib/validation/marketplace-connection-schema";
 import { marketplaceSourceLabel, marketplaceSourceTone } from "@/lib/marketplace-sources";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 
@@ -63,7 +71,11 @@ function ConnectDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o
           <DialogDescription>{t("settings.marketplaceConnections.dialogDescription")}</DialogDescription>
         </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit((values) => mutation.mutate(values))}>
-          <FormField label={t("settings.marketplaceConnections.fieldLabel")} htmlFor="dubizzle-url" error={errors.accountUrl?.message}>
+          <FormField
+            label={t("settings.marketplaceConnections.fieldLabel")}
+            htmlFor="dubizzle-url"
+            error={errors.accountUrl?.message}
+          >
             <Input
               id="dubizzle-url"
               type="url"
@@ -73,7 +85,9 @@ function ConnectDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o
           </FormField>
           <DialogFooter>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? t("settings.marketplaceConnections.connecting") : t("settings.marketplaceConnections.connect")}
+              {mutation.isPending
+                ? t("settings.marketplaceConnections.connecting")
+                : t("settings.marketplaceConnections.connect")}
             </Button>
           </DialogFooter>
         </form>
@@ -89,7 +103,13 @@ export function MarketplaceConnectionsCard() {
   const [fetchDialogOpen, setFetchDialogOpen] = useState(false);
   const [csvDialogOpen, setCsvDialogOpen] = useState(false);
 
-  const { data: connections, isLoading } = useQuery({
+  const {
+    data: connections,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["marketplace-connections"],
     queryFn: getMarketplaceConnections,
   });
@@ -113,12 +133,18 @@ export function MarketplaceConnectionsCard() {
         <CardDescription>{t("settings.marketplaceConnections.subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        {isLoading || !dubizzle ? (
+        {isLoading ? (
           <Skeleton className="h-16 w-full" />
+        ) : isError ? (
+          <InlineError error={error} onRetry={() => refetch()} />
+        ) : !dubizzle ? (
+          <InlineEmpty />
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3.5">
             <div className="flex items-center gap-3">
-              <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-semibold ${marketplaceSourceTone.dubizzle}`}>
+              <span
+                className={`flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-semibold ${marketplaceSourceTone.dubizzle}`}
+              >
                 {marketplaceSourceLabel.dubizzle.charAt(0)}
               </span>
               <div className="flex flex-col gap-0.5">
@@ -142,7 +168,9 @@ export function MarketplaceConnectionsCard() {
                     )}
                   </div>
                 ) : (
-                  <span className="text-xs text-muted-foreground">{t("settings.marketplaceConnections.notConnected")}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("settings.marketplaceConnections.notConnected")}
+                  </span>
                 )}
               </div>
             </div>
@@ -171,8 +199,12 @@ export function MarketplaceConnectionsCard() {
 
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-dashed border-border p-3.5">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-medium text-foreground">{t("settings.marketplaceConnections.csvRowTitle")}</span>
-            <span className="text-xs text-muted-foreground">{t("settings.marketplaceConnections.csvRowDescription")}</span>
+            <span className="text-sm font-medium text-foreground">
+              {t("settings.marketplaceConnections.csvRowTitle")}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {t("settings.marketplaceConnections.csvRowDescription")}
+            </span>
           </div>
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setCsvDialogOpen(true)}>
             <FileSpreadsheet className="size-3.5" />

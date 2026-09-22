@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { formatMoney } from "@/components/shared/currency";
-import { getInventoryReport } from "@/services/reports";
+import { getInventoryReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
 import type { ReportInventoryRow } from "@/types/report";
@@ -26,9 +26,9 @@ const inventoryStatusTone: Record<string, StatusTone> = {
 
 export function InventoryReportTab() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useQuery({ queryKey: ["reports", "inventory"], queryFn: getInventoryReport });
+  const { data, isLoading, isError, error, refetch } = useQuery({ queryKey: ["reports", "inventory"], queryFn: getInventoryReport });
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const columns: DataTableColumn<ReportInventoryRow>[] = [
     { key: "vehicle", header: t("reports.table.vehicle"), render: (r) => r.vehicleLabel },

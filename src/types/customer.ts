@@ -11,7 +11,8 @@ export interface Customer {
   address?: string;
   tags: string[];
   createdAt: string;
-  lifetimeValue: number;
+  /** Total of completed purchases; absent when the signed-in role may not see deals. */
+  lifetimeValue?: number;
 }
 
 export interface CustomerFilters {

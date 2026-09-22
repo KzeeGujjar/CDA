@@ -46,7 +46,8 @@ export interface VehicleSpec {
   seats: number;
   bodyType: string;
   vin: string;
-  importSpec: ImportSpec;
+  /** Absent when not recorded (the create/edit forms always set it; a record made another way may not). */
+  importSpec?: ImportSpec;
   accidentHistory: AccidentHistory;
   serviceHistory: ServiceHistoryStatus;
   owners: number;
@@ -62,18 +63,25 @@ export interface Vehicle {
   condition: VehicleCondition;
   status: VehicleStatus;
   price: Money;
-  costPrice: Money;
-  repairCost: Money;
-  transportCost: Money;
+  /**
+   * What the dealership paid. ABSENT (not zero) when the signed-in role may not see cost figures. Everything that
+   * shows or adds costs must handle that: use costsVisible() / getTotalCost() from lib/vehicle-finance.
+   */
+  costPrice?: Money;
+  repairCost?: Money;
+  transportCost?: Money;
+  otherCost?: Money;
   expectedSellingPrice: Money;
   estimatedMarketValue: Money;
   spec: VehicleSpec;
   images: string[];
   daysInStock: number;
   acquiredAt: string;
-  location: string;
-  emirate: Emirate;
-  sourceType: VehicleSourceType;
+  /** Absent when not recorded (the create/edit forms always set it; a record made another way may not). */
+  location?: string;
+  emirate?: Emirate;
+  /** Where the dealership got it; absent when not recorded. */
+  sourceType?: VehicleSourceType;
   registration: VehicleRegistration;
   featured?: boolean;
   notes?: string;

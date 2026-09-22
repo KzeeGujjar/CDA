@@ -15,11 +15,13 @@ export function ChatWindow({
   awaitingReply,
   streamingMessageId,
   onSend,
+  onDecide,
 }: {
   thread: ChatThread | null;
   awaitingReply: boolean;
   streamingMessageId: string | null;
   onSend: (text: string) => void;
+  onDecide?: (actionId: string, decision: "approve" | "reject") => Promise<void>;
 }) {
   const { t } = useTranslation();
 
@@ -36,13 +38,22 @@ export function ChatWindow({
       <ScrollArea className="flex-1">
         <div className="flex flex-col gap-4 p-4" role="log" aria-live="polite" aria-relevant="additions">
           {thread.messages.map((message) => (
-            <ChatMessageBubble key={message.id} message={message} streaming={message.id === streamingMessageId} />
+            <ChatMessageBubble
+              key={message.id}
+              message={message}
+              streaming={message.id === streamingMessageId}
+              onDecide={onDecide}
+            />
           ))}
           {awaitingReply && <TypingIndicator />}
           {thread.messages.length <= 1 && (
             <div className="flex flex-wrap gap-2 pt-2">
               {suggestionKeys.map((key) => (
-                <AiSuggestionChip key={key} label={t(`aiAssistant.suggestions.${key}`)} onClick={() => onSend(t(`aiAssistant.suggestions.${key}`))} />
+                <AiSuggestionChip
+                  key={key}
+                  label={t(`aiAssistant.suggestions.${key}`)}
+                  onClick={() => onSend(t(`aiAssistant.suggestions.${key}`))}
+                />
               ))}
             </div>
           )}

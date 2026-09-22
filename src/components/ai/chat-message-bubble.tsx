@@ -4,9 +4,18 @@ import { Bot, User } from "lucide-react";
 import { cn } from "@/utils";
 import { useMockStream } from "@/hooks/use-mock-stream";
 import { MarketplaceListingsGrid } from "./marketplace-listings-grid";
+import { AgentToolActivity } from "./agent-tool-activity";
 import type { ChatMessage } from "@/types/conversation";
 
-export function ChatMessageBubble({ message, streaming = false }: { message: ChatMessage; streaming?: boolean }) {
+export function ChatMessageBubble({
+  message,
+  streaming = false,
+  onDecide,
+}: {
+  message: ChatMessage;
+  streaming?: boolean;
+  onDecide?: (actionId: string, decision: "approve" | "reject") => Promise<void>;
+}) {
   const isUser = message.role === "user";
   const revealed = useMockStream(message.content, streaming && !isUser);
 
@@ -30,6 +39,7 @@ export function ChatMessageBubble({ message, streaming = false }: { message: Cha
           {revealed}
         </div>
       </div>
+      {!isUser && message.toolCalls && <AgentToolActivity toolCalls={message.toolCalls} onDecide={onDecide} />}
       {!isUser && message.listings && <MarketplaceListingsGrid listings={message.listings} />}
     </div>
   );

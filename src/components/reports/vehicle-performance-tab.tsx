@@ -7,7 +7,7 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { getVehiclePerformanceReport } from "@/services/reports";
+import { getVehiclePerformanceReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
 import type { VehiclePerformanceRow } from "@/types/report";
@@ -21,12 +21,12 @@ const vehicleStatusTone: Record<string, StatusTone> = {
 
 export function VehiclePerformanceTab() {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["reports", "vehicle-performance"],
     queryFn: getVehiclePerformanceReport,
   });
 
-  if (isError) return <ErrorState onRetry={() => refetch()} />;
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const columns: DataTableColumn<VehiclePerformanceRow>[] = [
     { key: "vehicle", header: t("reports.table.vehicle"), render: (r) => r.vehicleLabel },

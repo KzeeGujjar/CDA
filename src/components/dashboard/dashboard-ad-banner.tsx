@@ -6,11 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Megaphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getActiveDashboardAds } from "@/services/dashboard-ads";
+import { getActiveDashboardAds } from "@/services/dashboardAdService";
 
 export function DashboardAdBanner() {
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
-  const { data: ads } = useQuery({ queryKey: ["dashboard-ads-active"], queryFn: getActiveDashboardAds });
+  const { data: ads } = useQuery({
+    meta: { banner: true },
+    queryKey: ["dashboard-ads-active"],
+    queryFn: getActiveDashboardAds,
+  });
 
   const visibleAds = (ads ?? []).filter((ad) => !dismissedIds.includes(ad.id));
   if (visibleAds.length === 0) return null;
