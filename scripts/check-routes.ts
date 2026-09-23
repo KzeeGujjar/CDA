@@ -34,7 +34,9 @@ if (process.argv.includes("--markdown")) {
         (e.access.also ? ` + \`${e.access.also.resource}:${e.access.also.action}\`` : "")
       : e.access.kind === "self"
         ? "signed-in user (own data only)"
-        : "public (rate limited)";
+        : e.access.kind === "composed"
+          ? "signed-in user (composed: gated per-slice inside the handler)"
+          : "public (rate limited)";
   console.log("| Endpoint | Access |\n|---|---|");
   for (const e of entries) console.log(`| \`${e.method} ${e.url}\` | ${label(e)} |`);
   process.exit(0);
@@ -46,5 +48,5 @@ if (errors.length) {
 }
 const count = (k: string) => entries.filter((e) => e.access.kind === k).length;
 console.log(
-  `Route audit OK: ${entries.length} endpoints - ${count("permission")} permission-gated, ${count("self")} own-data, ${count("public")} public (allowlisted).`
+  `Route audit OK: ${entries.length} endpoints - ${count("permission")} permission-gated, ${count("self")} own-data, ${count("composed")} composed, ${count("public")} public (allowlisted).`
 );

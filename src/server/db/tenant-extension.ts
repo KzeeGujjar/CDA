@@ -36,6 +36,10 @@ export const TENANT_MODELS = {
   PartnerRequest: "partner_requests",
   AiToolCall: "ai_tool_calls",
   Notification: "notifications",
+  Conversation: "conversations",
+  Message: "messages",
+  DocumentTemplate: "document_templates",
+  GeneratedDocument: "generated_documents",
 } as const;
 
 const TENANT_MODEL_NAMES = new Set<string>(Object.keys(TENANT_MODELS));

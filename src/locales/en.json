@@ -311,6 +311,22 @@
       "rtaNotesEmpty": "No RTA information recorded yet.",
       "placeholderNotice": "Reference field only — connects to official RTA services once available."
     },
+    "photos": {
+      "empty": "No photos uploaded yet.",
+      "addPhotos": "Add photos",
+      "primary": "Primary",
+      "setPrimary": "Set as primary",
+      "moveEarlier": "Move earlier",
+      "moveLater": "Move later",
+      "replace": "Replace photo",
+      "delete": "Delete photo",
+      "deleteConfirmTitle": "Delete this photo?",
+      "deleteConfirm": "This photo will be removed from the gallery and cannot be recovered.",
+      "uploadFailed": "Could not upload this photo.",
+      "deleteFailed": "Could not delete this photo.",
+      "replaceFailed": "Could not replace this photo.",
+      "demoNotice": "Sign in to upload and manage real photos — these are sample images."
+    },
     "sort": {
       "recent": "Recently added",
       "priceDesc": "Price: high to low",
@@ -627,11 +643,11 @@
     },
     "newDocument": "New document",
     "editDocument": "Edit document",
-    "formDescription": "Document generation and e-signature integration will be connected to a backend later — this creates and tracks document records.",
+    "formDescription": "Documents are generated from your dealership's templates, filled in with real vehicle, customer and deal details.",
     "allTypes": "All types",
     "createdToast": "Document created",
     "updatedToast": "Document updated",
-    "previewDisclaimer": "This is a simulated preview. Real PDF generation will be available once connected to a backend.",
+    "previewDisclaimer": "This preview is exactly what Download, Print and Share will show. Electronic signature capture is not yet available — Sign only records that the document was signed.",
     "fields": {
       "type": "Document type",
       "title": "Title",
@@ -681,6 +697,10 @@
         "findMissingInfo": "Find missing information."
       }
     }
+  },
+  "sharedDocument": {
+    "notFound": "This link is invalid or has expired.",
+    "generatedOn": "Generated on"
   },
   "tasks": {
     "title": "Tasks",

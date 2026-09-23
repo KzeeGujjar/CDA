@@ -45,7 +45,11 @@ export function AiPerformanceTab() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard label={t("reports.kpi.totalInteractions")} value={String(data.totalInteractions)} delta={data.totalInteractionsDelta} icon={Sparkles} />
-          <StatCard label={t("reports.kpi.satisfaction")} value={`${data.avgSatisfaction.toFixed(1)}%`} icon={MessageSquareText} />
+          <StatCard
+            label={t("reports.kpi.satisfaction")}
+            value={data.avgSatisfaction === undefined ? "—" : `${data.avgSatisfaction.toFixed(1)}%`}
+            icon={MessageSquareText}
+          />
           <StatCard label={t("reports.kpi.timeSaved")} value={`${data.timeSavedHours}h`} icon={Clock} />
         </div>
       )}

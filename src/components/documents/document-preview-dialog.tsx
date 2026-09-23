@@ -1,8 +1,11 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DocumentPreview } from "@/components/documents/document-preview";
-import { generateDocumentContent } from "@/lib/document-generator";
+import { ErrorState } from "@/components/shared/error-state";
+import { getDocumentContent } from "@/services/documentService";
 import type { ContractDocument } from "@/types/document";
 import type { Customer } from "@/types/customer";
 import type { Vehicle } from "@/types/vehicle";
@@ -20,8 +23,19 @@ export function DocumentPreviewDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const {
+    data: content,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["document-content", doc?.id],
+    queryFn: () => getDocumentContent(doc!, { vehicle, customer }),
+    enabled: open && Boolean(doc),
+  });
+
   if (!doc) return null;
-  const content = generateDocumentContent(doc.type, { vehicle, customer });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -29,7 +43,13 @@ export function DocumentPreviewDialog({
         <DialogHeader>
           <DialogTitle>{doc.title}</DialogTitle>
         </DialogHeader>
-        <DocumentPreview content={content} />
+        {isLoading ? (
+          <Skeleton className="h-64 w-full" />
+        ) : isError ? (
+          <ErrorState error={error} onRetry={() => refetch()} />
+        ) : (
+          <DocumentPreview content={content ?? ""} />
+        )}
       </DialogContent>
     </Dialog>
   );

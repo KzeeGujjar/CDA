@@ -1,4 +1,3 @@
-import type { ApiError } from "@/types/common";
 import type { AiInsight, AnalyticsSnapshot, ChartPoint, DealerPerformanceSummary } from "@/types/analytics";
 import { aiInsightsFixture, analyticsSnapshotFixture, dealerPerformanceSummaryFixture } from "@/mock/analytics";
 import { backendRequest, liveOrDemo, unwrapBackend } from "@/services/backend";
@@ -6,37 +5,41 @@ import { backendRequest, liveOrDemo, unwrapBackend } from "@/services/backend";
 const wait = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * Dashboard data. Connected to the backend's four dashboard endpoints (/dashboard/inventory, /sales, /leads,
- * /sales-trend): with a real session the numbers are computed by the database for exactly what this user may see.
- * A figure the user's role may not see (cost, profit) or an endpoint they may not call comes back as `null`, never
- * as 0, so the page can leave it out. Without a session the built-in demo data is used, as before.
+ * Dashboard data. Connected to the backend's dashboard endpoints: with a real session the numbers are computed
+ * by the database for exactly what this user may see. A figure the user's role may not see (cost, profit) or
+ * a slice their role has no permission for at all comes back as `null`, never as 0, so the page can leave it
+ * out — this is now decided server-side, in one call (§0.20's `/dashboard/summary`, a `composed` route: any
+ * signed-in user may call it, and it is the route itself that never fabricates a slice it cannot compute).
+ * Without a session the built-in demo data is used, as before.
  *
- * Not on the backend yet, so empty in live mode rather than invented: lead funnel, inventory aging, revenue by
- * make, top performers, AI insights.
+ * Not on the backend yet, so empty in live mode rather than invented: lead funnel, revenue by make, top
+ * performers (unused by the dashboard page itself today — see src/types/analytics.ts).
  */
 
 interface MetricDto {
   value: number | null;
   change: number | null;
 }
-interface InventoryDto {
-  currency: string;
-  totalVehicles: MetricDto;
-  availableVehicles: MetricDto;
-  vehiclesPurchased: MetricDto;
-  expectedRevenue: MetricDto;
-  inventoryValue: MetricDto | null;
+interface AiInsightDto {
+  id: string;
+  kind: AiInsight["kind"];
+  message: string;
+  createdAt: string;
 }
-interface SalesDto {
+interface SummaryDto {
   currency: string;
-  vehiclesSold: MetricDto;
-  monthlySales: MetricDto;
+  totalVehicles: MetricDto | null;
+  availableVehicles: MetricDto | null;
+  vehiclesPurchased: MetricDto | null;
+  expectedRevenue: MetricDto | null;
+  totalInventoryValue: MetricDto | null;
+  vehiclesSold: MetricDto | null;
+  monthlySales: MetricDto | null;
   grossProfit: MetricDto | null;
-}
-interface LeadsDto {
-  currency: string;
-  newLeads: MetricDto;
-  conversionRate: MetricDto;
+  newLeads: MetricDto | null;
+  conversionRate: MetricDto | null;
+  inventoryAging: ChartPoint[];
+  aiInsights: AiInsightDto[];
 }
 interface TrendDto {
   months: { month: string; revenue: number }[];
@@ -52,38 +55,34 @@ async function readIfAllowed<T>(path: string): Promise<T | null> {
 const value = (m: MetricDto | null | undefined) => m?.value ?? null;
 const change = (m: MetricDto | null | undefined) => m?.change ?? null;
 
+async function fetchSummary(): Promise<SummaryDto> {
+  return unwrapBackend(await backendRequest<SummaryDto>("GET", "/dashboard/summary?period=month"));
+}
+
 async function liveSummary(): Promise<DealerPerformanceSummary> {
-  const [inventory, sales, leads] = await Promise.all([
-    readIfAllowed<InventoryDto>("/dashboard/inventory?period=month"),
-    readIfAllowed<SalesDto>("/dashboard/sales?period=month"),
-    readIfAllowed<LeadsDto>("/dashboard/leads?period=month"),
-  ]);
-  if (!inventory && !sales && !leads) {
-    const denied: ApiError = { message: "Your role cannot view the dashboard.", code: "forbidden", status: 403 };
-    throw denied;
-  }
+  const s = await fetchSummary();
   return {
-    currency: inventory?.currency ?? sales?.currency ?? leads?.currency,
-    totalVehicles: value(inventory?.totalVehicles),
-    totalVehiclesDelta: change(inventory?.totalVehicles),
-    availableVehicles: value(inventory?.availableVehicles),
-    availableVehiclesDelta: change(inventory?.availableVehicles),
-    vehiclesSold: value(sales?.vehiclesSold),
-    vehiclesSoldDelta: change(sales?.vehiclesSold),
-    vehiclesPurchased: value(inventory?.vehiclesPurchased),
-    vehiclesPurchasedDelta: change(inventory?.vehiclesPurchased),
-    totalInventoryValue: value(inventory?.inventoryValue),
-    totalInventoryValueDelta: change(inventory?.inventoryValue),
-    expectedRevenue: value(inventory?.expectedRevenue),
-    expectedRevenueDelta: change(inventory?.expectedRevenue),
-    grossProfit: value(sales?.grossProfit),
-    grossProfitDelta: change(sales?.grossProfit),
-    monthlySales: value(sales?.monthlySales),
-    monthlySalesDelta: change(sales?.monthlySales),
-    newLeads: value(leads?.newLeads),
-    newLeadsDelta: change(leads?.newLeads),
-    conversionRate: value(leads?.conversionRate),
-    conversionRateDelta: change(leads?.conversionRate),
+    currency: s.currency,
+    totalVehicles: value(s.totalVehicles),
+    totalVehiclesDelta: change(s.totalVehicles),
+    availableVehicles: value(s.availableVehicles),
+    availableVehiclesDelta: change(s.availableVehicles),
+    vehiclesSold: value(s.vehiclesSold),
+    vehiclesSoldDelta: change(s.vehiclesSold),
+    vehiclesPurchased: value(s.vehiclesPurchased),
+    vehiclesPurchasedDelta: change(s.vehiclesPurchased),
+    totalInventoryValue: value(s.totalInventoryValue),
+    totalInventoryValueDelta: change(s.totalInventoryValue),
+    expectedRevenue: value(s.expectedRevenue),
+    expectedRevenueDelta: change(s.expectedRevenue),
+    grossProfit: value(s.grossProfit),
+    grossProfitDelta: change(s.grossProfit),
+    monthlySales: value(s.monthlySales),
+    monthlySalesDelta: change(s.monthlySales),
+    newLeads: value(s.newLeads),
+    newLeadsDelta: change(s.newLeads),
+    conversionRate: value(s.conversionRate),
+    conversionRateDelta: change(s.conversionRate),
   };
 }
 
@@ -92,9 +91,12 @@ const monthLabel = (isoDate: string) =>
   new Date(`${isoDate}T00:00:00Z`).toLocaleString("en-US", { month: "short", timeZone: "UTC" });
 
 async function liveSnapshot(): Promise<AnalyticsSnapshot> {
-  const trend = await readIfAllowed<TrendDto>("/dashboard/sales-trend?months=6");
+  const [trend, summary] = await Promise.all([
+    readIfAllowed<TrendDto>("/dashboard/sales-trend?months=6"),
+    fetchSummary().catch(() => null),
+  ]);
   const salesTrend: ChartPoint[] = (trend?.months ?? []).map((m) => ({ label: monthLabel(m.month), value: m.revenue }));
-  return { salesTrend, leadFunnel: [], inventoryAging: [], revenueByMake: [], topPerformers: [] };
+  return { salesTrend, leadFunnel: [], inventoryAging: summary?.inventoryAging ?? [], revenueByMake: [], topPerformers: [] };
 }
 
 export function getDealerPerformanceSummary(): Promise<DealerPerformanceSummary> {
@@ -119,7 +121,7 @@ export function getAnalyticsSnapshot(): Promise<AnalyticsSnapshot> {
 
 export function getAiInsights(): Promise<AiInsight[]> {
   return liveOrDemo({
-    live: async () => [],
+    live: async () => (await fetchSummary()).aiInsights,
     demo: async () => {
       await wait(300);
       return aiInsightsFixture;

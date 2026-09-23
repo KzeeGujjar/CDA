@@ -3,6 +3,7 @@ import type { AuthContext } from "@/server/auth/context";
 import { withTenant } from "@/server/db/tenant";
 import { AppError } from "@/server/lib/errors";
 import { recordAiActivity } from "@/server/modules/ai/ai-activity.service";
+import { recordAudit } from "@/server/modules/audit/record";
 import type { AiToolCall } from "../providers/types";
 import { ALL_TOOLS, findTool, mayUse } from "./registry";
 import type { AgentTool } from "./types";
@@ -155,12 +156,23 @@ export async function runToolCall(
     const durationMs = Date.now() - started;
     const run = await finish("OK", truncated(JSON.stringify(result)), tool.summarize(result), args, { durationMs });
     if (tool.activity) {
+      // tool.activity marks the tools that do something worth a person's attention (§0.10's AI Activity
+      // feed); those same tools are the ones worth a line in the security audit trail too ("AI action
+      // executed") — a read-only lookup (searchVehicles, getInventory...) is not.
       await withTenant(ctx, (db) =>
-        recordAiActivity(db, ctx, {
-          action: tool.activity!,
-          summary: tool.summarize(result),
-          conversationId: where.conversationId,
-        })
+        Promise.all([
+          recordAiActivity(db, ctx, {
+            action: tool.activity!,
+            summary: tool.summarize(result),
+            conversationId: where.conversationId,
+          }),
+          recordAudit(db, ctx, {
+            action: "ai.action_executed",
+            entityType: "ai_tool_call",
+            entityId: run.rowId,
+            metadata: { tool: tool.name },
+          }),
+        ])
       ).catch(() => undefined);
     }
     return run;

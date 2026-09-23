@@ -228,6 +228,12 @@ async function main() {
       where: { organizationId: created!.organizationId, action: "organization.registered" },
     })) === 1
   );
+  ok(
+    "...and so is the owner user it created (§0.25/§0.26's 'User created')",
+    (await db.auditLog.count({
+      where: { organizationId: created!.organizationId, action: "user.created", entityId: created!.id },
+    })) === 1
+  );
 
   const verifyMail = await waitForMail(ownerEmail, "Confirm", beforeReg);
   ok(
@@ -908,6 +914,10 @@ async function main() {
   ok(
     "the session belongs to the inviting organization",
     (await call("/api/v1/auth/me", { token: cookieToken(accepted)! })).json.organization.id === orgX
+  );
+  ok(
+    "accepting an invitation logs a user.created audit entry (§0.25/§0.26's 'User created')",
+    !!(await db.auditLog.findFirst({ where: { organizationId: orgX, action: "user.created", entityId: salesUser.id } }))
   );
   ok(
     "an invitation cannot be accepted twice",

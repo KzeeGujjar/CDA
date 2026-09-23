@@ -94,6 +94,7 @@ async function main() {
   const owner = await mkUser(org.id, rolesA.dealerOwner, "owner");
   const salesperson = await mkUser(org.id, rolesA.salesperson, "salesperson");
   const accountant = await mkUser(org.id, rolesA.accountant, "accountant");
+  const marketingManager = await mkUser(org.id, rolesA.marketingManager, "marketingmanager");
   const usdOwner = await mkUser(usdOrg.id, rolesB.dealerOwner, "usdowner");
 
   // A small data set for THIS month (the dashboard's default period), known by hand.
@@ -216,15 +217,18 @@ async function main() {
     trend.months.map((m) => m.revenue)
   );
   same(
-    "what the backend does not provide yet is empty, not invented",
-    [
-      snapshot.leadFunnel,
-      snapshot.inventoryAging,
-      snapshot.revenueByMake,
-      snapshot.topPerformers,
-      await getAiInsights(),
-    ],
-    [[], [], [], [], []]
+    "what the backend still does not provide is empty, not invented",
+    [snapshot.leadFunnel, snapshot.revenueByMake, snapshot.topPerformers],
+    [[], [], []]
+  );
+  const summaryRaw = (await raw("summary?period=month")).body as {
+    inventoryAging: { label: string; value: number }[];
+    aiInsights: unknown[];
+  };
+  same(
+    "inventoryAging and aiInsights are real now (§0.20): match the summary endpoint exactly",
+    [snapshot.inventoryAging, await getAiInsights()],
+    [summaryRaw.inventoryAging, summaryRaw.aiInsights]
   );
 
   // 3. a role that may not see costs: those figures are null, the rest is real
@@ -256,22 +260,26 @@ async function main() {
     sal: await raw("sales?period=month"),
     led: await raw("leads?period=month"),
   };
-  const accSummary = await fails(() => getDealerPerformanceSummary());
-  if (acc.inv.status === 403 && acc.sal.status === 403 && acc.led.status === 403) {
-    ok(
-      "accountant: a role with no dashboard access gets a 403 the page can show",
-      accSummary?.status === 403 && accSummary.code === "forbidden"
-    );
-  } else {
-    const s = await getDealerPerformanceSummary();
-    ok(
-      "accountant: an endpoint the role may not read leaves its figures null, the others load",
-      (acc.inv.status === 403) === (s.totalVehicles === null) &&
-        (acc.sal.status === 403) === (s.monthlySales === null) &&
-        (acc.led.status === 403) === (s.newLeads === null),
-      JSON.stringify({ statuses: [acc.inv.status, acc.sal.status, acc.led.status], s })
-    );
-  }
+  // §0.20: the composed /dashboard/summary endpoint never 403s for a signed-in user — a slice the role may
+  // not read is null instead, decided by the route itself rather than by the frontend probing three endpoints
+  // and inferring a 403 from all three failing.
+  const accSummary = await getDealerPerformanceSummary();
+  ok(
+    "accountant: an endpoint the role may not read leaves its figures null, the others load",
+    (acc.inv.status === 403) === (accSummary.totalVehicles === null) &&
+      (acc.sal.status === 403) === (accSummary.monthlySales === null) &&
+      (acc.led.status === 403) === (accSummary.newLeads === null),
+    JSON.stringify({ statuses: [acc.inv.status, acc.sal.status, acc.led.status], accSummary })
+  );
+
+  await logout();
+  await login({ email: marketingManager, password });
+  const mkt = await getDealerPerformanceSummary();
+  ok(
+    "marketing manager: none of vehicles/sales/leads:read -> every figure is null, but no thrown error",
+    mkt.totalVehicles === null && mkt.monthlySales === null && mkt.newLeads === null,
+    JSON.stringify(mkt)
+  );
 
   // 5. another dealership, another currency
   await logout();

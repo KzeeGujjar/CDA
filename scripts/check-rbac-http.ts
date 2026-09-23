@@ -140,6 +140,13 @@ async function main() {
           wrong.push(`${routeKey(e)} (own data) refused ${key} with ${r.status}`);
         continue;
       }
+      if (e.access.kind === "composed") {
+        // Any signed-in user may call it; the handler composes several can() checks internally, each gating
+        // just its own slice of the response, so no role is ever refused the endpoint itself (§0.20).
+        if (r.status === 401 || r.status === 403)
+          wrong.push(`${routeKey(e)} (composed) refused ${key} with ${r.status}`);
+        continue;
+      }
       const roleHeld = held.get(key)!;
       const allowed =
         roleHeld.has(`${e.access.resource}:${e.access.action}`) &&
@@ -150,7 +157,8 @@ async function main() {
         );
       if (allowed && (r.status === 401 || r.status === 403))
         wrong.push(`${routeKey(e)}: ${key} holds ${e.access.resource}:${e.access.action} but got ${r.status}`);
-      if (!allowed && r.status === 403 && r.json?.code !== "forbidden")
+      // §0.24's v2 endpoints nest the code under .error (see api-route.ts's Envelope) — either shape is standard.
+      if (!allowed && r.status === 403 && r.json?.code !== "forbidden" && r.json?.error?.code !== "forbidden")
         wrong.push(`${routeKey(e)}: 403 for ${key} without the standard error body`);
     }
   }

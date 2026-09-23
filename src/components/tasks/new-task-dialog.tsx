@@ -19,10 +19,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { FormField } from "@/components/forms/form-field";
 import { taskCategories, taskCategoryMeta } from "@/lib/task-category-meta";
-import { createTask } from "@/services/taskService";
+import { createTask, getAssignableUsers } from "@/services/taskService";
 import { getVehicles } from "@/services/vehicleService";
 import { getCustomers } from "@/services/customerService";
-import { salespeople } from "@/lib/salespeople";
+import { notifyError } from "@/lib/errors/notify";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { TaskCategory, TaskPriority } from "@/types/task";
 
@@ -34,10 +34,16 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   const [category, setCategory] = useState<TaskCategory>("follow_up");
   const [priority, setPriority] = useState<TaskPriority>("medium");
   const [dueDate, setDueDate] = useState<Date | undefined>(new Date());
-  const [assignedToName, setAssignedToName] = useState(salespeople[0]);
+  const [assigneeId, setAssigneeId] = useState("");
   const [vehicleId, setVehicleId] = useState("");
   const [customerId, setCustomerId] = useState("");
 
+  const { data: assignableUsers = [] } = useQuery({
+    meta: { banner: true },
+    queryKey: ["assignable-users"],
+    queryFn: () => getAssignableUsers(),
+    enabled: open,
+  });
   const { data: vehicles = [] } = useQuery({
     meta: { banner: true },
     queryKey: ["vehicles"],
@@ -51,12 +57,14 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
     enabled: open,
   });
 
+  const effectiveAssigneeId = assigneeId || (assignableUsers[0]?.id ?? "");
+
   function reset() {
     setTitle("");
     setCategory("follow_up");
     setPriority("medium");
     setDueDate(new Date());
-    setAssignedToName(salespeople[0]);
+    setAssigneeId("");
     setVehicleId("");
     setCustomerId("");
   }
@@ -65,12 +73,14 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
     mutationFn: () => {
       const vehicle = vehicles.find((v) => v.id === vehicleId);
       const customer = customers.find((c) => c.id === customerId);
+      const assignee = assignableUsers.find((u) => u.id === effectiveAssigneeId);
       return createTask({
         title: title.trim(),
         category,
         priority,
         dueAt: (dueDate ?? new Date()).toISOString(),
-        assignedToName,
+        assignedToId: assignee?.id,
+        assignedToName: assignee?.name ?? "",
         vehicleId: vehicle?.id,
         vehicleLabel: vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}` : undefined,
         customerId: customer?.id,
@@ -83,6 +93,7 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
       reset();
       onOpenChange(false);
     },
+    onError: (error) => notifyError(error),
   });
 
   const canSave = title.trim().length > 0 && Boolean(dueDate);
@@ -156,14 +167,14 @@ export function NewTaskDialog({ open, onOpenChange }: { open: boolean; onOpenCha
           </FormField>
 
           <FormField label={t("tasks.fields.assignee")} htmlFor="task-assignee">
-            <Select value={assignedToName} onValueChange={setAssignedToName}>
+            <Select value={effectiveAssigneeId} onValueChange={setAssigneeId}>
               <SelectTrigger id="task-assignee" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {salespeople.map((name) => (
-                  <SelectItem key={name} value={name}>
-                    {name}
+                {assignableUsers.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.name}
                   </SelectItem>
                 ))}
               </SelectContent>

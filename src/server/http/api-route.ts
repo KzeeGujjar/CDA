@@ -6,7 +6,7 @@ import { readCookie, sessionCookieName } from "@/server/auth/cookies";
 import type { PermissionAction, PermissionResource } from "@/server/auth/permission-catalog";
 import { resolveSessionContext } from "@/server/auth/session";
 import { auditAuth } from "@/server/auth/flows/common";
-import { hit } from "@/server/auth/rate-limit";
+import { hit, LIMITS } from "@/server/auth/rate-limit";
 import { getPlatformDb } from "@/server/db/clients";
 import { ServerNotConfiguredError } from "@/server/env";
 import { describeDatabaseError, mapDatabaseError } from "@/server/lib/db-errors";
@@ -16,6 +16,7 @@ import {
   forbidden,
   payloadTooLarge,
   TenancyViolationError,
+  tooManyRequests,
   unauthorized,
   unsupportedMediaType,
 } from "@/server/lib/errors";
@@ -100,11 +101,17 @@ export type PublicRouteArgs<P> = BaseArgs<P>;
  *    also: [resource, action]        optional second permission that must ALSO be held (both are required);
  *  - self: true                      the route only ever touches the caller's OWN data (own profile,
  *                                    own sessions, own password), so any signed-in user may call it.
+ *  - composed: true                  the route fuses several independently-gated resources that different
+ *                                    roles hold different subsets of (the dashboard summary: vehicles, sales
+ *                                    and leads), so no single [resource, action] pair fits at the door. Any
+ *                                    signed-in user may call it; the handler itself checks `can()` per slice
+ *                                    and omits (never fabricates) what the caller may not see.
  */
 type PermissionPair = readonly [PermissionResource, PermissionAction];
 export type RouteAccess =
-  | { permission: PermissionPair; also?: PermissionPair; self?: never }
-  | { self: true; permission?: never; also?: never };
+  | { permission: PermissionPair; also?: PermissionPair; self?: never; composed?: never }
+  | { self: true; permission?: never; also?: never; composed?: never }
+  | { composed: true; permission?: never; also?: never; self?: never };
 type Options = RouteAccess;
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
@@ -218,12 +225,40 @@ export function jsonResponse(body: unknown, options: ResponseOptions = {}): Resp
   return new Response(JSON.stringify(body), { status: options.status ?? 200, headers });
 }
 
+/**
+ * Two response envelopes coexist deliberately (§0.24: API Design). "flat" is what every endpoint built before
+ * that section already returns — the resource body directly on success, {message,code,status,fieldErrors,
+ * requestId} on error — verified by 35+ test scripts that read those fields directly; rewriting all of them
+ * for a wire-format-only change was assessed and explicitly declined. "v2" is {success:true,data,meta} /
+ * {success:false,error:{code,message,details}} for every ENDPOINT BUILT FROM §0.24 ONWARD (apiRouteV2 /
+ * publicRouteV2 below). The frontend never has to know which one a given route uses:
+ * services/backend.ts's backendRequest() detects the shape and normalizes both into the same BackendResult.
+ */
+type Envelope = "flat" | "v2";
+
+function envelopeSuccess(envelope: Envelope, result: unknown): unknown {
+  if (envelope === "flat") return result;
+  if (result && typeof result === "object" && "data" in (result as object)) {
+    const { data, meta } = result as { data: unknown; meta?: Record<string, unknown> };
+    return meta !== undefined ? { success: true, data, meta } : { success: true, data };
+  }
+  return { success: true, data: result };
+}
+
+function envelopeError(envelope: Envelope, code: string, message: string, extra: Record<string, unknown> = {}): unknown {
+  if (envelope === "flat") return { message, code, ...extra };
+  // status is redundant in a v2 body (it is already the HTTP response status) — every other field goes in details.
+  const details = Object.fromEntries(Object.entries(extra).filter(([key]) => key !== "status"));
+  return { success: false, error: { code, message, ...(Object.keys(details).length ? { details } : {}) } };
+}
+
 async function execute<P>(
   req: Request,
   routeContext: { params: Promise<P> } | undefined,
-  options: { authenticated: boolean; permission?: PermissionPair; also?: PermissionPair },
+  options: { authenticated: boolean; permission?: PermissionPair; also?: PermissionPair; envelope?: Envelope },
   handler: (args: BaseArgs<P> & { ctx: AuthContext | null }) => Promise<unknown>
 ): Promise<Response> {
+  const envelope: Envelope = options.envelope ?? "flat";
   const incomingId = req.headers.get("x-request-id");
   // Echoed into logs and responses, so accept only a plain token (no log/header injection).
   const requestId = incomingId && /^[\w-]{8,64}$/.test(incomingId) ? incomingId : randomUUID();
@@ -249,8 +284,18 @@ async function execute<P>(
       const token = readCookie(req.headers.get("cookie"), sessionCookieName());
       ctx = await resolveSessionContext(getPlatformDb(), token);
       if (!ctx) throw unauthorized();
+      // The general backstop (LIMITS.apiUser): stops one session from hammering the API, on top of whatever
+      // tighter, flow-specific limit a particular endpoint (login, AI, invitations...) already applies.
+      const limited = await hit(getPlatformDb(), LIMITS.apiUser(ctx.userId));
+      if (!limited.allowed) throw tooManyRequests(limited.retryAfter);
       if (options.permission) await authorizeRoute(ctx, options.permission, req, requestId);
       if (options.also) await authorizeRoute(ctx, options.also, req, requestId);
+    } else {
+      const ip = clientIp(req);
+      if (ip) {
+        const limited = await hit(getPlatformDb(), LIMITS.apiIp(ip));
+        if (!limited.allowed) throw tooManyRequests(limited.retryAfter);
+      }
     }
 
     const params = (routeContext?.params ? await routeContext.params : {}) as P;
@@ -275,32 +320,31 @@ async function execute<P>(
     });
 
     if (result instanceof Response) return finish(result);
-    return json(200, result);
+    return json(200, envelopeSuccess(envelope, result));
   } catch (error) {
     if (error instanceof AppError) {
-      const body = {
-        ...error.toApiError(),
-        ...(error.fieldErrors ? { fieldErrors: error.fieldErrors } : {}),
-        requestId,
-      };
-      return json(error.status, body, error.headers);
+      const api = error.toApiError();
+      return json(
+        error.status,
+        envelopeError(envelope, api.code ?? "error", api.message, { status: api.status, requestId, ...(error.fieldErrors ? { fieldErrors: error.fieldErrors } : {}) }),
+        error.headers
+      );
     }
     if (error instanceof ZodError) {
-      return json(400, {
-        message: "Invalid request.",
-        code: "validation_error",
-        status: 400,
-        fieldErrors: error.issues.map((i) => ({ path: i.path.join("."), message: i.message })),
-        requestId,
-      });
+      return json(
+        400,
+        envelopeError(envelope, "validation_error", "Invalid request.", {
+          status: 400,
+          requestId,
+          fieldErrors: error.issues.map((i) => ({ path: i.path.join("."), message: i.message })),
+        })
+      );
     }
     if (error instanceof ServerNotConfiguredError) {
-      return json(503, {
-        message: "This deployment has no backend configured.",
-        code: "backend_not_configured",
-        status: 503,
-        requestId,
-      });
+      return json(
+        503,
+        envelopeError(envelope, "backend_not_configured", "This deployment has no backend configured.", { status: 503, requestId })
+      );
     }
     // Database failures become a safe, classified answer (never the raw error: it holds host, SQL and constraint names).
     const dbError = mapDatabaseError(error);
@@ -309,14 +353,15 @@ async function execute<P>(
       console.error(
         `[${requestId}] Database error ${dbError.code} (prisma=${info?.prismaCode ?? "-"} sqlstate=${info?.sqlState ?? "-"} kind=${info?.kind ?? "-"})`
       );
-      return json(dbError.status, { ...dbError.toApiError(), requestId }, dbError.headers);
+      const api = dbError.toApiError();
+      return json(dbError.status, envelopeError(envelope, api.code ?? "error", api.message, { status: api.status, requestId }), dbError.headers);
     }
     if (error instanceof TenancyViolationError) {
       console.error(`[${requestId}] ${error.message}`);
-      return json(403, { message: "Forbidden.", code: "forbidden", status: 403, requestId });
+      return json(403, envelopeError(envelope, "forbidden", "Forbidden.", { status: 403, requestId }));
     }
     console.error(`[${requestId}] Unhandled error`, error);
-    return json(500, { message: "Something went wrong.", code: "internal_error", status: 500, requestId });
+    return json(500, envelopeError(envelope, "internal_error", "Something went wrong.", { status: 500, requestId }));
   }
 }
 
@@ -342,4 +387,25 @@ export function apiRoute<P = Record<string, never>>(
 export function publicRoute<P = Record<string, never>>(handler: (args: PublicRouteArgs<P>) => Promise<unknown>) {
   return (req: Request, routeContext?: { params: Promise<P> }): Promise<Response> =>
     execute(req, routeContext, { authenticated: false }, (args) => handler(args));
+}
+
+/**
+ * Same pipeline as apiRoute, but every response is wrapped {success:true,data,meta} / {success:false,error:
+ * {code,message,details}} (§0.24: API Design). Return the resource directly from the handler and it becomes
+ * `data`; return { data, meta } yourself when a list endpoint needs to carry a total/limit/offset alongside
+ * the items. Endpoints built before §0.24 keep using apiRoute (see the Envelope comment above execute()) —
+ * this is for endpoints built from §0.24 onward only.
+ */
+export function apiRouteV2<P = Record<string, never>>(
+  options: Options,
+  handler: (args: RouteArgs<P>) => Promise<unknown>
+) {
+  return (req: Request, routeContext?: { params: Promise<P> }): Promise<Response> =>
+    execute(req, routeContext, { ...options, authenticated: true, envelope: "v2" }, (args) => handler(args as RouteArgs<P>));
+}
+
+/** publicRoute's v2-envelope counterpart. See apiRouteV2. */
+export function publicRouteV2<P = Record<string, never>>(handler: (args: PublicRouteArgs<P>) => Promise<unknown>) {
+  return (req: Request, routeContext?: { params: Promise<P> }): Promise<Response> =>
+    execute(req, routeContext, { authenticated: false, envelope: "v2" }, (args) => handler(args));
 }

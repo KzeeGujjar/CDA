@@ -251,6 +251,14 @@ async function main() {
   await db.storedFile.deleteMany({ where: { organizationId: X.org.id } }); // tidy the pending rows created by the matrix
 
   // ═════════ 2. photo flow with real bytes ═════════
+  same(
+    "a vehicle with no photos yet has no thumbnail, on both the detail and the list endpoint",
+    [
+      (await get(`/api/v1/vehicles/${V.v1.id}`, tok("dealerOwner"))).json.primaryPhotoUrl,
+      (await get(`/api/v1/vehicles?search=${V.v1.stockNumber}`, tok("dealerOwner"))).json.items[0]?.primaryPhotoUrl,
+    ],
+    [null, null]
+  );
   const t1 = (
     await post(photoUrl(V.v1.id, "/upload-url"), tok("dealerOwner"), {
       fileName: "front.jpg",
@@ -291,6 +299,15 @@ async function main() {
   );
   const again = await post(photoUrl(V.v1.id, `/${t1.file.id}/complete`), tok("dealerOwner"));
   ok("completing twice is harmless", again.status === 200 && again.json.isPrimary === true);
+  ok(
+    "the vehicle's thumbnail (detail and list) now points at the primary photo's own object",
+    (await get(`/api/v1/vehicles/${V.v1.id}`, tok("dealerOwner"))).json.primaryPhotoUrl?.includes(
+      `/${t1.file.id}.`
+    ) &&
+      (await get(`/api/v1/vehicles?search=${V.v1.stockNumber}`, tok("dealerOwner"))).json.items[0]?.primaryPhotoUrl?.includes(
+        `/${t1.file.id}.`
+      )
+  );
   const t2 = (
     await post(photoUrl(V.v1.id, "/upload-url"), tok("dealerOwner"), {
       fileName: "side.png",
@@ -312,6 +329,10 @@ async function main() {
     "making another photo primary swaps it",
     [patch.status, (await get(photoUrl(V.v1.id), tok("dealerOwner"))).json.map((p: { id: string }) => p.id)],
     [200, [t2.file.id, t1.file.id]]
+  );
+  ok(
+    "...and the vehicle's thumbnail follows the new primary",
+    (await get(`/api/v1/vehicles/${V.v1.id}`, tok("dealerOwner"))).json.primaryPhotoUrl?.includes(`/${t2.file.id}.`)
   );
   same(
     "reordering validates its input (400 for a bad sortOrder or empty body)",
@@ -339,6 +360,10 @@ async function main() {
       p.isPrimary,
     ]),
     [[t1.file.id, true]]
+  );
+  ok(
+    "...and the vehicle's thumbnail falls back to the promoted photo",
+    (await get(`/api/v1/vehicles/${V.v1.id}`, tok("dealerOwner"))).json.primaryPhotoUrl?.includes(`/${t1.file.id}.`)
   );
   ok("...and the object is really gone from storage", !(await objectExists("vehicle-photos", photoRow.objectPath)));
   const deletedRow = await db.storedFile.findUniqueOrThrow({ where: { id: t2.file.id } });

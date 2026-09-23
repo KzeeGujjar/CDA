@@ -8,8 +8,20 @@ import type { ApiError } from "@/types/common";
 export type BackendResult<T> =
   { kind: "ok"; status: number; data: T } | { kind: "error"; error: ApiError } | { kind: "unavailable" };
 
+interface FlatErrorBody {
+  message?: string;
+  code?: string;
+  fieldErrors?: { path: string; message: string }[];
+  requestId?: string;
+}
+interface V2Body {
+  success: boolean;
+  data?: unknown;
+  error?: { code?: string; message?: string; details?: { fieldErrors?: FlatErrorBody["fieldErrors"]; requestId?: string } };
+}
+
 export async function backendRequest<T>(
-  method: "GET" | "POST" | "PUT",
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   path: string,
   body?: unknown
 ): Promise<BackendResult<T>> {
@@ -25,30 +37,39 @@ export async function backendRequest<T>(
   } catch {
     return { kind: "unavailable" };
   }
-  let json: {
-    message?: string;
-    code?: string;
-    fieldErrors?: { path: string; message: string }[];
-    requestId?: string;
-  } | null = null;
+  let raw: FlatErrorBody | V2Body | null = null;
   try {
     const text = await response.text();
-    json = text ? JSON.parse(text) : null;
+    raw = text ? JSON.parse(text) : null;
   } catch {
     // An HTML error page or an empty body: there is no API behind this address.
     return { kind: "unavailable" };
   }
-  if (response.ok) return { kind: "ok", status: response.status, data: json as T };
-  if (response.status === 404 && !json?.code) return { kind: "unavailable" };
+  // Two response envelopes coexist server-side (§0.24: API Design) — endpoints built before it return their
+  // fields directly, endpoints built from it onward wrap everything in {success, data|error}. Normalized
+  // here so nothing downstream of backendRequest needs to know which one a given route uses.
+  const isV2 = raw !== null && "success" in raw;
+  const data = isV2 ? (raw as V2Body).data : raw;
+  const err: FlatErrorBody | undefined = isV2
+    ? {
+        code: (raw as V2Body).error?.code,
+        message: (raw as V2Body).error?.message,
+        fieldErrors: (raw as V2Body).error?.details?.fieldErrors,
+        requestId: (raw as V2Body).error?.details?.requestId,
+      }
+    : ((raw as FlatErrorBody | null) ?? undefined);
+
+  if (response.ok) return { kind: "ok", status: response.status, data: data as T };
+  if (response.status === 404 && !err?.code) return { kind: "unavailable" };
   const retryAfter = Number(response.headers.get("retry-after"));
   return {
     kind: "error",
     error: {
-      message: json?.message ?? "The request failed.",
-      code: json?.code,
+      message: err?.message ?? "The request failed.",
+      code: err?.code,
       status: response.status,
-      ...(json?.fieldErrors?.length ? { fieldErrors: json.fieldErrors } : {}),
-      ...(json?.requestId ? { requestId: json.requestId } : {}),
+      ...(err?.fieldErrors?.length ? { fieldErrors: err.fieldErrors } : {}),
+      ...(err?.requestId ? { requestId: err.requestId } : {}),
       ...(Number.isFinite(retryAfter) && retryAfter > 0 ? { retryAfterSeconds: retryAfter } : {}),
     },
   };
@@ -60,6 +81,21 @@ export async function backendRequest<T>(
  */
 export const isUnavailable = (result: BackendResult<unknown>) =>
   result.kind === "unavailable" || (result.kind === "error" && result.error.code === "backend_not_configured");
+
+/**
+ * PUTs a file straight to a signed upload URL — object storage, not our own `/api/v1` origin — that a service
+ * obtained from the server (services/vehicleService.ts's photo upload flow). This is the one other place besides
+ * backendRequest this app talks to the network from directly; every service still goes through this file rather
+ * than calling fetch itself, so there is one place to audit (scripts/check-services.ts enforces it).
+ */
+export async function putSignedUpload(url: string, headers: Record<string, string>, file: File): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: "PUT", headers, body: file });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * "live": a real session exists, so the AI agent talks to the server. "demo": there is none (or no backend at all),

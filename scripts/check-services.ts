@@ -148,7 +148,12 @@ const EXPECTED_CONNECTED = [
   "authService.ts",
   "customerService.ts",
   "dashboardService.ts",
+  "documentService.ts",
   "leadService.ts",
+  "marketingService.ts",
+  "messageService.ts",
+  "reportService.ts",
+  "taskService.ts",
   "vehicleService.ts",
 ];
 ok(

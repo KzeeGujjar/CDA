@@ -142,7 +142,18 @@ function detailsOf(key: VehicleKey) {
 
 // ─────────────────────────── the seed ───────────────────────────
 async function wipeDemoRecords(tx: TenantDb): Promise<Record<string, number>> {
-  // Children before parents. Users, roles, branches, files and audit logs are left alone.
+  // Children before parents. Users, roles, branches and audit logs are left alone.
+  //
+  // `files`: an ACTIVE row has real bytes sitting in Storage, so silently deleting it here would orphan them
+  // without telling anyone — its FK is left standing to block the reset instead (a deliberately loud failure,
+  // see the P2003 handler above), and the operator removes the attachment (or the bytes) first, or uses a
+  // fresh database. A DELETED row (a tombstone left by the ordinary delete-a-photo/document flow, §0.8) is a
+  // different story: its bytes are already gone from Storage (or will be, via `storage:maintenance`) and the
+  // row exists only for the audit trail, which `--reset` is already about to clear along with everything
+  // else — so tombstones are removed here, but a live, ACTIVE file still blocks the reset exactly as before.
+  //
+  // `conversations` has no external resource at all, so it is wiped here like everything else; it cascades to
+  // its own `messages`.
   const removed: Record<string, number> = {};
   const step = async (name: string, run: () => Promise<{ count: number }>) => (removed[name] = (await run()).count);
   await step("aiToolCalls", () => tx.aiToolCall.deleteMany({}));
@@ -150,9 +161,11 @@ async function wipeDemoRecords(tx: TenantDb): Promise<Record<string, number>> {
   await step("aiActivity", () => tx.aiActivity.deleteMany({}));
   await step("aiMessages", () => tx.aiMessage.deleteMany({}));
   await step("aiConversations", () => tx.aiConversation.deleteMany({}));
+  await step("conversations", () => tx.conversation.deleteMany({}));
   await step("notifications", () => tx.notification.deleteMany({}));
   await step("tasks", () => tx.task.deleteMany({}));
   await step("partnerRequests", () => tx.partnerRequest.deleteMany({}));
+  await step("deletedFiles", () => tx.storedFile.deleteMany({ where: { status: "DELETED" } }));
   await step("deals", () => tx.deal.deleteMany({}));
   await step("leads", () => tx.lead.deleteMany({}));
   await step("vehicles", () => tx.vehicle.deleteMany({}));

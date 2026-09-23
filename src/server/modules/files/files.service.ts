@@ -442,6 +442,38 @@ export async function listVehiclePhotos(ctx: AuthContext, vehicleId: string): Pr
   return withSignedUrls(rows);
 }
 
+/**
+ * One signed thumbnail per vehicle (its primary photo, or the first by display order if none is marked primary
+ * yet), for a list of vehicles at once — used by the vehicles list/detail endpoints so a grid of cards costs one
+ * extra query, not one Storage round trip per vehicle. Missing entries simply have no photo. Storage being down
+ * degrades to "no thumbnails" rather than failing the vehicle list: `db` is the caller's own tenant transaction,
+ * so no separate permission check is made here.
+ */
+export async function primaryPhotosByVehicle(db: TenantDb, vehicleIds: string[]): Promise<Map<string, PhotoDto>> {
+  const result = new Map<string, PhotoDto>();
+  if (!vehicleIds.length) return result;
+  const rows = await db.storedFile.findMany({
+    where: { vehicleId: { in: vehicleIds }, kind: "VEHICLE_PHOTO", status: "ACTIVE" },
+    orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+  const firstPerVehicle = new Map<string, StoredFile>();
+  for (const row of rows) {
+    if (row.vehicleId && !firstPerVehicle.has(row.vehicleId)) firstPerVehicle.set(row.vehicleId, row);
+  }
+  if (!firstPerVehicle.size) return result;
+  try {
+    const dtos = await withSignedUrls([...firstPerVehicle.values()]);
+    const byFileId = new Map(dtos.map((d) => [d.id, d]));
+    for (const [vehicleId, row] of firstPerVehicle) {
+      const dto = byFileId.get(row.id);
+      if (dto) result.set(vehicleId, dto);
+    }
+  } catch (error) {
+    console.error("[files] could not sign vehicle thumbnail URLs:", error instanceof Error ? error.message : error);
+  }
+  return result;
+}
+
 export async function updateVehiclePhoto(
   ctx: AuthContext,
   vehicleId: string,

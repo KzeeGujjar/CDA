@@ -9,6 +9,7 @@ import { describeDatabaseError } from "@/server/lib/db-errors";
 import { recordAudit } from "@/server/modules/audit/record";
 import { emirateCodes, vehicleImportSpecs, vehicleSourceTypes } from "@/lib/uae/reference";
 import { dayInZone, id, likeSafe, money, page, parseQuery, toEnum } from "@/server/modules/crm-common";
+import { primaryPhotosByVehicle } from "@/server/modules/files/files.service";
 
 /**
  * Vehicles (the inventory). The organization always comes from the session; the caller's role decides which
@@ -205,6 +206,9 @@ export interface VehicleDto {
   registration: Record<string, unknown>;
   notes: string | null;
   featured: boolean;
+  /** Signed URL for the primary photo (or the first, if none is marked primary), null with no photos yet or if
+   *  Storage could not be reached. Expires; re-fetch the vehicle rather than caching it. See §0.19. */
+  primaryPhotoUrl: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -212,7 +216,12 @@ export interface VehicleDto {
 type VehicleWithBranch = Vehicle & { branch: { id: string; name: string; emirate: string | null } | null };
 const withBranch = { branch: { select: { id: true, name: true, emirate: true } } } as const;
 
-function toDto(v: VehicleWithBranch, org: { currency: string; timezone: string }, showCosts: boolean): VehicleDto {
+function toDto(
+  v: VehicleWithBranch,
+  org: { currency: string; timezone: string },
+  showCosts: boolean,
+  primaryPhotoUrl: string | null = null
+): VehicleDto {
   const n = (d: { toString(): string } | null) => (d === null ? null : Number(d.toString()));
   return {
     id: v.id,
@@ -256,6 +265,7 @@ function toDto(v: VehicleWithBranch, org: { currency: string; timezone: string }
     registration: (v.registration ?? {}) as Record<string, unknown>,
     notes: v.notes,
     featured: v.featured,
+    primaryPhotoUrl,
     createdAt: v.createdAt.toISOString(),
     updatedAt: v.updatedAt.toISOString(),
   };
@@ -313,8 +323,9 @@ export async function listVehicles(ctx: AuthContext, query: URLSearchParams) {
       db.vehicle.count({ where }),
       db.vehicle.findMany({ where, orderBy, skip: (q.page - 1) * q.pageSize, take: q.pageSize, include: withBranch }),
     ]);
+    const photos = await primaryPhotosByVehicle(db, rows.map((r) => r.id));
     return page(
-      rows.map((r) => toDto(r, org, showCosts)),
+      rows.map((r) => toDto(r, org, showCosts, photos.get(r.id)?.url ?? null)),
       total,
       q.page,
       q.pageSize
@@ -344,7 +355,8 @@ export async function getVehicle(ctx: AuthContext, vehicleId: string): Promise<V
     ]);
     // Another organization's vehicle, one outside the caller's branches, and a missing one are all the same 404.
     if (!row || !scopeAllows(ctx, scope, VEHICLE_SCOPE, row)) throw notFound("Vehicle not found.");
-    return toDto(row, org, can(ctx, "profit", "read"));
+    const photo = (await primaryPhotosByVehicle(db, [row.id])).get(row.id) ?? null;
+    return toDto(row, org, can(ctx, "profit", "read"), photo?.url ?? null);
   });
 }
 
@@ -468,15 +480,19 @@ export async function updateVehicle(
       Object.assign(data, { purchaseCurrency: null, purchaseAmountOriginal: null, purchaseFxRate: null });
     }
     const row = await db.vehicle.update({ where: { id: vehicleId }, data, include: withBranch });
+    // This app never hard-deletes a vehicle (every other table references it, and losing purchase/deal
+    // history would be wrong for a financial record) — archiving IS the "remove from inventory" action, so
+    // it gets its own audit action rather than blending into every other field edit as "vehicle.updated".
     await recordAudit(db, ctx, {
-      action: "vehicle.updated",
+      action: input.status === "archived" && existing.status !== "ARCHIVED" ? "vehicle.archived" : "vehicle.updated",
       entityType: "vehicle",
       entityId: vehicleId,
       // Field names only: values (prices, costs) do not belong in the audit trail's metadata.
       metadata: { fields: Object.keys(input).sort().join(",") },
       ...meta,
     });
-    return toDto(row, org, can(ctx, "profit", "read"));
+    const photo = (await primaryPhotosByVehicle(db, [row.id])).get(row.id) ?? null;
+    return toDto(row, org, can(ctx, "profit", "read"), photo?.url ?? null);
   });
 }
 

@@ -24,7 +24,7 @@ export function PurchaseReportTab() {
   const columns: DataTableColumn<ReportPurchaseRow>[] = [
     { key: "date", header: t("reports.table.date"), render: (r) => r.date },
     { key: "vehicle", header: t("reports.table.vehicle"), render: (r) => r.vehicleLabel },
-    { key: "supplier", header: t("reports.table.supplier"), render: (r) => r.supplierName },
+    { key: "supplier", header: t("reports.table.supplier"), render: (r) => r.supplierName ?? "—" },
     {
       key: "purchasePrice",
       header: t("reports.table.purchasePrice"),

@@ -410,6 +410,10 @@ async function main() {
     "calculateProfit records a price-analysis activity",
     !!(await db.aiActivity.findFirst({ where: { organizationId: X.org.id, action: "PRICE_ANALYSIS" } }))
   );
+  ok(
+    "...and a matching entry in the security audit log (§0.25's 'AI action executed')",
+    !!(await db.auditLog.findFirst({ where: { organizationId: X.org.id, action: "ai.action_executed", metadata: { path: ["tool"], equals: "calculateProfit" } } }))
+  );
 
   const val = '[[tool:getValuation {"make":"Toyota","model":"Land Cruiser","year":2022,"mileageKm":50000}]]';
   await turn("dealerOwner", val);

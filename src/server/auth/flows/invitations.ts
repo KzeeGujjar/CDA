@@ -214,6 +214,16 @@ export async function acceptInvitation(
     metadata: { role: invitation.role.key },
     meta,
   });
+  await auditAuth(db, {
+    organizationId: invitation.organizationId,
+    userId,
+    userName: input.name,
+    action: "user.created",
+    entityType: "user",
+    entityId: userId,
+    metadata: { role: invitation.role.key, via: "invitation" },
+    meta,
+  });
 
   return {
     token: session.token,

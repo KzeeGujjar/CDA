@@ -11,6 +11,7 @@ import { join, relative, sep } from "node:path";
 export type Access =
   | { kind: "permission"; resource: string; action: string; also?: { resource: string; action: string } }
   | { kind: "self" }
+  | { kind: "composed" }
   | { kind: "public" };
 
 export interface RouteEntry {
@@ -41,6 +42,8 @@ export const PUBLIC_ROUTE_ALLOWLIST = new Set([
   "POST /api/v1/auth/password/forgot",
   "POST /api/v1/auth/password/reset",
   "POST /api/v1/auth/invitations/accept",
+  // A share link works for whoever holds it, by design (see src/server/platform/shared-documents.ts).
+  "GET /api/v1/generated-documents/shared/:token",
 ]);
 
 function walk(dir: string, out: string[] = []): string[] {
@@ -79,12 +82,12 @@ export function loadRouteManifest(root = "src/app/api"): { entries: RouteEntry[]
 
     for (const method of HTTP_METHODS) {
       if (!exported.includes(method)) continue;
-      const decl = new RegExp(`^export\\s+const\\s+${method}\\s*=\\s*(apiRoute|publicRoute)\\b`, "m").exec(src);
+      const decl = new RegExp(`^export\\s+const\\s+${method}\\s*=\\s*(apiRouteV2|apiRoute|publicRouteV2|publicRoute)\\b`, "m").exec(src);
       if (!decl) {
         violations.push(`${file}: ${method} is not wrapped in apiRoute()/publicRoute()`);
         continue;
       }
-      if (decl[1] === "publicRoute") {
+      if (decl[1] === "publicRoute" || decl[1] === "publicRouteV2") {
         entries.push({ file, url, method, access: { kind: "public" } });
         continue;
       }
@@ -106,6 +109,7 @@ export function loadRouteManifest(root = "src/app/api"): { entries: RouteEntry[]
           },
         });
       else if (/self:\s*true/.test(options)) entries.push({ file, url, method, access: { kind: "self" } });
+      else if (/composed:\s*true/.test(options)) entries.push({ file, url, method, access: { kind: "composed" } });
       else violations.push(`${file}: ${method} declares neither permission: [resource, action] nor self: true`);
     }
   }

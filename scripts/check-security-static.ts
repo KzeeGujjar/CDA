@@ -133,6 +133,7 @@ const TEST_ONLY_SETTINGS: Record<string, string> = {
   EMAIL_OUTBOX_FILE: "test switch: the file the file email transport writes to",
   STORAGE_ALLOW_INSECURE_URL: "test switch: allows a plain-http Storage URL on loopback",
   STORAGE_PRIVATE_CHECK_TTL_SECONDS: "test tuning: cache lifetime of the bucket-is-private check",
+  MESSAGING_ALLOW_INSECURE_URL: "test switch: allows a plain-http WhatsApp/Twilio URL on loopback",
 };
 /** In the example but not read by the app (yet): public by design, and the reason is written next to them there. */
 const DOCUMENTED_NOT_READ = new Set(["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"]);
@@ -256,10 +257,23 @@ function git(args: string[]): string {
     throw new Error(`git ${args.slice(0, 3).join(" ")} failed: ${String(e.stderr).slice(0, 200)}`);
   }
 }
+// Files that legitimately hold fake, key-shaped test values: this scanner's own self-test (below, proving the
+// pattern actually matches something), and the fixed test credentials the AI check scripts and fake providers
+// (scripts/fake-ai-providers.ts) agree on so a check run can exercise a real HTTP request/response shape. Narrow
+// and named, not a blanket exemption — every other tracked file, including every other script, is still scanned.
+const KNOWN_TEST_FIXTURES = [
+  "scripts/check-security-static.ts",
+  "scripts/fake-ai-providers.ts",
+  "scripts/check-ai-unit.ts",
+  "scripts/check-ai-http.ts",
+  "scripts/check-ai-agent-unit.ts",
+  "scripts/check-ai-agent-http.ts",
+];
+const EXCLUDE_PATHSPECS = ["package-lock.json", ...KNOWN_TEST_FIXTURES].map((p) => `:!${p}`);
 for (const [label, pattern] of SECRET_SHAPES) {
-  const inFiles = git(["grep", "-lE", "-e", pattern, "--", ".", ":!package-lock.json"]);
+  const inFiles = git(["grep", "-lE", "-e", pattern, "--", ".", ...EXCLUDE_PATHSPECS]);
   expect(`no ${label} in any tracked file`, inFiles.trim() === "", inFiles.trim().split("\n").slice(0, 3).join(", "));
-  const inHistory = git(["log", "--all", "-G", pattern, "--format=%h", "--", ".", ":!package-lock.json"]);
+  const inHistory = git(["log", "--all", "-G", pattern, "--format=%h", "--", ".", ...EXCLUDE_PATHSPECS]);
   expect(
     `no ${label} anywhere in the git history`,
     inHistory.trim() === "",
@@ -411,6 +425,7 @@ const REVIEWED_NO_BODY = new Set([
   "POST /api/v1/auth/sessions/revoke-others",
   "POST /api/v1/documents/[id]/complete",
   "POST /api/v1/vehicles/[id]/photos/[fileId]/complete",
+  "POST /api/v1/generated-documents/[id]/share",
 ]);
 for (const entryName of noBodyReview)
   expect(`state-changing endpoint without a body is reviewed: ${entryName}`, REVIEWED_NO_BODY.has(entryName));
@@ -591,8 +606,11 @@ for (const e of entries.filter((x) => x.access.kind === "public")) {
   expect(`public endpoint ${routeKey(e)} takes a body only through a schema`, !/req\.json|body\(\s*z\./.test(text));
 }
 expect(
-  "every mutating endpoint declares a permission (or is public/own-data)",
-  entries.every((e) => e.access.kind === "permission" || e.access.kind === "self" || e.access.kind === "public")
+  "every mutating endpoint declares a permission (or is public/own-data/composed)",
+  entries.every(
+    (e) =>
+      e.access.kind === "permission" || e.access.kind === "self" || e.access.kind === "public" || e.access.kind === "composed"
+  )
 );
 
 console.log(`Static security audit: ${checks} checks, ${problems.length} problems.`);

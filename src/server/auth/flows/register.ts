@@ -114,6 +114,16 @@ export async function register(input: RegisterInput, meta: RequestMeta): Promise
       entityId: created.organizationId,
       meta,
     });
+    await auditAuth(db, {
+      organizationId: created.organizationId,
+      userId: created.userId,
+      userName: input.name,
+      action: "user.created",
+      entityType: "user",
+      entityId: created.userId,
+      metadata: { role: "dealerOwner", via: "registration" },
+      meta,
+    });
 
     const token = await issueAuthToken(db, {
       organizationId: created.organizationId,

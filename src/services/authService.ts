@@ -1,10 +1,18 @@
 import type { ApiError } from "@/types/common";
 import type { AuthSession, AuthUser, LoginCredentials, SignUpInput } from "@/types/auth";
 import { currentUserFixture } from "@/mock/auth";
-import { backendRequest, isUnavailable, resetBackendMode } from "@/services/backend";
+import { backendMode, backendRequest, isUnavailable, resetBackendMode } from "@/services/backend";
 
 /** The built-in demo user, shown until a real session is found. */
 export const getDemoUser = (): AuthUser => currentUserFixture;
+
+/**
+ * Whether the app is currently live (a real session) or demo (services/backend.ts's `liveOrDemo`). Frontend code
+ * outside src/services may not import services/backend directly (see eslint.config.mjs); this is the one
+ * sanctioned way to ask, for the rare feature — uploading a real vehicle photo, for one — that has no demo
+ * equivalent at all and needs to know up front instead of letting every action fail with a confusing 401.
+ */
+export { backendMode };
 
 const wait = (ms = 350) => new Promise((resolve) => setTimeout(resolve, ms));
 

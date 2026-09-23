@@ -27,6 +27,7 @@
     "check:profit-http": "tsx scripts/check-profit-http.ts",
     "storage:maintenance": "tsx scripts/storage-maintenance.ts",
     "storage:check": "tsx scripts/storage-live-check.ts",
+    "tasks:remind": "tsx scripts/tasks-remind.ts",
     "check:storage": "tsx scripts/check-storage-unit.ts",
     "check:storage-policies": "tsx scripts/check-storage-policies.ts",
     "check:storage-http": "tsx scripts/check-storage-http.ts",
@@ -48,7 +49,14 @@
     "check:security-http": "tsx scripts/check-security-http.ts",
     "check:demo-seed": "tsx scripts/check-demo-seed.ts",
     "check:crm-http": "tsx scripts/check-crm-http.ts",
-    "check:crm-frontend": "tsx scripts/check-crm-frontend.ts"
+    "check:crm-frontend": "tsx scripts/check-crm-frontend.ts",
+    "check:messages-http": "tsx scripts/check-messages-http.ts",
+    "check:reports-http": "tsx scripts/check-reports-http.ts",
+    "check:dashboard-summary-http": "tsx scripts/check-dashboard-summary-http.ts",
+    "check:marketing-http": "tsx scripts/check-marketing-http.ts",
+    "check:documents-http": "tsx scripts/check-documents-http.ts",
+    "check:tasks-http": "tsx scripts/check-tasks-http.ts",
+    "check:rate-limit-http": "tsx scripts/check-rate-limit-http.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

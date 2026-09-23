@@ -29,7 +29,8 @@ export interface ReportPurchaseRow {
   id: ID;
   date: string;
   vehicleLabel: string;
-  supplierName: string;
+  /** Absent live: there is no supplier/vendor field on a vehicle record, so this is never invented. */
+  supplierName?: string;
   purchasePrice: number;
   transportCost: number;
   totalCost: number;
@@ -73,14 +74,16 @@ export interface ReportInventoryRow {
   vehicleLabel: string;
   status: string;
   daysInStock: number;
-  costPrice: number;
+  /** Absent when the signed-in role may not see cost figures (needs profit:read), never a fabricated 0. */
+  costPrice: number | null;
   currentPrice: number;
   location: string;
 }
 
 export interface InventoryReport {
   totalUnits: number;
-  totalValue: number;
+  /** null unless the caller also holds profit:read. */
+  totalValue: number | null;
   avgDaysInStock: number;
   agingBuckets: ChartPoint[];
   byStatus: ChartPoint[];
@@ -129,8 +132,9 @@ export interface VehiclePerformanceRow {
   vehicleLabel: string;
   make: string;
   daysToSell: number | null;
-  views: number;
-  inquiries: number;
+  /** Absent live: no page-view or inquiry tracking exists anywhere in this app, so these are never invented. */
+  views?: number;
+  inquiries?: number;
   status: string;
 }
 
@@ -168,7 +172,8 @@ export interface AiPerformanceRow {
 export interface AiPerformanceReport {
   totalInteractions: number;
   totalInteractionsDelta: number;
-  avgSatisfaction: number;
+  /** Absent live: no satisfaction rating is collected anywhere in this app, so this is never invented. */
+  avgSatisfaction?: number;
   timeSavedHours: number;
   usageTrend: ChartPoint[];
   rows: AiPerformanceRow[];

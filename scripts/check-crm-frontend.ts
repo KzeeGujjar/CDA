@@ -197,6 +197,72 @@ async function main() {
     "Imported"
   );
 
+  // vehicle photos (§0.19): the real object-storage architecture, exercised through the frontend service itself —
+  // upload, list, primary, reorder, replace, delete — against the fake Supabase Storage this harness runs. The
+  // bucket itself is only created on demand here: check-storage-http.ts owns the full storage-policy surface.
+  const FAKE_STORAGE = process.env.SUPABASE_URL ?? "http://127.0.0.1:54340";
+  await fetch(`${FAKE_STORAGE}/__admin/bucket`, {
+    method: "POST",
+    body: JSON.stringify({ id: "vehicle-photos", public: false, file_size_limit: 10485760, allowed_mime_types: null }),
+  });
+  const {
+    getVehiclePhotos,
+    uploadVehiclePhoto,
+    setVehiclePhotoPrimary,
+    reorderVehiclePhoto,
+    deleteVehiclePhoto,
+    replaceVehiclePhoto,
+  } = await import("@/services/vehicleService");
+  const photoFile = (name: string) => {
+    const bytes = Buffer.alloc(2048, 0x41);
+    Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0x10, 0x4a, 0x46, 0x49, 0x46, 0, 1]).copy(bytes);
+    return new File([bytes], name, { type: "image/jpeg" });
+  };
+
+  same("live: a brand-new vehicle has no photos", await getVehiclePhotos(created.id), []);
+  const photo1 = await uploadVehiclePhoto(created.id, photoFile("front.jpg"));
+  ok("live: uploadVehiclePhoto returns a real, signed, primary photo", photo1.isPrimary && !!photo1.url);
+  const photo2 = await uploadVehiclePhoto(created.id, photoFile("side.jpg"));
+  same("live: a second photo is not primary", photo2.isPrimary, false);
+  same(
+    "live: getVehiclePhotos lists both, primary first",
+    (await getVehiclePhotos(created.id)).map((p) => p.id),
+    [photo1.id, photo2.id]
+  );
+  ok(
+    "live: the vehicle's own images[] reflects the primary photo's own object",
+    !!(await getVehicleById(created.id))?.images[0]?.includes(`/${photo1.id}.`)
+  );
+  const nowPrimary = await setVehiclePhotoPrimary(created.id, photo2.id);
+  ok("live: setVehiclePhotoPrimary swaps the cover photo", nowPrimary.isPrimary);
+  const reordered = await reorderVehiclePhoto(created.id, photo1.id, 5);
+  same("live: reorderVehiclePhoto changes its position", reordered.sortOrder, 5);
+  const replaced = await replaceVehiclePhoto(created.id, nowPrimary, photoFile("front-retake.jpg"));
+  ok(
+    "live: replaceVehiclePhoto keeps the primary slot, under a new photo",
+    replaced.isPrimary && replaced.id !== photo2.id
+  );
+  same(
+    "live: the old primary photo is really gone after replace",
+    (await getVehiclePhotos(created.id)).some((p) => p.id === photo2.id),
+    false
+  );
+  await deleteVehiclePhoto(created.id, photo1.id);
+  same(
+    "live: deleteVehiclePhoto removes it, leaving only the replacement",
+    (await getVehiclePhotos(created.id)).map((p) => p.id),
+    [replaced.id]
+  );
+  // Leave no active photo behind: a file attached to a demo-org vehicle blocks prisma/seed-demo.ts's --reset
+  // (it refuses rather than silently orphaning Storage bytes) — later check scripts in the same suite run
+  // reset the demo dealership too, so this check must not leave one lying around.
+  await deleteVehiclePhoto(created.id, replaced.id);
+  same(
+    "live: cleaned up after itself (no photo left attached to this vehicle)",
+    await getVehiclePhotos(created.id),
+    []
+  );
+
   const liveCustomers = await getCustomers();
   same("live: getCustomers returns every customer", liveCustomers.length, dbCustomers.length);
   const aishaFull = liveCustomers.find((c) => c.id === aisha.id)!;

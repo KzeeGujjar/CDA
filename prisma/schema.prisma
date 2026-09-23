@@ -345,6 +345,63 @@ enum NotificationKind {
   @@map("notification_kind")
 }
 
+// Matches the frontend MessageChannel. AI_AGENT is a real channel here too: an AI-handled conversation is
+// still a conversation, with its own thread, so it shows up in the same inbox as a human one.
+enum MessageChannel {
+  WHATSAPP     @map("whatsapp")
+  EMAIL        @map("email")
+  SMS          @map("sms")
+  WEBSITE_CHAT @map("website_chat")
+  AI_AGENT     @map("ai_agent")
+
+  @@map("message_channel")
+}
+
+enum MessageDirection {
+  INBOUND  @map("inbound")
+  OUTBOUND @map("outbound")
+
+  @@map("message_direction")
+}
+
+// QUEUED/SENT/DELIVERED/READ track an outbound message through its provider (website_chat and ai_agent, which
+// have no external provider, go straight to SENT); FAILED covers both a provider rejection and "no provider
+// is configured for this channel" — always a real status, never a silent success.
+enum MessageStatus {
+  QUEUED    @map("queued")
+  SENT      @map("sent")
+  DELIVERED @map("delivered")
+  READ      @map("read")
+  FAILED    @map("failed")
+
+  @@map("message_status")
+}
+
+// Matches the frontend DocumentType exactly.
+enum DocumentType {
+  QUOTATION          @map("quotation")
+  INVOICE            @map("invoice")
+  RECEIPT            @map("receipt")
+  PURCHASE_AGREEMENT @map("purchase_agreement")
+  SALES_AGREEMENT    @map("sales_agreement")
+  INSPECTION_REPORT  @map("inspection_report")
+  DELIVERY_FORM      @map("delivery_form")
+  CUSTOMER_AGREEMENT @map("customer_agreement")
+
+  @@map("document_type")
+}
+
+// Matches the frontend DocumentStatus. PENDING_SIGNATURE/SIGNED exist for a future real e-signature flow;
+// today a person sets them by hand (generated_documents.signed_at is real, but nothing writes it yet).
+enum DocumentStatus {
+  DRAFT             @map("draft")
+  PENDING_SIGNATURE @map("pending_signature")
+  SIGNED            @map("signed")
+  COMPLETED         @map("completed")
+
+  @@map("document_status")
+}
+
 // ─────────────────────── Currencies (global reference data) ───────────────────────
 // Not tenant data: the same rows for every organization, so no organization_id and no RLS. The runtime role
 // can only READ them (see create-app-role.sql); they are maintained by migrations / the platform.
@@ -440,10 +497,14 @@ model Organization {
   aiUsage         AiUsage[]
   aiActivities    AiActivity[]
 
-  tasks           Task[]
-  partnerRequests PartnerRequest[]
-  aiToolCalls     AiToolCall[]
-  notifications   Notification[]
+  tasks              Task[]
+  partnerRequests    PartnerRequest[]
+  aiToolCalls        AiToolCall[]
+  notifications      Notification[]
+  conversations      Conversation[]
+  messages           Message[]
+  documentTemplates  DocumentTemplate[]
+  generatedDocuments GeneratedDocument[]
 
   baseCurrency Currency @relation(fields: [currency], references: [code], onDelete: Restrict)
 
@@ -465,11 +526,12 @@ model Branch {
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  userBranches UserBranch[]
-  vehicles     Vehicle[]
-  leads        Lead[]
-  deals        Deal[]
+  organization  Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  userBranches  UserBranch[]
+  vehicles      Vehicle[]
+  leads         Lead[]
+  deals         Deal[]
+  conversations Conversation[]
 
   @@unique([id, organizationId])
   @@unique([organizationId, name])
@@ -522,6 +584,12 @@ model User {
   partnerRequests PartnerRequest[]
   aiToolCalls     AiToolCall[]
   notifications   Notification[]
+
+  assignedConversations Conversation[]
+  sentMessages          Message[]
+
+  createdDocumentTemplates DocumentTemplate[]
+  createdDocuments         GeneratedDocument[]
 
   @@unique([id, organizationId])
   @@index([organizationId, status])
@@ -744,6 +812,8 @@ model Customer {
 
   tasks           Task[]
   partnerRequests PartnerRequest[]
+  conversations   Conversation[]
+  documents       GeneratedDocument[]
 
   @@unique([id, organizationId])
   @@index([organizationId, name])
@@ -809,6 +879,7 @@ model Vehicle {
 
   tasks           Task[]
   partnerRequests PartnerRequest[]
+  documents       GeneratedDocument[]
 
   @@unique([id, organizationId])
   @@unique([organizationId, stockNumber])
@@ -902,7 +973,8 @@ model Deal {
 
   aiConversations AiConversation[]
 
-  tasks Task[]
+  tasks     Task[]
+  documents GeneratedDocument[]
 
   @@unique([id, organizationId])
   @@unique([organizationId, reference])
@@ -1121,6 +1193,11 @@ model Task {
   customerId     String?      @map("customer_id")
   leadId         String?      @map("lead_id")
   dealId         String?      @map("deal_id")
+  /// When to remind the assignee. Null = no reminder set.
+  remindAt       DateTime?    @map("remind_at") @db.Timestamptz(3)
+  /// Set once a reminder notification has actually been created (see tasks-remind.ts), so a maintenance run
+  /// started twice never double-notifies. Cleared if remindAt is changed to a new time.
+  remindedAt     DateTime?    @map("reminded_at") @db.Timestamptz(3)
   completedAt    DateTime?    @map("completed_at") @db.Timestamptz(3)
   createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -1233,6 +1310,165 @@ model Notification {
   @@unique([id, organizationId])
   @@index([organizationId, userId, readAt, createdAt(sort: Desc)])
   @@map("notifications")
+}
+
+// ─────────────────────────── Messaging (internal model; providers are adapters) ───────────────────────────
+// One thread per (organization, channel, contact) — the inbox listing shown at /messages. The actual bytes of
+// the conversation live in Message; this row is only what a list view and the unread badge need. Sending and
+// receiving through a real channel (WhatsApp, email, SMS) goes through src/server/messaging/providers/*, an
+// adapter interface this table never references directly — swapping a provider is a new adapter file, never a
+// migration. website_chat and ai_agent have no external provider: a message is "sent" the moment it is saved.
+
+// A conversation is assigned to the tenant's messages the same way a lead is: contact info duplicated onto the
+// row (contactName/contactHandle) so the inbox lists instantly without joining a customer that may not exist
+// yet (a WhatsApp message from a number with no matching customer record is still a real conversation).
+model Conversation {
+  id                 String         @id @default(ulid())
+  organizationId     String         @map("organization_id")
+  channel            MessageChannel
+  customerId         String?        @map("customer_id")
+  branchId           String?        @map("branch_id")
+  assignedToId       String?        @map("assigned_to_id")
+  contactName        String         @map("contact_name")
+  /// The adapter's address for this contact: phone number (whatsapp/sms), email address, or an opaque
+  /// website-chat session id. Never shown to another tenant; not an FK, just an opaque string per channel.
+  contactHandle      String         @map("contact_handle")
+  /// true while the AI agent is answering this conversation instead of a person (§0.10's agent, a future wire-up).
+  aiHandling         Boolean        @default(false) @map("ai_handling")
+  /// Unread INBOUND messages. Maintained by the service layer on send/read, not a trigger (mirrors ai_conversations.message_count).
+  unreadCount        Int            @default(0) @map("unread_count")
+  lastMessagePreview String?        @map("last_message_preview")
+  lastMessageAt      DateTime?      @map("last_message_at") @db.Timestamptz(3)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  customer     Customer?    @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  branch       Branch?      @relation(fields: [branchId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  assignedTo   User?        @relation(fields: [assignedToId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  messages     Message[]
+
+  @@unique([id, organizationId])
+  @@index([organizationId, channel, lastMessageAt(sort: Desc)])
+  @@index([organizationId, assignedToId])
+  @@index([organizationId, customerId])
+  @@map("conversations")
+}
+
+model Message {
+  id                String           @id @default(ulid())
+  organizationId    String           @map("organization_id")
+  conversationId    String           @map("conversation_id")
+  direction         MessageDirection
+  status            MessageStatus    @default(SENT)
+  body              String
+  /// The user who sent it. null for an inbound message, and for one the AI composed.
+  sentById          String?          @map("sent_by_id")
+  /// The channel provider's own id for this message (a WhatsApp message id, a Resend email id, a Twilio SID).
+  /// Unique per organization so a provider webhook (inbound delivery, a status callback) can be replayed
+  /// safely — multiple NULLs are fine (every outbound message composed in-app before it reaches a provider).
+  providerMessageId String?          @map("provider_message_id")
+  /// Set when status = FAILED: why (a provider's rejection reason, or "not configured").
+  errorCode         String?          @map("error_code")
+  createdAt         DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  conversation Conversation @relation(fields: [conversationId, organizationId], references: [id, organizationId], onDelete: Cascade)
+  sentBy       User?        @relation(fields: [sentById, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@unique([organizationId, providerMessageId])
+  @@index([organizationId, conversationId, createdAt])
+  @@map("messages")
+}
+
+// ─────────────────────────── Document generation (templates are versioned; providers-of-content, not files) ───
+// A document's rendered text lives in this table, not in Supabase Storage (src/server/storage/*): the `files`
+// table's CHECK constraints assume exactly one parent (a vehicle, OR a customer, OR a deal), but a generated
+// document routinely names two or three at once (a sales agreement is about a vehicle AND a customer AND,
+// once one exists, a deal). Plain text, not a PDF: the frontend has always rendered documents as preformatted
+// text (components/documents/document-preview.tsx), and no PDF renderer is wired into this app (adding a
+// headless-Chrome dependency for Vercel would be a separate, larger decision) — Download/Print/Share all work
+// on the exact same text a person already reads on screen.
+
+// One row per (organization, type, language, version). Editing a template never mutates a row — it creates the
+// next version — so a document already generated always points at the exact words it was produced from, even
+// after the template is edited again. is_active marks which version Generate uses today; at most one per
+// (organization, type, language), enforced by document_templates_one_active_idx below, the same technique
+// files.files_one_primary_photo already uses for "one primary photo per vehicle" (§0.8).
+model DocumentTemplate {
+  id             String       @id @default(ulid())
+  organizationId String       @map("organization_id")
+  type           DocumentType
+  /// ISO 639-1. Only "en" ships a built-in default (src/server/modules/documents/default-templates.ts); a
+  /// dealership adds its own language by creating the first template row for it.
+  language       String       @default("en") @db.Char(2)
+  version        Int
+  isActive       Boolean      @default(true) @map("is_active")
+  name           String
+  /// Plain text with {{variable.path}} placeholders (src/server/modules/documents/render.ts). Never executed,
+  /// never interpreted as HTML — a lookup-and-substitute over a fixed, server-built variables object only.
+  content        String
+  /// Documents which {{variable.path}} tokens this template's content actually uses, for a future template
+  /// editor UI. Derived automatically when the template is created, never hand-maintained.
+  variables      Json         @default("[]") @db.JsonB
+  createdById    String?      @map("created_by_id")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy    User?               @relation(fields: [createdById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  documents    GeneratedDocument[]
+
+  @@unique([id, organizationId])
+  @@unique([organizationId, type, language, version])
+  @@index([organizationId, type, language])
+  @@map("document_templates")
+}
+
+// A generated document. content is a frozen snapshot: regenerating (PATCH, a vehicle/customer/deal or type
+// change) re-renders and overwrites it, but variables always records exactly what was used for that render,
+// so what was actually shown/sent to a customer is reconstructable even if the vehicle or customer record
+// changes later. template_id/template_version are null when no custom template exists yet for this
+// organization/type/language and the built-in default was used.
+model GeneratedDocument {
+  id              String         @id @default(ulid())
+  organizationId  String         @map("organization_id")
+  type            DocumentType
+  title           String
+  status          DocumentStatus @default(DRAFT)
+  language        String         @default("en") @db.Char(2)
+  templateId      String?        @map("template_id")
+  templateVersion Int?           @map("template_version")
+  vehicleId       String?        @map("vehicle_id")
+  customerId      String?        @map("customer_id")
+  dealId          String?        @map("deal_id")
+  /// The resolved facts the current content was rendered from (vehicle/customer/deal/dealer snapshot at
+  /// generation time) — never the model's own guess, always real column values at render time.
+  variables       Json           @db.JsonB
+  /// The rendered plain-text snapshot. What Preview, Download, Print and Share all show.
+  content         String
+  createdById     String?        @map("created_by_id")
+  /// Set by POST .../share; null = never shared. A fresh share revokes the previous token (one link at a time).
+  shareToken      String?        @unique @map("share_token")
+  shareExpiresAt  DateTime?      @map("share_expires_at") @db.Timestamptz(3)
+  /// Real column, ready for a future e-signature integration; nothing writes it yet (see DocumentStatus).
+  signedAt        DateTime?      @map("signed_at") @db.Timestamptz(3)
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  template     DocumentTemplate? @relation(fields: [templateId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle      Vehicle?          @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer     Customer?         @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  deal         Deal?             @relation(fields: [dealId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  createdBy    User?             @relation(fields: [createdById, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@unique([id, organizationId])
+  @@index([organizationId, type, createdAt(sort: Desc)])
+  @@index([organizationId, vehicleId])
+  @@index([organizationId, customerId])
+  @@index([organizationId, dealId])
+  @@map("generated_documents")
 }
 
 // ─────────────────────────── Abuse protection ───────────────────────────

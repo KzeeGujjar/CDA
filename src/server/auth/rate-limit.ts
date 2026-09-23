@@ -106,4 +106,23 @@ export const LIMITS = {
     windowSeconds: 3600,
   }),
   invite: (userId: string): LimitRule => ({ scope: "invite:user", identifier: userId, limit: 30, windowSeconds: 3600 }),
+  /**
+   * The general backstop every request goes through (src/server/http/api-route.ts's execute()), independent
+   * of the tighter, flow-specific limits above. Generous on purpose — it exists to stop abuse (a script
+   * hammering the API), not to throttle normal use, and the default is high enough that no existing test
+   * script (which reuses one session token across many assertions) trips it. Override with
+   * API_RATE_LIMIT_PER_MINUTE / API_RATE_LIMIT_PER_MINUTE_IP for a deployment that wants it tighter.
+   */
+  apiUser: (userId: string): LimitRule => ({
+    scope: "api:user",
+    identifier: userId,
+    limit: Number(process.env.API_RATE_LIMIT_PER_MINUTE) || 600,
+    windowSeconds: 60,
+  }),
+  apiIp: (ip: string): LimitRule => ({
+    scope: "api:ip",
+    identifier: ip,
+    limit: Number(process.env.API_RATE_LIMIT_PER_MINUTE_IP) || 120,
+    windowSeconds: 60,
+  }),
 };

@@ -13,11 +13,8 @@ import { TranslateAdvertisementCard } from "@/components/marketing/translate-adv
 import { GeneratedContentList } from "@/components/marketing/generated-content-list";
 import { CampaignBuilderCard } from "@/components/marketing/campaign-builder-card";
 import { getVehicles } from "@/services/vehicleService";
-import {
-  generateMarketingContent,
-  translateAdvertisement,
-  type TranslationTargetLanguage,
-} from "@/lib/marketing-generator";
+import { generateContent, translateContent, type TranslationTargetLanguage } from "@/services/marketingService";
+import { notifyError } from "@/lib/errors/notify";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { GeneratedMarketingContent, MarketingContentType, MarketingGeneratedType } from "@/types/marketing";
 
@@ -46,39 +43,32 @@ export default function AiMarketingPage() {
     });
   }
 
-  function handleGenerate(type: MarketingContentType) {
+  async function handleGenerate(type: MarketingContentType) {
     if (!vehicle) return;
     setGeneratingType(type);
-    setTimeout(() => {
-      const item: GeneratedMarketingContent = {
-        id: `gen-${Math.random().toString(36).slice(2, 9)}`,
-        vehicleId: vehicle.id,
-        type,
-        content: generateMarketingContent(vehicle, type),
-        createdAt: new Date().toISOString(),
-      };
+    try {
+      const item = await generateContent(vehicle, type);
       setGeneratedContent((prev) => [item, ...prev]);
       setNewestId(item.id);
+    } catch (error) {
+      notifyError(error);
+    } finally {
       setGeneratingType(null);
-    }, 900);
+    }
   }
 
-  function handleTranslate(target: TranslationTargetLanguage) {
+  async function handleTranslate(target: TranslationTargetLanguage) {
     if (!vehicle) return;
     setGeneratingType("translated_ad");
-    setTimeout(() => {
-      const item: GeneratedMarketingContent = {
-        id: `gen-${Math.random().toString(36).slice(2, 9)}`,
-        vehicleId: vehicle.id,
-        type: "translated_ad",
-        targetLanguage: target,
-        content: translateAdvertisement(vehicle, target),
-        createdAt: new Date().toISOString(),
-      };
+    try {
+      const item = await translateContent(vehicle, target);
       setGeneratedContent((prev) => [item, ...prev]);
       setNewestId(item.id);
+    } catch (error) {
+      notifyError(error);
+    } finally {
       setGeneratingType(null);
-    }, 900);
+    }
   }
 
   const vehicleContent = generatedContent.filter((c) => c.vehicleId === vehicleId);

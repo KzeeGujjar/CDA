@@ -28,7 +28,7 @@ import { PriceBadge } from "@/components/shared/price-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { registrationStatusTone } from "@/components/vehicles/registration-status";
-import { VehicleGallery } from "@/components/vehicles/vehicle-gallery";
+import { VehiclePhotoManager } from "@/components/vehicles/vehicle-photo-manager";
 import { VehicleStatusBadge } from "@/components/vehicles/vehicle-status-badge";
 import { VehicleActionBar } from "@/components/vehicles/vehicle-action-bar";
 import { VehicleAiAnalysisCard } from "@/components/vehicles/vehicle-ai-analysis-card";
@@ -138,7 +138,11 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ vehicl
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="flex flex-col gap-4 lg:col-span-2">
-          <VehicleGallery images={vehicle.images} alt={`${vehicle.make} ${vehicle.model}`} />
+          <VehiclePhotoManager
+            vehicleId={vehicle.id}
+            fallbackImages={vehicle.images}
+            alt={`${vehicle.make} ${vehicle.model}`}
+          />
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <div className="overflow-x-auto pb-1">

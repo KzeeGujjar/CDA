@@ -20,10 +20,17 @@ export interface ContractDocument {
   vehicleLabel?: string;
   customerId?: ID;
   customerName?: string;
+  dealId?: ID;
+  dealReference?: string;
   status: DocumentStatus;
   createdByName: string;
   createdAt: string;
   updatedAt: string;
+  /** Only set when the backend already sent it (right after create/update/get-by-id). Demo mode never sets
+   * this — its content is generated on demand by getDocumentContent(). */
+  content?: string;
+  /** True while an unexpired share link exists (documentService.shareDocument issues/rotates one). */
+  hasActiveShare?: boolean;
 }
 
 export type DocumentInput = Pick<

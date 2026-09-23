@@ -32,8 +32,8 @@ export function VehiclePerformanceTab() {
     { key: "vehicle", header: t("reports.table.vehicle"), render: (r) => r.vehicleLabel },
     { key: "make", header: t("reports.table.make"), render: (r) => r.make },
     { key: "daysToSell", header: t("reports.table.daysToSell"), render: (r) => (r.daysToSell === null ? "—" : r.daysToSell) },
-    { key: "views", header: t("reports.table.views"), render: (r) => r.views },
-    { key: "inquiries", header: t("reports.table.inquiries"), render: (r) => r.inquiries },
+    { key: "views", header: t("reports.table.views"), render: (r) => r.views ?? "—" },
+    { key: "inquiries", header: t("reports.table.inquiries"), render: (r) => r.inquiries ?? "—" },
     { key: "status", header: t("reports.table.status"), render: (r) => <StatusBadge label={r.status} tone={vehicleStatusTone[r.status] ?? "neutral"} /> },
   ];
 

@@ -603,6 +603,11 @@ async function main() {
       !JSON.stringify(updAudit.metadata).includes("95000"),
     JSON.stringify(updAudit?.metadata)
   );
+  await put(`/api/v1/vehicles/${c.id}`, who.manager, { status: "archived" });
+  ok(
+    "vehicles: archiving (this app's only 'delete') is audited as vehicle.archived, not vehicle.updated (§0.25/§0.26)",
+    !!(await db.auditLog.findFirst({ where: { organizationId: ORG, action: "vehicle.archived", entityId: c.id } }))
+  );
   const dropUsd = await put(`/api/v1/vehicles/${f150.id}`, who.manager, { purchasePrice: 190000 });
   ok(
     "vehicles: a new purchase price clears the USD record it no longer explains",

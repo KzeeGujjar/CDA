@@ -9,7 +9,7 @@ import { DataTable, type DataTableColumn } from "@/components/tables/data-table"
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { formatMoney } from "@/components/shared/currency";
+import { formatMoney, OptionalCurrency } from "@/components/shared/currency";
 import { getInventoryReport } from "@/services/reportService";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import { ReportExportButtons } from "@/components/reports/report-export-buttons";
@@ -37,7 +37,11 @@ export function InventoryReportTab() {
     {
       key: "costPrice",
       header: t("reports.table.costPrice"),
-      render: (r) => <span className="font-mono">{formatMoney({ amount: r.costPrice, currency: "AED" })}</span>,
+      render: (r) => (
+        <span className="font-mono">
+          <OptionalCurrency money={r.costPrice === null ? null : { amount: r.costPrice, currency: "AED" }} placeholder={t("common.restricted")} />
+        </span>
+      ),
     },
     {
       key: "currentPrice",
@@ -62,7 +66,11 @@ export function InventoryReportTab() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard label={t("reports.kpi.totalUnits")} value={String(data.totalUnits)} icon={PackageCheck} />
-          <StatCard label={t("reports.kpi.totalValue")} value={formatMoney({ amount: data.totalValue, currency: "AED" })} icon={Warehouse} />
+          <StatCard
+            label={t("reports.kpi.totalValue")}
+            value={data.totalValue === null ? t("common.restricted") : formatMoney({ amount: data.totalValue, currency: "AED" })}
+            icon={Warehouse}
+          />
           <StatCard label={t("reports.kpi.avgDaysInStock")} value={String(data.avgDaysInStock)} icon={Clock} />
         </div>
       )}

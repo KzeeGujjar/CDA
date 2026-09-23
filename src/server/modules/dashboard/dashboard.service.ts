@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { AuthContext } from "@/server/auth/context";
-import { can, requirePermission, scopeFilter, type ScopeFilter } from "@/server/auth/authorize";
+import { can, permissionScope, requirePermission, scopeFilter, type ScopeFilter } from "@/server/auth/authorize";
 import type { PermissionScope } from "@/server/auth/permission-catalog";
 import { withTenant, type TenantDb } from "@/server/db/tenant";
+import { money } from "@/server/modules/crm-common";
 
 /**
  * Dashboard numbers. Every figure is computed by a PostgreSQL function (migration dashboard_functions),
@@ -271,6 +272,208 @@ export async function getSalesTrend(ctx: AuthContext, query: URLSearchParams): P
         revenue: row.revenue,
         grossProfit: includeProfit ? row.gross_profit : null,
       })),
+    };
+  });
+}
+
+// ── one consolidated endpoint (§0.20) ───────────────────────────────────────────────────────────
+
+/**
+ * Every dashboard figure in one call, for a page that wants the whole picture without four round trips. Unlike
+ * the four endpoints above, this one has no single [resource, action] gate at the door (`composed: true` on
+ * its route, see src/server/http/api-route.ts) — an Accountant holds sales:read but not vehicles:read, a
+ * Marketing Manager holds neither, and the page should still show whatever slice a role actually has, exactly
+ * as it already does when the frontend calls the four endpoints separately and treats a 403 as "leave this
+ * slice out" (services/dashboardService.ts's `readIfAllowed`, now done here instead). A slice the caller may
+ * not see is `null`, never fabricated, never a reason to fail the whole request.
+ */
+export interface AiInsightDto {
+  id: string;
+  kind: "price_trend" | "overpriced" | "resale_potential" | "aging" | "opportunity";
+  message: string;
+  createdAt: string;
+}
+
+export interface DashboardSummaryDto {
+  period: PeriodDto;
+  currency: string;
+  totalVehicles: Metric | null;
+  availableVehicles: Metric | null;
+  vehiclesPurchased: Metric | null;
+  expectedRevenue: Metric | null;
+  /** null unless the caller holds vehicles:read AND profit:read. */
+  totalInventoryValue: Metric | null;
+  vehiclesSold: Metric | null;
+  monthlySales: Metric | null;
+  /** null unless the caller holds sales:read AND profit:read. */
+  grossProfit: Metric | null;
+  newLeads: Metric | null;
+  conversionRate: Metric | null;
+  /** [] unless the caller holds vehicles:read. */
+  inventoryAging: { label: string; value: number }[];
+  /**
+   * Rule-based, computed live from this organization's own vehicles — never an LLM call. Grounded in SQL
+   * facts (aging stock, listed price vs this app's own market estimate), the way docs/BACKEND_ARCHITECTURE.md
+   * always scoped "AI Insights": a future pass may add an LLM only to phrase these, never to invent the facts.
+   * [] unless the caller holds vehicles:read.
+   */
+  aiInsights: AiInsightDto[];
+}
+
+const DAY_MS = 86_400_000;
+
+async function computeInventoryAging(db: TenantDb, branchIds: string[] | null) {
+  const rows = await db.vehicle.findMany({
+    where: {
+      status: { notIn: ["SOLD", "ARCHIVED"] },
+      ...(branchIds ? { branchId: { in: branchIds } } : {}),
+    },
+    select: { acquiredAt: true },
+  });
+  const now = Date.now();
+  const buckets = [
+    { label: "0-30 days", min: 0, max: 30 },
+    { label: "31-60 days", min: 31, max: 60 },
+    { label: "61-90 days", min: 61, max: 90 },
+    { label: "90+ days", min: 91, max: Infinity },
+  ];
+  return buckets.map((b) => ({
+    label: b.label,
+    value: rows.filter((v) => {
+      const days = Math.floor((now - v.acquiredAt.getTime()) / DAY_MS);
+      return days >= b.min && days <= b.max;
+    }).length,
+  }));
+}
+
+async function computeAiInsights(db: TenantDb, branchIds: string[] | null): Promise<AiInsightDto[]> {
+  const rows = await db.vehicle.findMany({
+    where: { status: { in: ["AVAILABLE", "RESERVED"] }, ...(branchIds ? { branchId: { in: branchIds } } : {}) },
+    select: { id: true, make: true, model: true, year: true, acquiredAt: true, listPrice: true, estimatedMarketValue: true },
+  });
+  const now = Date.now();
+  const insights: AiInsightDto[] = [];
+  const nowIso = new Date().toISOString();
+
+  const aging = rows.filter((v) => (now - v.acquiredAt.getTime()) / DAY_MS > 60);
+  if (aging.length > 0) {
+    insights.push({
+      id: "aging",
+      kind: "aging",
+      message: `${aging.length} vehicle${aging.length === 1 ? " has" : "s have"} been in stock for over 60 days.`,
+      createdAt: nowIso,
+    });
+  }
+
+  const priced = rows.filter((v) => money(v.estimatedMarketValue ?? 0) > 0);
+  const overpriced = priced.filter((v) => money(v.listPrice) > money(v.estimatedMarketValue!) * 1.1);
+  if (overpriced.length > 0) {
+    const v = overpriced[0];
+    insights.push({
+      id: "overpriced",
+      kind: "overpriced",
+      message:
+        overpriced.length === 1
+          ? `The ${v.year} ${v.make} ${v.model} is listed above its estimated market value.`
+          : `${overpriced.length} vehicles are listed above their estimated market value.`,
+      createdAt: nowIso,
+    });
+  }
+
+  const underpriced = priced.filter((v) => money(v.listPrice) < money(v.estimatedMarketValue!) * 0.9);
+  if (underpriced.length > 0) {
+    insights.push({
+      id: "opportunity",
+      kind: "opportunity",
+      message: `${underpriced.length} vehicle${underpriced.length === 1 ? " is" : "s are"} priced well below estimated market value — room to raise price.`,
+      createdAt: nowIso,
+    });
+  }
+
+  return insights;
+}
+
+export async function getDashboardSummary(ctx: AuthContext, query: URLSearchParams): Promise<DashboardSummaryDto> {
+  const q = parse(periodQuerySchema, query);
+  const includeProfit = can(ctx, "profit", "read");
+  const vehiclesScope = can(ctx, "vehicles", "read") ? permissionScope(ctx, "vehicles", "read") : null;
+  const salesScope = can(ctx, "sales", "read") ? permissionScope(ctx, "sales", "read") : null;
+  const leadsScope = can(ctx, "leads", "read") ? permissionScope(ctx, "leads", "read") : null;
+
+  return withTenant(ctx, async (db) => {
+    const r = await resolvePeriod(db, q);
+    const bounds = [
+      r.bounds.period_start,
+      r.bounds.period_end,
+      r.bounds.prev_start,
+      r.bounds.prev_end,
+    ] as const;
+
+    let totalVehicles: Metric | null = null;
+    let availableVehicles: Metric | null = null;
+    let vehiclesPurchased: Metric | null = null;
+    let expectedRevenue: Metric | null = null;
+    let totalInventoryValue: Metric | null = null;
+    let inventoryAging: { label: string; value: number }[] = [];
+    let aiInsights: AiInsightDto[] = [];
+    if (vehiclesScope) {
+      const { branchIds } = scopeFilter(ctx, vehiclesScope, { branchField: "branchId" });
+      const rows = await db.$queryRaw<MetricRow[]>`
+        SELECT * FROM dashboard_stock_kpis(
+          ${bounds[0]}::timestamptz, ${bounds[1]}::timestamptz, ${bounds[2]}::timestamptz, ${bounds[3]}::timestamptz,
+          ${branchIds}::text[], ${includeProfit}::boolean)`;
+      totalVehicles = toMetric(rows, "total_vehicles");
+      availableVehicles = toMetric(rows, "available_vehicles");
+      vehiclesPurchased = toMetric(rows, "vehicles_purchased");
+      expectedRevenue = toMetric(rows, "expected_revenue");
+      totalInventoryValue = includeProfit ? toMetric(rows, "inventory_value") : null;
+      [inventoryAging, aiInsights] = await Promise.all([
+        computeInventoryAging(db, branchIds),
+        computeAiInsights(db, branchIds),
+      ]);
+    }
+
+    let vehiclesSold: Metric | null = null;
+    let monthlySales: Metric | null = null;
+    let grossProfit: Metric | null = null;
+    if (salesScope) {
+      const { branchIds, ownerId } = scopeFilter(ctx, salesScope, { ownerField: "salespersonId", branchField: "branchId" });
+      const rows = await db.$queryRaw<MetricRow[]>`
+        SELECT * FROM dashboard_sales_kpis(
+          ${bounds[0]}::timestamptz, ${bounds[1]}::timestamptz, ${bounds[2]}::timestamptz, ${bounds[3]}::timestamptz,
+          ${branchIds}::text[], ${ownerId}::text, ${includeProfit}::boolean)`;
+      vehiclesSold = toMetric(rows, "vehicles_sold");
+      monthlySales = toMetric(rows, "sales_revenue");
+      grossProfit = includeProfit ? toMetric(rows, "gross_profit") : null;
+    }
+
+    let newLeads: Metric | null = null;
+    let conversionRate: Metric | null = null;
+    if (leadsScope) {
+      const { branchIds, ownerId } = scopeFilter(ctx, leadsScope, { ownerField: "assignedToId", branchField: "branchId" });
+      const rows = await db.$queryRaw<MetricRow[]>`
+        SELECT * FROM dashboard_lead_kpis(
+          ${bounds[0]}::timestamptz, ${bounds[1]}::timestamptz, ${bounds[2]}::timestamptz, ${bounds[3]}::timestamptz,
+          ${branchIds}::text[], ${ownerId}::text)`;
+      newLeads = toMetric(rows, "new_leads");
+      conversionRate = toMetric(rows, "conversion_rate", "points");
+    }
+
+    return {
+      period: r.period,
+      currency: r.currency,
+      totalVehicles,
+      availableVehicles,
+      vehiclesPurchased,
+      expectedRevenue,
+      totalInventoryValue,
+      vehiclesSold,
+      monthlySales,
+      grossProfit,
+      newLeads,
+      conversionRate,
+      inventoryAging,
+      aiInsights,
     };
   });
 }

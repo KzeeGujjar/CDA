@@ -10,8 +10,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { StatusBadge } from "@/components/shared/status-badge";
 import { documentStatusTone } from "./document-status";
 import { documentTypeMeta } from "@/lib/document-type-meta";
-import { generateDocumentContent } from "@/lib/document-generator";
-import { updateDocumentStatus } from "@/services/documentService";
+import { getDocumentContent, shareDocument, updateDocumentStatus } from "@/services/documentService";
+import { notifyError } from "@/lib/errors/notify";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
 import type { ContractDocument } from "@/types/document";
 import type { Vehicle } from "@/types/vehicle";
@@ -75,16 +75,20 @@ export function DocumentCard({
     },
   });
 
-  function handleDownload() {
-    const content = generateDocumentContent(doc.type, { vehicle, customer });
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const anchor = window.document.createElement("a");
-    anchor.href = url;
-    anchor.download = `${doc.title.replace(/[^a-z0-9]+/gi, "-")}.txt`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-    toast.success(t("contractsDocuments.actions.downloaded"));
+  async function handleDownload() {
+    try {
+      const content = await getDocumentContent(doc, { vehicle, customer });
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const anchor = window.document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${doc.title.replace(/[^a-z0-9]+/gi, "-")}.txt`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+      toast.success(t("contractsDocuments.actions.downloaded"));
+    } catch (error) {
+      notifyError(error);
+    }
   }
 
   function handlePrint() {
@@ -92,9 +96,14 @@ export function DocumentCard({
     setTimeout(() => window.print(), 200);
   }
 
-  function handleShare() {
-    const url = typeof window !== "undefined" ? `${window.location.origin}/contracts-documents?doc=${doc.id}` : "";
-    navigator.clipboard?.writeText(url).then(() => toast.success(t("contractsDocuments.actions.linkCopied")));
+  async function handleShare() {
+    try {
+      const { url } = await shareDocument(doc.id);
+      await navigator.clipboard?.writeText(url);
+      toast.success(t("contractsDocuments.actions.linkCopied"));
+    } catch (error) {
+      notifyError(error);
+    }
   }
 
   const canSign = doc.status === "draft" || doc.status === "pending_signature";
