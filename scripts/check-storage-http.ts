@@ -13,6 +13,7 @@ import { sessionCookieName } from "@/server/auth/cookies";
 import { createSession } from "@/server/auth/session";
 import { provisionOrganizationRoles } from "@/server/modules/rbac/apply-role-template";
 import { runStorageMaintenance } from "@/server/platform/storage-maintenance";
+import { SupabaseObjectStorage } from "@/server/storage/object-storage";
 import { seedDashboardFixture } from "./lib/dashboard-fixture";
 
 try {
@@ -366,6 +367,22 @@ async function main() {
     (await get(`/api/v1/vehicles/${V.v1.id}`, tok("dealerOwner"))).json.primaryPhotoUrl?.includes(`/${t1.file.id}.`)
   );
   ok("...and the object is really gone from storage", !(await objectExists("vehicle-photos", photoRow.objectPath)));
+  {
+    // ObjectStorage.list() (§0.27): an ops-level capability, exercised directly against the fake server the
+    // same way scripts/storage-live-check.ts exercises it against a real one.
+    const t1Row = await db.storedFile.findUniqueOrThrow({ where: { id: t1.file.id } });
+    const storage = new SupabaseObjectStorage(FAKE, SERVICE_KEY);
+    const listed = await storage.list("vehicle-photos", `${X.org.id}/${V.v1.id}`);
+    ok(
+      "list() finds the surviving photo under its organization/vehicle prefix",
+      listed.some((e) => t1Row.objectPath.endsWith(e.name) && e.size !== null),
+      JSON.stringify(listed)
+    );
+    ok(
+      "list() does not find the deleted photo's object",
+      !listed.some((e) => photoRow.objectPath.endsWith(e.name))
+    );
+  }
   const deletedRow = await db.storedFile.findUniqueOrThrow({ where: { id: t2.file.id } });
   ok(
     "the row is kept as a tombstone with the removal recorded",

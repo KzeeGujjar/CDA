@@ -44,6 +44,8 @@ export const PUBLIC_ROUTE_ALLOWLIST = new Set([
   "POST /api/v1/auth/invitations/accept",
   // A share link works for whoever holds it, by design (see src/server/platform/shared-documents.ts).
   "GET /api/v1/generated-documents/shared/:token",
+  // No session exists for an external scheduler; gated by CRON_SECRET instead (see the route file).
+  "GET /api/v1/internal/maintenance-jobs",
 ]);
 
 function walk(dir: string, out: string[] = []): string[] {

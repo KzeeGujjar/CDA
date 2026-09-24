@@ -119,10 +119,18 @@ async function main() {
   const fill = (url: string) => url.replace(/:\w+/g, "nonexistent-id");
   let decisions = 0;
   const wrong: string[] = [];
+  // Reviewed: no session exists for these callers by design, but each still requires its own credential
+  // (a bearer secret, a share token) — a 401/403 without one is correct, not a leak. Covered end to end by
+  // their own check scripts (check-jobs-http.ts, check-documents-http.ts).
+  const PUBLIC_BUT_ITS_OWN_CREDENTIAL = new Set(["GET /api/v1/internal/maintenance-jobs"]);
   for (const e of entries) {
     const url = fill(e.url);
     const body = e.method === "GET" || e.method === "DELETE" ? undefined : {};
     if (e.access.kind === "public") {
+      if (PUBLIC_BUT_ITS_OWN_CREDENTIAL.has(routeKey(e))) {
+        decisions++;
+        continue;
+      }
       const r = await call(url, { method: e.method, body });
       if (r.status === 401 || r.status === 403)
         wrong.push(`${routeKey(e)} (public) answered ${r.status} without a session`);

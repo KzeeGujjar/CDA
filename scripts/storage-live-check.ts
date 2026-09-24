@@ -77,6 +77,13 @@ async function main() {
         );
       }
 
+      const listed = await storage.list(bucket, "_storage-check");
+      check(
+        label("list() finds the uploaded object"),
+        listed.some((e) => path.endsWith(e.name) && e.size === PNG.length),
+        JSON.stringify(listed)
+      );
+
       const signed = await storage.createSignedDownloadUrl(bucket, path, 60);
       const ok = await fetch(signed);
       check(
@@ -114,6 +121,8 @@ async function main() {
       await storage.removeObjects(bucket, [path]).catch(() => undefined);
       const info = await storage.getObjectInfo(bucket, path).catch(() => "error" as const);
       check(label("the test object was removed"), info === null);
+      const listedAfter = await storage.list(bucket, "_storage-check").catch(() => [] as const);
+      check(label("list() no longer finds it after removal"), !listedAfter.some((e) => path.endsWith(e.name)));
     }
   }
 

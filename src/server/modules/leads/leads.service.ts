@@ -6,6 +6,7 @@ import { withTenant, type TenantDb } from "@/server/db/tenant";
 import { forbidden, notFound } from "@/server/lib/errors";
 import type { RequestMeta } from "@/server/http/api-route";
 import { recordAudit } from "@/server/modules/audit/record";
+import { notifyUser } from "@/server/modules/notifications/notifications.service";
 import { id, likeSafe, money, page, parseQuery, toEnum } from "@/server/modules/crm-common";
 
 /**
@@ -231,6 +232,17 @@ export async function createLead(ctx: AuthContext, input: CreateLeadInput, meta?
       metadata: { source: input.source },
       ...meta,
     });
+    // "New lead" (§27): only worth notifying about when it lands on someone ELSE's desk — self-assigning your
+    // own lead (the default, assigneeId ?? ctx.userId) is not news to you.
+    if (assigneeId !== ctx.userId) {
+      await notifyUser(db, ctx, {
+        userId: assigneeId,
+        kind: "LEAD",
+        title: "New lead",
+        description: `${customer.name} (${input.source.replace("_", " ")})`,
+        link: `/leads/${row.id}`,
+      });
+    }
     return toDto(row, currency, ctx);
   });
 }
@@ -254,7 +266,9 @@ export async function updateLead(
       data: {
         ...rest,
         ...(stage ? { stage: stage.toUpperCase() as never } : {}),
-        ...(nextFollowUpAt !== undefined ? { nextFollowUpAt: nextFollowUpAt ? new Date(nextFollowUpAt) : null } : {}),
+        ...(nextFollowUpAt !== undefined
+          ? { nextFollowUpAt: nextFollowUpAt ? new Date(nextFollowUpAt) : null, followUpRemindedAt: null }
+          : {}),
       },
       include,
     });

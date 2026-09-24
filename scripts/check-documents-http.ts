@@ -189,6 +189,14 @@ async function main() {
     "a contract-type document is audited as contract.generated, not document.created (§0.25/§0.26)",
     !!(await db.auditLog.findFirst({ where: { organizationId: X.org.id, action: "contract.generated", entityId: contractRes.data.id } }))
   );
+  const contractNotif = await db.notification.findFirst({
+    where: { organizationId: X.org.id, userId: X.users.dealerOwner.id, kind: "DOCUMENT", title: "Contract ready", description: contractRes.data.title },
+  });
+  ok("notifications: a contract-type document generates a 'Contract ready' notification for its creator (§27)", !!contractNotif, JSON.stringify(contractNotif));
+  ok(
+    "notifications: a non-contract document (the quotation above) does not",
+    !(await db.notification.findFirst({ where: { organizationId: X.org.id, kind: "DOCUMENT", description: gen1.data.title } }))
+  );
 
   // ═════════ 4. templates: versioning ═════════
   const t1 = await post("/api/v1/document-templates", tok("dealerOwner"), {
@@ -244,6 +252,14 @@ async function main() {
   const signedRow = await db.generatedDocument.findUniqueOrThrow({ where: { id: gen1.data.id } });
   ok("...and signed_at is recorded (ready for a future real e-signature integration)", signedRow.signedAt !== null);
   same("an unknown status is a 400", (await patch(`/api/v1/generated-documents/${gen1.data.id}/status`, tok("dealerOwner"), { status: "voided" })).status, 400);
+  const inspectionCompleted = await patch(`/api/v1/generated-documents/${forUpdate.data.id}/status`, tok("dealerOwner"), { status: "completed" });
+  same("an inspection report can be moved to completed", inspectionCompleted.data.status, "completed");
+  const inspectionNotif = await db.notification.findFirst({
+    where: { organizationId: X.org.id, userId: X.users.dealerOwner.id, kind: "INSPECTION", title: "Inspection completed" },
+  });
+  ok("notifications: an inspection report reaching completed notifies its creator (§27)", !!inspectionNotif, JSON.stringify(inspectionNotif));
+  const signedIsNotInspectionNotif = await db.notification.count({ where: { organizationId: X.org.id, kind: "INSPECTION" } });
+  same("...exactly one such notification (moving gen1, a quotation, to signed above did not create one)", signedIsNotInspectionNotif, 1);
 
   // ═════════ 7. sharing: a real, working public link ═════════
   const shareRes = await post(`/api/v1/generated-documents/${gen1.data.id}/share`, tok("dealerOwner"), {});

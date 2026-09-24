@@ -27,6 +27,12 @@ export interface ObjectInfo {
   contentType: string | null;
 }
 
+export interface ObjectListEntry {
+  name: string;
+  size: number | null;
+  updatedAt: string | null;
+}
+
 export interface ObjectStorage {
   createSignedUploadUrl(bucket: string, path: string): Promise<SignedUpload>;
   createSignedDownloadUrl(
@@ -46,6 +52,13 @@ export interface ObjectStorage {
   /** The first bytes of the object, or null when it does not exist. */
   readObjectHead(bucket: string, path: string, length?: number): Promise<Uint8Array | null>;
   removeObjects(bucket: string, paths: string[]): Promise<void>;
+  /**
+   * Objects directly under `prefix` (not recursive), newest bucket contents first. This is an ops/debugging
+   * capability, not a read path the application uses: normal reads stay DB-driven (StoredFile rows carry
+   * permission scope, soft-delete state and business metadata a bucket listing does not have) — see
+   * storage-live-check.ts, which uses this to verify a bucket's real contents against what the app expects.
+   */
+  list(bucket: string, prefix: string, options?: { limit?: number; offset?: number }): Promise<ObjectListEntry[]>;
   /** Throws unless the bucket exists and is private. */
   assertBucketPrivate(bucket: string): Promise<void>;
 }
@@ -176,6 +189,24 @@ export class SupabaseObjectStorage implements ObjectStorage {
     if (!paths.length) return;
     const { error } = await this.client.storage.from(bucket).remove(paths);
     if (error) throw unavailable("removing objects", error);
+  }
+
+  async list(bucket: string, prefix: string, options: { limit?: number; offset?: number } = {}): Promise<ObjectListEntry[]> {
+    await this.assertBucketPrivate(bucket);
+    const { data, error } = await this.client.storage.from(bucket).list(prefix, {
+      limit: options.limit ?? 100,
+      offset: options.offset ?? 0,
+      sortBy: { column: "name", order: "asc" },
+    });
+    if (error) throw unavailable("listing objects", error);
+    // A "folder" placeholder has no id; only real objects are meaningful to a caller.
+    return (data ?? [])
+      .filter((entry) => entry.id !== null)
+      .map((entry) => ({
+        name: entry.name,
+        size: typeof entry.metadata?.size === "number" ? entry.metadata.size : null,
+        updatedAt: entry.updated_at ?? null,
+      }));
   }
 
   /** A signed URL must point at our own Supabase project. Anything else is a misconfiguration or an attack. */

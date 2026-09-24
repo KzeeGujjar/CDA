@@ -7,6 +7,7 @@ import { conflict, forbidden, notFound } from "@/server/lib/errors";
 import type { RequestMeta } from "@/server/http/api-route";
 import { describeDatabaseError } from "@/server/lib/db-errors";
 import { recordAudit } from "@/server/modules/audit/record";
+import { notifyUser } from "@/server/modules/notifications/notifications.service";
 import { emirateCodes, vehicleImportSpecs, vehicleSourceTypes } from "@/lib/uae/reference";
 import { dayInZone, id, likeSafe, money, page, parseQuery, toEnum } from "@/server/modules/crm-common";
 import { primaryPhotosByVehicle } from "@/server/modules/files/files.service";
@@ -491,6 +492,26 @@ export async function updateVehicle(
       metadata: { fields: Object.keys(input).sort().join(",") },
       ...meta,
     });
+    // "Vehicle price change" (§27): tells whoever is working a lead on THIS car, not a fabricated "watcher" —
+    // there is no per-vehicle ownership/subscription model, but an active lead genuinely pointed at it is.
+    if (input.listPrice !== undefined && Number(existing.listPrice) !== input.listPrice) {
+      const interested = await db.lead.findMany({
+        where: { interestedVehicleId: vehicleId, stage: { notIn: ["WON", "LOST"] }, assignedToId: { not: null } },
+        select: { assignedToId: true },
+        distinct: ["assignedToId"],
+      });
+      const label = `${row.year} ${row.make} ${row.model}`.trim();
+      const price = `${input.listPrice.toLocaleString()} ${org.currency}`;
+      for (const lead of interested) {
+        await notifyUser(db, ctx, {
+          userId: lead.assignedToId!,
+          kind: "PRICE",
+          title: "Vehicle price change",
+          description: `${label} is now ${price}`,
+          link: `/inventory/${vehicleId}`,
+        });
+      }
+    }
     const photo = (await primaryPhotosByVehicle(db, [row.id])).get(row.id) ?? null;
     return toDto(row, org, can(ctx, "profit", "read"), photo?.url ?? null);
   });

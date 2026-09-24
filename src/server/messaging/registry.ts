@@ -39,3 +39,28 @@ const ALL_CHANNELS: MessageChannel[] = ["WHATSAPP", "EMAIL", "SMS", "WEBSITE_CHA
 export function channelStatuses(): ChannelStatus[] {
   return ALL_CHANNELS.map((channel) => ({ channel, configured: getMessageProvider(channel) !== null }));
 }
+
+export interface DeliveryOutcome {
+  status: "SENT" | "FAILED";
+  providerMessageId: string | null;
+  errorCode: string | null;
+}
+
+/**
+ * Sends through a channel's adapter and normalizes the result — never a fabricated "sent". Shared by the live
+ * send path (src/server/modules/messages/messages.service.ts, a real network call made outside the DB
+ * transaction) and the background retry job (src/server/platform/message-retries.ts), so there is exactly one
+ * place that decides what "delivered" means for a channel.
+ */
+export async function deliverMessage(channel: MessageChannel, to: string, body: string): Promise<DeliveryOutcome> {
+  const provider = getMessageProvider(channel);
+  if (!provider) return { status: "FAILED", providerMessageId: null, errorCode: "provider_not_configured" };
+  try {
+    const result = await provider.send({ to, body });
+    if (result.status === "sent") return { status: "SENT", providerMessageId: result.providerMessageId ?? null, errorCode: null };
+    return { status: "FAILED", providerMessageId: null, errorCode: result.errorCode ?? "send_failed" };
+  } catch (error) {
+    console.error("[messaging] provider threw:", error instanceof Error ? error.message : error);
+    return { status: "FAILED", providerMessageId: null, errorCode: "send_failed" };
+  }
+}

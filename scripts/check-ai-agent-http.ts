@@ -600,6 +600,14 @@ async function main() {
     "the model was told it has not been done",
     (await shownToModel()).includes("awaiting_user_approval") && (await shownToModel()).includes("has NOT been done")
   );
+  const opportunityNotif = await db.notification.findFirst({
+    where: { organizationId: X.org.id, userId: X.users.dealerOwner.id, kind: "AI", title: "AI proposed an action" },
+  });
+  ok(
+    "notifications: a proposal awaiting approval notifies the user who is chatting, as an 'AI opportunity' (§27)",
+    !!opportunityNotif,
+    JSON.stringify(opportunityNotif)
+  );
   const pending = t1.json.pendingActions[0];
   ok(
     "the proposal says in plain words what will happen and carries its arguments for the person to review",

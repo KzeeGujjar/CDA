@@ -923,6 +923,10 @@ model Lead {
   budget              Decimal?   @db.Decimal(14, 2)
   lastContactAt       DateTime?  @map("last_contact_at") @db.Timestamptz(3)
   nextFollowUpAt      DateTime?  @map("next_follow_up_at") @db.Timestamptz(3)
+  /// When the follow-up reminder job (src/server/platform/lead-follow-up-reminders.ts) last notified the
+  /// assignee about this lead's next_follow_up_at. Null means "not reminded yet"; reset to null whenever
+  /// next_follow_up_at is changed, so a rescheduled follow-up gets its own reminder. Mirrors tasks.reminded_at.
+  followUpRemindedAt  DateTime?  @map("follow_up_reminded_at") @db.Timestamptz(3)
   createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -1370,6 +1374,10 @@ model Message {
   providerMessageId String?          @map("provider_message_id")
   /// Set when status = FAILED: why (a provider's rejection reason, or "not configured").
   errorCode         String?          @map("error_code")
+  /// When the background retry job (src/server/platform/message-retries.ts) last attempted this message.
+  /// Null means "never retried yet" — the gate that keeps a FAILED send from being retried more than once
+  /// automatically (mirrors tasks.reminded_at).
+  retriedAt         DateTime?        @map("retried_at") @db.Timestamptz(3)
   createdAt         DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)

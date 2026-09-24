@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Car, UserRound, Target, Handshake, FileText, ListChecks, MessageSquare, Bot } from "lucide-react";
+import { Search, Car, UserRound, Target, Handshake, FileText, ListChecks, MessageSquare, Bot, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -16,72 +16,49 @@ import {
 } from "@/components/ui/command";
 import { navGroups } from "@/constants";
 import { useTranslation } from "@/lib/i18n/LanguageProvider";
-import { getVehicles } from "@/services/vehicleService";
-import { getCustomers } from "@/services/customerService";
-import { getLeads } from "@/services/leadService";
+import { useDebouncedValue } from "@/hooks/use-debounce";
+import { globalSearch, type GroupedSearchResults, type SearchResultItem } from "@/services/searchService";
 import { getDeals } from "@/services/dealService";
-import { getDocuments } from "@/services/documentService";
-import { getTasks } from "@/services/taskService";
-import { getConversations } from "@/services/messageService";
-import { getChatThreads } from "@/services/aiService";
+
+// Deals has no backend search yet (the deals module itself is demo data only, §0.17/§0.29) — kept exactly as
+// it was: fetched and filtered client-side, unlike the other 7 groups below.
+const DEAL_CAP = 5;
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 250);
   const router = useRouter();
   const { t } = useTranslation();
 
   const searching = query.trim().length > 0;
-  const queryOpts = { enabled: open && searching };
+  const debouncedSearching = debouncedQuery.trim().length > 0;
 
-  const { data: vehicles = [] } = useQuery({
+  const { data: results } = useQuery({
     meta: { banner: true },
-    queryKey: ["vehicles", "palette"],
-    queryFn: () => getVehicles(),
-    ...queryOpts,
+    queryKey: ["search", "palette", debouncedQuery],
+    queryFn: () => globalSearch(debouncedQuery),
+    enabled: open && debouncedSearching,
   });
-  const { data: customers = [] } = useQuery({
-    meta: { banner: true },
-    queryKey: ["customers", "palette"],
-    queryFn: () => getCustomers(),
-    ...queryOpts,
-  });
-  const { data: leads = [] } = useQuery({
-    meta: { banner: true },
-    queryKey: ["leads", "palette"],
-    queryFn: () => getLeads(),
-    ...queryOpts,
-  });
+  const groups: GroupedSearchResults = results ?? {
+    vehicles: [],
+    customers: [],
+    leads: [],
+    documents: [],
+    tasks: [],
+    messages: [],
+    aiConversations: [],
+  };
+
   const { data: deals = [] } = useQuery({
     meta: { banner: true },
     queryKey: ["deals", "palette"],
     queryFn: () => getDeals(),
-    ...queryOpts,
+    enabled: open && searching,
   });
-  const { data: documents = [] } = useQuery({
-    meta: { banner: true },
-    queryKey: ["documents", "palette"],
-    queryFn: () => getDocuments(),
-    ...queryOpts,
-  });
-  const { data: tasks = [] } = useQuery({
-    meta: { banner: true },
-    queryKey: ["tasks", "palette"],
-    queryFn: () => getTasks(),
-    ...queryOpts,
-  });
-  const { data: conversations = [] } = useQuery({
-    meta: { banner: true },
-    queryKey: ["conversations", "palette"],
-    queryFn: () => getConversations(),
-    ...queryOpts,
-  });
-  const { data: chatThreads = [] } = useQuery({
-    meta: { banner: true },
-    queryKey: ["chat-threads", "palette"],
-    queryFn: () => getChatThreads(),
-    ...queryOpts,
-  });
+  const dealMatches = deals
+    .filter((d) => `${d.reference} ${d.customerName} ${d.vehicleLabel}`.toLowerCase().includes(query.trim().toLowerCase()))
+    .slice(0, DEAL_CAP);
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -102,6 +79,25 @@ export function CommandPalette() {
   function go(href: string) {
     handleOpenChange(false);
     router.push(href);
+  }
+
+  function resultGroup(heading: string, icon: LucideIcon, items: SearchResultItem[]) {
+    if (!searching || items.length === 0) return null;
+    const Icon = icon;
+    return (
+      <>
+        <CommandSeparator />
+        <CommandGroup heading={heading}>
+          {items.map((item) => (
+            <CommandItem key={item.id} value={`${item.title} ${item.subtitle ?? ""}`} onSelect={() => go(item.link)}>
+              <Icon className="size-4" />
+              {item.title}
+              {item.subtitle && <span className="truncate text-muted-foreground">{item.subtitle}</span>}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </>
+    );
   }
 
   return (
@@ -145,68 +141,15 @@ export function CommandPalette() {
             </CommandGroup>
           )}
 
-          {searching && vehicles.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("inventory.title")}>
-                {vehicles.map((v) => (
-                  <CommandItem
-                    key={v.id}
-                    value={`${v.year} ${v.make} ${v.model} ${v.trim} ${v.stockNumber} ${v.spec.vin}`}
-                    onSelect={() => go(`/inventory/${v.id}`)}
-                  >
-                    <Car className="size-4" />
-                    {v.year} {v.make} {v.model} <span className="text-muted-foreground">{v.trim}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
+          {resultGroup(t("inventory.title"), Car, groups.vehicles)}
+          {resultGroup(t("nav.customers"), UserRound, groups.customers)}
+          {resultGroup(t("nav.leads"), Target, groups.leads)}
 
-          {searching && customers.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("nav.customers")}>
-                {customers.map((c) => (
-                  <CommandItem
-                    key={c.id}
-                    value={`${c.name} ${c.email} ${c.phone}`}
-                    onSelect={() => go(`/customers/${c.id}`)}
-                  >
-                    <UserRound className="size-4" />
-                    {c.name} <span className="text-muted-foreground">{c.email}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
-
-          {searching && leads.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("nav.leads")}>
-                {leads.map((l) => (
-                  <CommandItem
-                    key={l.id}
-                    value={`${l.customerName} ${l.interestedVehicleLabel ?? ""}`}
-                    onSelect={() => go(`/leads/${l.id}`)}
-                  >
-                    <Target className="size-4" />
-                    {l.customerName}
-                    {l.interestedVehicleLabel && (
-                      <span className="text-muted-foreground">{l.interestedVehicleLabel}</span>
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
-
-          {searching && deals.length > 0 && (
+          {searching && dealMatches.length > 0 && (
             <>
               <CommandSeparator />
               <CommandGroup heading={t("nav.deals")}>
-                {deals.map((d) => (
+                {dealMatches.map((d) => (
                   <CommandItem
                     key={d.id}
                     value={`${d.reference} ${d.customerName} ${d.vehicleLabel}`}
@@ -221,81 +164,10 @@ export function CommandPalette() {
             </>
           )}
 
-          {searching && documents.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("contractsDocuments.title")}>
-                {documents.map((doc) => (
-                  <CommandItem
-                    key={doc.id}
-                    value={`${doc.title} ${doc.customerName ?? ""} ${doc.vehicleLabel ?? ""}`}
-                    onSelect={() => go("/contracts-documents")}
-                  >
-                    <FileText className="size-4" />
-                    {doc.title}
-                    {doc.customerName && <span className="text-muted-foreground">{doc.customerName}</span>}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
-
-          {searching && tasks.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("tasks.title")}>
-                {tasks.map((task) => (
-                  <CommandItem
-                    key={task.id}
-                    value={`${task.title} ${task.customerName ?? ""} ${task.assignedToName}`}
-                    onSelect={() => go("/tasks")}
-                  >
-                    <ListChecks className="size-4" />
-                    {task.title}
-                    <span className="text-muted-foreground">{task.assignedToName}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
-
-          {searching && conversations.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("messages.title")}>
-                {conversations.map((c) => (
-                  <CommandItem
-                    key={c.id}
-                    value={`${c.contactName} ${c.lastMessagePreview}`}
-                    onSelect={() => go("/messages")}
-                  >
-                    <MessageSquare className="size-4" />
-                    {c.contactName}
-                    <span className="truncate text-muted-foreground">{c.lastMessagePreview}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
-
-          {searching && chatThreads.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading={t("common.aiConversations")}>
-                {chatThreads.map((thread) => (
-                  <CommandItem
-                    key={thread.id}
-                    value={`${thread.title} ${thread.lastMessagePreview}`}
-                    onSelect={() => go("/ai-assistant")}
-                  >
-                    <Bot className="size-4" />
-                    {thread.title}
-                    <span className="truncate text-muted-foreground">{thread.lastMessagePreview}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
+          {resultGroup(t("contractsDocuments.title"), FileText, groups.documents)}
+          {resultGroup(t("tasks.title"), ListChecks, groups.tasks)}
+          {resultGroup(t("messages.title"), MessageSquare, groups.messages)}
+          {resultGroup(t("common.aiConversations"), Bot, groups.aiConversations)}
         </CommandList>
       </CommandDialog>
     </>

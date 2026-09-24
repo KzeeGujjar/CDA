@@ -7,7 +7,7 @@ import { badRequest, notFound } from "@/server/lib/errors";
 import type { RequestMeta } from "@/server/http/api-route";
 import { id, likeSafe, page, parseQuery } from "@/server/modules/crm-common";
 import { recordAudit } from "@/server/modules/audit/record";
-import { getMessageProvider } from "@/server/messaging/registry";
+import { deliverMessage } from "@/server/messaging/registry";
 
 /**
  * The internal conversation/message model behind the unified inbox (whatsapp, email, sms, website_chat,
@@ -187,21 +187,6 @@ export async function markConversationRead(ctx: AuthContext, conversationId: str
   return toConversationDto(row);
 }
 
-/** Sends through the channel's adapter (never inside the DB transaction: it is a real network call), then
- *  records what actually happened — SENT with the provider's id, or FAILED with why. Never a fabricated "sent". */
-async function deliver(channel: Conversation["channel"], to: string, body: string) {
-  const provider = getMessageProvider(channel);
-  if (!provider) return { status: "FAILED" as const, providerMessageId: null, errorCode: "provider_not_configured" };
-  try {
-    const result = await provider.send({ to, body });
-    if (result.status === "sent") return { status: "SENT" as const, providerMessageId: result.providerMessageId ?? null, errorCode: null };
-    return { status: "FAILED" as const, providerMessageId: null, errorCode: result.errorCode ?? "send_failed" };
-  } catch (error) {
-    console.error("[messaging] provider threw:", error instanceof Error ? error.message : error);
-    return { status: "FAILED" as const, providerMessageId: null, errorCode: "send_failed" };
-  }
-}
-
 export async function sendMessage(
   ctx: AuthContext,
   conversationId: string,
@@ -211,7 +196,7 @@ export async function sendMessage(
   const scope = requirePermission(ctx, "messages", "create");
   const convo = await withTenant(ctx, (db) => loadConversation(ctx, db, conversationId, scope));
 
-  const result = await deliver(convo.channel, convo.contactHandle, input.body);
+  const result = await deliverMessage(convo.channel, convo.contactHandle, input.body);
 
   const row = await withTenant(ctx, async (db) => {
     const message = await db.message.create({
@@ -265,7 +250,7 @@ export async function createConversation(
   });
 
   const channelEnum = input.channel.toUpperCase() as Conversation["channel"];
-  const result = await deliver(channelEnum, contact.handle, input.body);
+  const result = await deliverMessage(channelEnum, contact.handle, input.body);
 
   const row = await withTenant(ctx, async (db) => {
     const branchId = scope === "organization" ? undefined : ctx.branchIds[0];

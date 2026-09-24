@@ -995,6 +995,34 @@ async function main() {
     assigned.status === 201 && assigned.json.assignedTo.id === nooraId,
     assigned.raw.slice(0, 200)
   );
+  // ── real notifications (§27): "New lead" and "Vehicle price change" ──
+  const newLeadNotif = await db.notification.findFirst({
+    where: { organizationId: ORG, userId: nooraId, kind: "LEAD", link: `/leads/${assigned.json.id}` },
+  });
+  ok("notifications: assigning a lead to someone else notifies them of the new lead", !!newLeadNotif, JSON.stringify(newLeadNotif));
+  same(
+    "notifications: self-assigning your own lead (the default) does not notify yourself",
+    await db.notification.count({ where: { organizationId: ORG, userId: yousefId, kind: "LEAD", link: `/leads/${nl.json.id}` } }),
+    0
+  );
+  const priceUpdate = await put(`/api/v1/vehicles/${escalade.id}`, who.manager, { listPrice: Number(escalade.listPrice) + 1234 });
+  ok("notifications: the price-change vehicle update succeeds", priceUpdate.status === 200, priceUpdate.raw.slice(0, 200));
+  const priceNotif = await db.notification.findFirst({
+    where: { organizationId: ORG, userId: yousefId, kind: "PRICE", link: `/inventory/${escalade.id}` },
+  });
+  ok(
+    "notifications: a price change on a vehicle a lead is interested in notifies that lead's assignee",
+    !!priceNotif,
+    JSON.stringify(priceNotif)
+  );
+  const priceNotifCountBefore = await db.notification.count({ where: { organizationId: ORG, kind: "PRICE" } });
+  const priceUpdateNoop = await put(`/api/v1/vehicles/${escalade.id}`, who.manager, { notes: "no price change here" });
+  ok("notifications: an update that does not touch listPrice sends no price notification", priceUpdateNoop.status === 200);
+  same(
+    "...(PRICE notification count is unchanged)",
+    await db.notification.count({ where: { organizationId: ORG, kind: "PRICE" } }),
+    priceNotifCountBefore
+  );
   same(
     "leads: an unknown customer is a 404",
     (await post("/api/v1/leads", who.manager, { customerId: "nope", source: "phone" })).status,

@@ -219,6 +219,31 @@ export function startFakeSupabase(port: number, serviceKey: string): Promise<Fak
       }
     }
 
+    // ── list objects under a prefix ──
+    r = /^object\/list\/([^/]+)$/.exec(route);
+    if (r && method === "POST") {
+      if (!isService(req)) return apiError(res, 403, "Unauthorized");
+      const bucket = r[1];
+      const { prefix, limit, offset } = JSON.parse((await readBody(req)).toString() || "{}") as {
+        prefix?: string;
+        limit?: number;
+        offset?: number;
+      };
+      const wantedPrefix = prefix ? `${bucket}/${prefix}` : `${bucket}/`;
+      const matches = [...objects.entries()]
+        .filter(([key]) => key.startsWith(wantedPrefix))
+        .map(([key, o]) => ({
+          name: key.slice(wantedPrefix.length),
+          id: key,
+          updated_at: o.createdAt,
+          created_at: o.createdAt,
+          last_accessed_at: o.createdAt,
+          metadata: { size: o.bytes.length, mimetype: o.contentType },
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      return json(res, 200, matches.slice(offset ?? 0, (offset ?? 0) + (limit ?? 100)));
+    }
+
     // ── object info / remove ──
     r = /^object\/info\/([^/]+)\/(.+)$/.exec(route);
     if (r && method === "GET") {

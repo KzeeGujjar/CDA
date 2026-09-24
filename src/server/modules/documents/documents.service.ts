@@ -8,6 +8,7 @@ import { appUrl } from "@/server/env";
 import { forbidden, notFound } from "@/server/lib/errors";
 import type { RequestMeta } from "@/server/http/api-route";
 import { recordAudit } from "@/server/modules/audit/record";
+import { notifyUser } from "@/server/modules/notifications/notifications.service";
 import { DEFAULT_TEMPLATES } from "./default-templates";
 import { extractVariables, renderTemplate } from "./render";
 
@@ -315,6 +316,16 @@ export async function createDocument(
       metadata: { type: input.type },
       ...meta,
     });
+    // "Contract ready" (§27): the same isContract distinction the audit action above already draws.
+    if (isContract) {
+      await notifyUser(db, ctx, {
+        userId: ctx.userId,
+        kind: "DOCUMENT",
+        title: "Contract ready",
+        description: row.title,
+        link: "/contracts-documents",
+      });
+    }
     return toDetailDto(row);
   });
 }
@@ -403,6 +414,17 @@ export async function updateDocumentStatus(
       metadata: { from: down(existing.status), to: body.status },
       ...meta,
     });
+    // "Inspection completed" (§27): specifically an inspection report reaching COMPLETED, not just any status
+    // edit on any document type.
+    if (body.status === "completed" && existing.status !== "COMPLETED" && existing.type === "INSPECTION_REPORT" && existing.createdById) {
+      await notifyUser(db, ctx, {
+        userId: existing.createdById,
+        kind: "INSPECTION",
+        title: "Inspection completed",
+        description: existing.title,
+        link: "/contracts-documents",
+      });
+    }
     return toDetailDto(row);
   });
 }

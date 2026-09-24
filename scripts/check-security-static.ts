@@ -426,6 +426,7 @@ const REVIEWED_NO_BODY = new Set([
   "POST /api/v1/documents/[id]/complete",
   "POST /api/v1/vehicles/[id]/photos/[fileId]/complete",
   "POST /api/v1/generated-documents/[id]/share",
+  "POST /api/v1/notifications/read-all",
 ]);
 for (const entryName of noBodyReview)
   expect(`state-changing endpoint without a body is reviewed: ${entryName}`, REVIEWED_NO_BODY.has(entryName));
@@ -588,6 +589,9 @@ const REVIEWED_SELF = new Set([
   "GET /api/v1/reference/uae",
   "GET /api/v1/reference/currencies",
   "GET /api/v1/reference/convert",
+  "GET /api/v1/notifications",
+  "PATCH /api/v1/notifications/:id",
+  "POST /api/v1/notifications/read-all",
 ]);
 const selfNow = entries.filter((e) => e.access.kind === "self").map(routeKey);
 for (const r of selfNow)

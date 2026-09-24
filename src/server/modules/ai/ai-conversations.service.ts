@@ -10,6 +10,7 @@ import { buildSystemPrompt, MAX_USER_MESSAGE_CHARS, normalizeTurns, titleFrom } 
 import { providerStatuses } from "@/server/ai/providers/registry";
 import type { AiTurn } from "@/server/ai/providers/types";
 import { recordAudit } from "@/server/modules/audit/record";
+import { likeSafe } from "@/server/modules/crm-common";
 import { loadToolCalls, type ToolCallDto } from "./ai-tool-calls";
 import { recordAiActivity } from "./ai-activity.service";
 import { runAi } from "./ai-runner";
@@ -40,6 +41,7 @@ export const sendMessageSchema = z.strictObject({
 });
 export const listConversationsQuerySchema = z.strictObject({
   status: z.enum(["active", "archived"]).default("active"),
+  search: z.string().trim().max(100).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).max(100_000).default(0),
 });
@@ -149,7 +151,12 @@ export async function listConversations(
 ): Promise<{ items: ConversationDto[]; total: number }> {
   requirePermission(ctx, "ai_agent", "read");
   const q = parse(listConversationsQuerySchema, query);
-  const where = { userId: ctx.userId, status: q.status.toUpperCase() as "ACTIVE" | "ARCHIVED" };
+  const s = q.search ? likeSafe(q.search) : undefined;
+  const where = {
+    userId: ctx.userId,
+    status: q.status.toUpperCase() as "ACTIVE" | "ARCHIVED",
+    ...(s ? { title: { contains: s, mode: "insensitive" as const } } : {}),
+  };
   return withTenant(ctx, async (db) => {
     const [rows, total] = await Promise.all([
       db.aiConversation.findMany({

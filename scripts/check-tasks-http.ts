@@ -125,6 +125,10 @@ async function main() {
   const list = await get("/api/v1/tasks", tok("dealerOwner"));
   const mine = (list.data as { id: string; vehicleLabel: string | null }[]).find((t) => t.id === genRes.data.id);
   same("the list resolves the vehicle's real label", mine?.vehicleLabel, "2023 Toyota Camry");
+  const searched = await get(`/api/v1/tasks?search=${encodeURIComponent("Follow up on Camry")}`, tok("dealerOwner"));
+  ok("search (§29) finds a task by title", (searched.data as { id: string }[]).some((t) => t.id === genRes.data.id), JSON.stringify(searched.data));
+  const searchedMiss = await get(`/api/v1/tasks?search=${encodeURIComponent("no such task title exists")}`, tok("dealerOwner"));
+  same("...and finds nothing for a title that isn't there", searchedMiss.data.length, 0);
 
   // ═════════ 3. get one, with activity history ═════════
   const detail = await get(`/api/v1/tasks/${genRes.data.id}`, tok("dealerOwner"));

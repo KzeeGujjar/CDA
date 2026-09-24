@@ -7,6 +7,7 @@ import { forbidden, notFound } from "@/server/lib/errors";
 import type { RequestMeta } from "@/server/http/api-route";
 import { recordAudit } from "@/server/modules/audit/record";
 import { loadRecordContext, type RecordType } from "@/server/modules/ai/record-context";
+import { likeSafe } from "@/server/modules/crm-common";
 
 /**
  * Tasks. Used by the REST endpoint (POST /tasks) and by the AI agent's createTask tool, so both go through
@@ -126,6 +127,7 @@ export const taskStatusValues = ["open", "completed"] as const;
 export const listTasksQuerySchema = z.strictObject({
   status: z.enum(taskStatusValues).optional(),
   category: z.enum(taskCategories).optional(),
+  search: z.string().trim().max(100).optional(),
   limit: z.coerce.number().int().min(1).max(200).default(100),
   offset: z.coerce.number().int().min(0).max(100_000).default(0),
 });
@@ -215,11 +217,13 @@ const parseQuery = <T>(schema: z.ZodType<T>, query: URLSearchParams): T => schem
 export async function listTasks(ctx: AuthContext, query: URLSearchParams): Promise<{ items: TaskListDto[]; total: number }> {
   const scope = requirePermission(ctx, "tasks", "read");
   const q = parseQuery(listTasksQuerySchema, query);
+  const s = q.search ? likeSafe(q.search) : undefined;
   const where: Prisma.TaskWhereInput = {
     AND: [
       scopeWhere(ctx, scope, { ownerField: "assignedToId" }) as Prisma.TaskWhereInput,
       q.status ? { status: q.status.toUpperCase() as never } : {},
       q.category ? { category: q.category.toUpperCase() as never } : {},
+      s ? { title: { contains: s, mode: "insensitive" } } : {},
     ],
   };
   return withTenant(ctx, async (db) => {

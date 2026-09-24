@@ -4,6 +4,7 @@ import { withTenant } from "@/server/db/tenant";
 import { AppError } from "@/server/lib/errors";
 import { recordAiActivity } from "@/server/modules/ai/ai-activity.service";
 import { recordAudit } from "@/server/modules/audit/record";
+import { notifyUser } from "@/server/modules/notifications/notifications.service";
 import type { AiToolCall } from "../providers/types";
 import { ALL_TOOLS, findTool, mayUse } from "./registry";
 import type { AgentTool } from "./types";
@@ -137,6 +138,11 @@ export async function runToolCall(
   if (tool.confirm) {
     const description = tool.describe?.(args) ?? `Run ${tool.name}`;
     const run = await finish("AWAITING_CONFIRMATION", "", description, args);
+    // "AI opportunity" (§27): the agent found something worth a mutating action but — by design (see the
+    // docstring above) — did not do it. That is exactly the moment a person needs to be told about it.
+    await withTenant(ctx, (db) =>
+      notifyUser(db, ctx, { userId: ctx.userId, kind: "AI", title: "AI proposed an action", description, link: "/ai-assistant" })
+    ).catch(() => undefined);
     run.content = JSON.stringify({
       status: "awaiting_user_approval",
       actionId: run.rowId,

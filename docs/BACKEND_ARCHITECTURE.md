@@ -94,7 +94,7 @@ Everything above is reachable from the existing navigation; the six placeholder 
 | `scripts/check-profit-http.ts` (`npm run check:profit-http`) | 70 assertions over real HTTP: roles, database-sourced costs, scope, tenants, validation |
 | `prisma/migrations/2026091900{0700,0800,0900}_*` | `files` table (+ constraints, RLS, one primary photo) and the Supabase buckets/policies (see §0.8) |
 | `src/server/storage/*`, `src/server/modules/files/*`, `src/server/platform/storage-maintenance.ts`, `src/app/api/v1/{documents,vehicles/[id]/photos}` | Private-bucket file storage: 10 endpoints (see §0.8) |
-| `scripts/check-storage-unit.ts`, `check-storage-policies.ts`, `check-storage-http.ts` | 79 + 24 + 118 assertions (`npm run check:storage`, `check:storage-policies`, `check:storage-http`) |
+| `scripts/check-storage-unit.ts`, `check-storage-policies.ts`, `check-storage-http.ts` | 79 + 24 + 120 assertions (`npm run check:storage`, `check:storage-policies`, `check:storage-http`) |
 | `src/components/vehicles/vehicle-photo-manager.tsx`, `vehicleService.ts` photo functions, `primaryPhotoUrl` on `VehicleDto` | The vehicle detail page's real photo manager: upload, reorder, primary, delete, replace (see §0.19) |
 | `prisma/migrations/20260921000400_messaging`, `src/server/messaging/*`, `src/server/modules/messages/*`, `src/app/api/v1/messages/*` | Conversation/message model + WhatsApp/email/SMS/website-chat/ai-agent provider adapters: 5 endpoints (see §0.20) |
 | `src/server/modules/reports/reports.service.ts`, `src/app/api/v1/reports/*` | 8 real reports (Market stays demo): 8 endpoints (see §0.20) |
@@ -105,7 +105,18 @@ Everything above is reachable from the existing navigation; the six placeholder 
 | `20260921000600_task_reminders`, `src/server/platform/task-reminders.ts`, `src/app/api/v1/tasks/*` | Real list/get/update/status/delete, reminders (a real notification), activity history (reused audit log): 4 new endpoints (see §0.23) |
 | `LIMITS.apiUser`/`apiIp` (`src/server/auth/rate-limit.ts`, wired into `api-route.ts`) | A general rate-limiting backstop on every route, closing §0.14's documented gap (see §0.25) |
 | `vehicle.archived`, `contract.generated`, `user.created`, `ai.action_executed` audit actions | Security-checklist audit-log coverage for actions that were previously unaudited or blended into a broader one (see §0.26) |
-| `scripts/storage-live-check.ts` (`npm run storage:check`) | 48 probes to run against YOUR real Supabase project (see §0.8) |
+| `ObjectStorage.list()` (`src/server/storage/object-storage.ts`) | The one method the spec's `StorageProvider` example named that did not already exist; ops/debugging use only (see §0.27) |
+| `src/server/messaging/registry.ts`'s `deliverMessage()`, `src/server/platform/message-retries.ts`, `messages.retried_at` | Retries a FAILED outbound message once, automatically; shares its "what does delivered mean" logic with the live send path (see §0.28) |
+| `src/server/platform/run-maintenance-jobs.ts`, `GET /api/v1/internal/maintenance-jobs`, `vercel.json` | One `CRON_SECRET`-gated endpoint runs storage cleanup + task reminders + message retries together; one cron entry schedules it — closes the "nothing schedules this" gap standing since §0.8 (see §0.28) |
+| `scripts/check-jobs-http.ts` | 10 assertions (`npm run check:jobs-http`) |
+| `scripts/storage-live-check.ts` (`npm run storage:check`) | 48 probes to run against YOUR real Supabase project, now including `list()` (see §0.8, §0.27) |
+| `src/server/modules/notifications/*`, `src/app/api/v1/notifications/*` | Real notification API (list/mark-read/mark-all-read), own-data only: 3 endpoints (see §0.29) |
+| `src/server/platform/lead-follow-up-reminders.ts`, `leads.follow_up_reminded_at` | Fourth background job, folded into `run-maintenance-jobs.ts`/the same cron entry (see §0.28, §0.29) |
+| `scripts/check-notifications-http.ts` | 28 assertions (`npm run check:notifications-http`) |
+| `src/server/modules/search/search.service.ts`, `src/app/api/v1/search` | Global search: one `composed` endpoint fanning out to 7 real types' own `list*` functions: 1 endpoint (see §0.31) |
+| `20260925000100_search_indexes` | `pg_trgm` + 13 GIN trigram indexes on every column any `search` filter in the app matches against |
+| `src/services/searchService.ts`, `src/components/layout/command-palette.tsx` | Command palette rewired off 8 full-table client fetches per keystroke onto 1 real search call (see §0.31) |
+| `scripts/check-search-http.ts` | 21 assertions (`npm run check:search-http`) |
 | `prisma/migrations/2026091900{1000,1100}_*` | AI tables (`ai_settings`, `ai_conversations`, `ai_messages`, `ai_usage`, `ai_activity`), constraints, RLS, append-only usage ledger (see §0.9) |
 | `src/server/ai/*` | Provider abstraction: config, `AiProvider` interface, Claude / OpenAI / Gemini adapters, registry, pricing, prompts |
 | `src/server/modules/ai/*`, `src/app/api/v1/ai/*` | `runAi()` core, conversations, activity, usage, settings: 13 endpoints |
@@ -114,7 +125,7 @@ Everything above is reachable from the existing navigation; the six placeholder 
 | `prisma/migrations/2026091900{1200,1300}_*` | `tasks`, `partner_requests` (bank evaluations, company quotations), `ai_tool_calls` (audit trail of the agent), constraints, RLS (see §0.10) |
 | `src/server/ai/agent/*`, `src/server/modules/{ai/ai-agent.service.ts,tasks,partner-requests}` | The AI agent: 11 tools, executor, agent loop, approval flow (see §0.10) |
 | `src/app/api/v1/ai/agent/*`, `src/app/api/v1/tasks` | 4 endpoints (see §0.10) |
-| `scripts/check-ai-agent-unit.ts`, `check-ai-agent-http.ts`, `check-ai-agent-frontend.ts` | 107 + 107 + 28 assertions (`npm run check:ai-agent`, `check:ai-agent-http`, `check:ai-agent-frontend`) |
+| `scripts/check-ai-agent-unit.ts`, `check-ai-agent-http.ts`, `check-ai-agent-frontend.ts` | 107 + 109 + 28 assertions (`npm run check:ai-agent`, `check:ai-agent-http`, `check:ai-agent-frontend`) |
 | `src/services/backend.ts`, `services/aiService.ts`, `services/authService.ts`, `components/ai/agent-tool-activity.tsx` | The frontend cut-over of the AI Agent page and sign-in (see §0.10) |
 | `prisma/migrations/20260921000000_uae_currency_support` | `currencies`, `exchange_rates` (seeded AED, USD, the peg), currency foreign keys, vehicle emirate / specification / source / purchase-in-original-currency columns, constraints (see §0.11) |
 | `src/lib/uae/reference.ts`, `src/lib/money/convert.ts` | Shared UAE lists and exact currency conversion (see §0.11) |
@@ -134,7 +145,7 @@ Everything above is reachable from the existing navigation; the six placeholder 
 | `prisma/migrations/20260921000300_vehicle_details` | `spec` / `registration` JSON documents, `location`, `notes`, `featured` on `vehicles` (see §0.17) |
 | `src/server/modules/{vehicles,customers,leads}/*.service.ts`, `src/app/api/v1/{vehicles,customers,leads}/*` | 13 endpoints: list/get/create/update for Vehicles, Customers, Leads (see §0.17) |
 | `src/services/{vehicle,customer,lead}Service.ts` | Connected to the backend, gradually replacing their mock data (see §0.17) |
-| `scripts/check-crm-http.ts`, `check-crm-frontend.ts` | 193 + 46 checks (`npm run check:crm-http`, `check:crm-frontend`) |
+| `scripts/check-crm-http.ts`, `check-crm-frontend.ts` | 200 + 46 checks (`npm run check:crm-http`, `check:crm-frontend`) |
 | `src/lib/security/csp.ts`, `next.config.ts` | `fastly.picsum.photos` added to `img-src` / `remotePatterns` — a real bug found in final testing (see §0.18) |
 
 **Also done: the tenant-isolation layer (§0.3)** and the first tenant-scoped endpoints: `GET /api/v1/auth/me`, `GET|POST /api/v1/branches`, `GET /api/v1/branches/:id`, `GET /api/v1/users`, `GET /api/v1/users/:id`.
@@ -179,7 +190,13 @@ Everything above is reachable from the existing navigation; the six placeholder 
 
 **Also done: Security verified item by item, and Audit Logging completed (§0.25, §0.26)**: a 16-item security checklist checked one line at a time against the codebase — almost all of it was already §0.14's work (RLS, RBAC, input validation, CSP/security headers, CSRF, secure cookies, storage policies, secret handling); the one genuine, previously-documented gap ("no general per-IP limiter on ordinary API calls") is now closed by a rate-limiting backstop on every route. Audit logging's 12 named actions were checked the same way: most already existed, and the real gaps — a vehicle's only "delete" (archiving), a legal-agreement document, a user record actually being created, and a mutating AI action — now each write their own named entry.
 
-**Not done yet:** the deals module and its endpoints (Vehicles, Customers and Leads are done, §0.17), and the other business tables (§3.2, §3.5); the frontend pages and service cut-over for authentication (the emailed links point at `/verify-email`, `/reset-password` and `/accept-invitation`, which do not exist yet); MFA; an email provider account (Resend is wired but needs a key and a verified sending domain); inbound message webhooks (§0.20 sends only); marketing-content history (a generated item is not persisted, same as before §0.21); a scheduler for task reminders or storage maintenance (both run by hand or from a job you add); a UI for document templates, task descriptions or task activity history (all real, backend-only capabilities for now). The frontend calls the sign-in, AI Agent, dashboard, vehicles, customers, leads, messages, reports, marketing, documents and tasks endpoints when a real session exists (§0.10, §0.17, §0.20, §0.21, §0.22, §0.23); everything else, and any deployment without a database, behaves as before.
+**Also done: File Storage confirmed, Background Jobs given a scheduler (§0.27, §0.28)**: the storage abstraction the spec asked for already existed (§0.8) in full except one method, `list()`, now added for ops tooling. Background jobs were checked against all six requested examples; five already run fast and synchronous, correctly not queued, and one genuine gap was real: a failed WhatsApp/SMS/email send was never retried. A third `runX()` job now retries it once, and — closing a gap this doc has flagged since §0.8 — one endpoint plus one `vercel.json` cron entry now actually schedules all three maintenance jobs (storage cleanup, task reminders, message retries), gated by `CRON_SECRET`, the same convention Vercel Cron uses natively.
+
+**Also done: a real Notifications API, and one more background job (§0.29)**: the notifications table and its 8-kind enum already existed (§0.15) feeding the top-bar bell, but only one thing had ever written a row and nothing had ever read one over HTTP — the frontend ran on demo data. Now a real own-data API (list/mark-read/mark-all-read), and each of the 8 named types checked against what genuinely triggers it: 6 got a real trigger wired into the module that already owns the moment (a lead assigned to someone else, a vehicle price change reaching an interested lead's assignee, a document generation/status-completion pair for contracts and inspections, an AI proposal awaiting approval), one (follow-up reminders) got a fourth background job — the exact one-line addition §0.28 said the next job would be — and one ("Deal update") stays honestly undone because the deals module doesn't exist. Every trigger goes through one function, so wiring in a real email/WhatsApp/push/SMS channel later touches one place, not seven.
+
+**Also done: Messages re-confirmed already built, and Global Search added (§0.30, §0.31)**: the messaging architecture a separate spec section asked for turned out to be exactly §0.20's existing module (internal conversation/message model, one provider interface, an adapter per channel, no vendor coupling) — re-verified, nothing new needed. Global Search was real, new work: one `composed` endpoint fans out, in parallel, to each of 7 real types' own already-permission-checked `list*` function — never a second implementation of RBAC — with real filtering (which types), pagination (genuine next-page, not a fixed cap), and sorting. It also fixed a real defect the audit surfaced: the command palette was fetching entire tables on every keystroke; it now makes one debounced call. A `pg_trgm` migration adds trigram indexes on every column any `search` filter in the app matches against, substring search's only real optimization, benefiting every pre-existing search param too.
+
+**Not done yet:** the deals module and its endpoints (Vehicles, Customers and Leads are done, §0.17), and the other business tables (§3.2, §3.5); the frontend pages and service cut-over for authentication (the emailed links point at `/verify-email`, `/reset-password` and `/accept-invitation`, which do not exist yet); MFA; an email provider account (Resend is wired but needs a key and a verified sending domain); inbound message webhooks (§0.20 sends only); marketing-content history (a generated item is not persisted, same as before §0.21); a UI for document templates, task descriptions, task activity history, or resending a message that failed twice (all real, backend-only capabilities for now); an image-processing pipeline or a market-data sync job (no feature needs either yet, §0.28); real email/WhatsApp/push/SMS notification delivery (the seam is ready, §0.29, nothing sends yet); "Deal update" notifications, any deal-related audit action, and deal search (all blocked on the deals module, same gap since §0.17). The frontend calls the sign-in, AI Agent, dashboard, vehicles, customers, leads, messages, reports, marketing, documents, tasks, notifications and search endpoints when a real session exists (§0.10, §0.17, §0.20, §0.21, §0.22, §0.23, §0.29, §0.31); everything else, and any deployment without a database, behaves as before.
 
 **Design points worth knowing**
 - **Platform organization:** one `organizations` row (type PLATFORM, id `platform`) owns platform staff and the Super Admin role, so `organization_id` is NOT NULL on every table and composite foreign keys work.
@@ -1195,6 +1212,136 @@ The audit log itself already existed (`audit_logs`, `recordAudit()`, §0.5) with
 **NOT done, or limits worth knowing**
 - `deal.created`/`deal.updated` cannot be logged until the deals module itself exists (tracked as a pre-existing gap since §0.17; not part of this security pass).
 - `ai.action_executed` is written best-effort (`.catch(() => undefined)`, matching the existing `ai_activity` write right next to it) — a failure to write it never fails the AI response itself.
+
+---
+
+## 0.27 File Storage (already built; extended with `list()`)
+
+A `StorageProvider`-shaped abstraction already existed from §0.8: `ObjectStorage` (`src/server/storage/object-storage.ts`), an interface implemented by exactly one class, `SupabaseObjectStorage` — the *only* file in the codebase that imports the Supabase client for storage, or ever sees a bucket URL or the service-role key. Every caller (vehicle photos, vehicle/customer/deal documents, the storage maintenance job) goes through `getObjectStorage()`, a lazily-constructed singleton configured from `.env` (`storageConfig()` in `src/server/env.ts`). This section's ask — `upload`, `delete`, `getSignedUrl`, `list`, environment configuration, no provider logic scattered through the app — was already true of `createSignedUploadUrl`/`removeObjects`/`createSignedDownloadUrl`/config; the one literally missing method was `list`.
+
+**Added:** `list(bucket, prefix, options?)` on the interface and the Supabase implementation, returning name/size/updatedAt for objects directly under a prefix. Deliberately *not* wired into the application's normal read paths — `files.service.ts` correctly keeps listing files from the database (`StoredFile` rows carry permission scope, soft-delete state and business metadata a bucket listing does not have), so switching any real feature to bucket listing would be a regression, not an improvement. `list()` is an ops/debugging capability: `scripts/storage-live-check.ts` now uses it to verify a real bucket's actual contents match what the app just wrote and removed, and `scripts/check-storage-http.ts` exercises it against the fake Storage server the same way.
+
+**Verified**
+- `scripts/check-storage-http.ts`: `list()` finds a photo that still exists under its `organizationId/vehicleId` prefix, and does not find one that was deleted — 2 new assertions, 120 total (up from 118).
+- `scripts/storage-live-check.ts`: `list()` finds the test object right after upload, and confirms it is gone after removal — extended for the next real-project run (still not run against a live Supabase project in this pass, same limit as §0.8).
+- `scripts/lib/fake-supabase-storage.ts` gained a `/object/list/:bucket` handler so the fake server's behaviour matches what `@supabase/supabase-js`'s `.list()` actually calls.
+
+**NOT done, or limits worth knowing**
+- No caller in the application uses `list()` for a real feature yet, by design (see above) — it exists to satisfy the full method set the spec asked for, and for ops tooling.
+
+---
+
+## 0.28 Background Jobs (a genuine gap closed; the rest already fit the existing pattern)
+
+Two background jobs already existed (§0.8, §0.23): a pure, idempotent, batched `runX()` function in `src/server/platform/`, invoked by a thin CLI script (`npm run storage:maintenance`, `npm run tasks:remind`). Neither was reachable from any HTTP route, and **nothing scheduled either of them** — a documented, standing gap. No queue library existed anywhere in the codebase (no BullMQ/pg-boss/Inngest, no `vercel.json`), consistent with the spec's own instruction: *"use a queue system only where actually needed."*
+
+Checked against the spec's six examples, what actually needed backgrounding today (not hypothetically):
+
+| Example | Finding |
+|---|---|
+| AI processing | The agent executor already defers every mutating tool call to a human-approved proposal rather than executing it inline (§0.10) — that *is* the deferred-work pattern for AI actions here. The LLM completion call itself is a synchronous chat turn; a user is waiting for the answer, so it stays a normal request, not a queued job |
+| Document generation | Confirmed synchronous (`documents.service.ts`): `{{token}}` string substitution against a plain-text template, no rendering, effectively instant. Correctly not backgrounded |
+| **Notifications** | **The real, current gap.** Sending a WhatsApp/SMS/email message (`messages.service.ts`'s `sendMessage`/`createConversation`) makes a genuine external network call synchronously inside the request — deliberately: the caller needs to know right away whether it actually sent, never a fabricated "sent". What nothing did until now: retry a transient failure afterwards. See below |
+| Report generation | Confirmed synchronous (`reports.service.ts`): plain DB aggregation queries, no export/PDF/CSV step. Correctly not backgrounded |
+| Image processing | No thumbnailing/resizing pipeline exists anywhere in the app (uploads go straight from the browser to Storage via a signed URL; the server only verifies size/type/magic bytes). Nothing to background — building an image pipeline that nothing currently needs would be inventing infrastructure ahead of a feature, the same call already made for the Deals module in §0.26 |
+| Market data synchronization | No external market-data source is integrated anywhere in this codebase (Market Intelligence/Price Analyzer are still placeholder pages, §0.1). Nothing to background yet, honestly, for the same reason |
+
+**Added**
+- `src/server/messaging/registry.ts` now exports `deliverMessage()` — moved out of `messages.service.ts` (previously a private, unexported function) so the live send path and the new retry job share exactly one implementation of "what does 'delivered' mean for a channel," rather than two copies drifting apart.
+- `src/server/platform/message-retries.ts` → `runMessageRetries()`: the third `runX()` job, same shape as the other two. Finds outbound messages `FAILED` within the last 24 hours, not yet retried, whose failure wasn't `provider_not_configured` (retrying a channel with no credentials would just fail again), and retries each exactly once — `messages.retried_at` (new column, mirrors `tasks.reminded_at`) is stamped whether the retry succeeds or not, so nothing is ever auto-retried twice. Anything still `FAILED` after that needs a human resend, same as before this section.
+- `src/server/platform/run-maintenance-jobs.ts` → `runMaintenanceJobs()`: runs all three jobs (storage cleanup, task reminders, message retries) together, each isolated with its own try/catch so one failing never stops the others. This is the thing that actually needed scheduling — one entry, not three.
+- `GET /api/v1/internal/maintenance-jobs`: the endpoint that closes the "nothing schedules this" gap. No session exists for a scheduler, so it is `publicRouteV2` (reviewed, on the allowlist) but gated by `CRON_SECRET` as a bearer token, checked with a constant-time comparison — the same convention Vercel Cron uses natively (set `CRON_SECRET` in the project and Vercel sends `Authorization: Bearer <value>` automatically on every invocation of a path listed in `vercel.json`'s `"crons"`). Missing/wrong secret is a plain 401; an unset `CRON_SECRET` is a 503, never silent open access.
+- `vercel.json`: one cron entry, `*/30 * * * *`, calling that endpoint. `npm run jobs:run` runs the same orchestrator locally without a server or a secret, for manual testing or a non-Vercel scheduler.
+
+**Verified**
+- `scripts/check-jobs-http.ts` (new): no secret → 401, wrong secret → 401, correct secret → 200 with a per-job summary; a message that fails to a normal number is recovered (SENT, provider id, `retriedAt` stamped) on retry; a message to a number the fake provider always refuses is retried exactly once and stays `FAILED`; `provider_not_configured` and messages older than the retry window are correctly left alone; an already-retried message is not retried again, including calling the job function directly twice in a row. 10 assertions.
+- `scripts/check-storage-http.ts` / `scripts/check-messages-http.ts` / `scripts/check-tasks-http.ts`: re-run unaffected by the `deliverMessage()` move and the new column — 120 / 21 / 31 assertions, all still passing.
+- `scripts/check-rbac-http.ts`: the new endpoint is a reviewed, named exception to "no public endpoint answers 401 without a session" (it isn't gated by a session at all — it's gated by its own secret, which the check above covers) — 67 assertions.
+- Full regression re-run (storage, jobs, messages, tasks, RBAC, security-http, security-db, CRM, rate-limiting, documents, services, auth, and the rest of the suite) with zero failures. tsc, eslint and `npm run build` clean.
+
+**NOT done, or limits worth knowing**
+- A message is retried automatically exactly once. Repeated manual failures need a person to resend (no UI for that yet — same limit as most of this backend's newer capabilities).
+- The cron schedule (every 30 minutes) is a reasonable default, not a requirement; tightening or loosening it is a one-line change to `vercel.json`.
+- Image processing and market-data sync have no job because no feature producing that need exists yet — they get the same `runX()` treatment the moment one does, not a queue library invented ahead of time.
+
+---
+
+## 0.29 Notifications (implemented and tested)
+
+The table and its 8-kind enum already existed (§0.15, `notifications`/`NotificationKind`, feeding the top-bar bell) — but only one thing ever wrote a row (`runTaskReminders()`), nothing ever read one over HTTP, and the frontend's `notificationService.ts` ran entirely on demo data. This section: a real API, and real triggers wherever a genuine one exists.
+
+**The API** — `src/server/modules/notifications/notifications.service.ts`, all own-data (`self: true`, no permission needed beyond being signed in, same as `GET /api/v1/auth/me`):
+- `GET /api/v1/notifications` — the caller's own, newest first, capped at 50.
+- `PATCH /api/v1/notifications/:id` — mark one read (`{read:true}` only; someone else's id is a 404, never a 403, so its existence is never confirmed to the wrong user).
+- `POST /api/v1/notifications/read-all` — mark every one of the caller's unread notifications read.
+
+**The 8 named types, checked one at a time against what genuinely triggers each:**
+
+| Type | Real trigger |
+|---|---|
+| New lead | `leads.service.ts`'s `createLead` — but only when the lead is assigned to someone OTHER than its creator (self-assigning your own lead, the default, is not news to you) |
+| Follow-up reminder | **New job**: `src/server/platform/lead-follow-up-reminders.ts` → `runLeadFollowUpReminders()`, the same `runX()`/idempotent-gate shape as `runTaskReminders()` (§0.23), now folded into the same `run-maintenance-jobs.ts` orchestrator and cron entry (§0.28) — a fourth job, a one-line addition, exactly as §0.28 said the next one would be |
+| Vehicle price change | `vehicles.service.ts`'s `updateVehicle`, when `listPrice` actually changes — notifies the assignee of every active (not won/lost) lead genuinely interested in that vehicle (`Lead.interestedVehicleId`), not a fabricated "vehicle owner/watcher" role that does not exist in this schema |
+| AI opportunity | `src/server/ai/agent/executor.ts`, at the exact point a mutating tool call becomes a pending proposal instead of running (§0.10's `tool.confirm` branch) — the AI found something worth doing and, correctly, did not do it; that is the opportunity |
+| Contract ready | `documents.service.ts`'s `createDocument`, the same `isContract` check that already drives the `contract.generated` audit action (§0.26) |
+| Inspection completed | `documents.service.ts`'s `updateDocumentStatus`, specifically an `inspection_report`-type document reaching `completed` — not any status edit on any document type |
+| Deal update | **Not done** — the deals module still does not exist (§0.17, §0.26). Same honest gap as `deal.created`/`deal.updated` in audit logging; this fires the day that module is built, not before |
+| Task reminder | Already existed (§0.23) — `runTaskReminders()` was the one place this table was ever written before this section |
+
+**Future channels (email, WhatsApp, push, SMS)** — the spec's explicit ask. Every trigger above calls one function, `notifyUser(db, ctx, {userId, kind, title, description, link})`; none of them knows or cares how a notification reaches its user. Fanning a notification out to a real channel is a future change *inside that one function* — reusing the exact adapter-per-channel pattern §0.20's messaging module (`WhatsAppProvider`/`SmsProvider`/`EmailProvider`) already established for outbound messages — never a change at any of the seven call sites above. Nothing about this section builds that fan-out now: there is no product decision yet about which kinds should page a phone versus wait for the bell, and building it unasked would be guessing at that decision instead of leaving the seam ready for it.
+
+**Frontend** — `src/services/notificationService.ts` rewritten with `liveOrDemo`, matching the shape every other connected service uses; `notifications-menu.tsx`/`notification-panel.tsx` needed zero changes, since the DTO the API returns was designed to match `AppNotification` exactly (kind/title/description/link/read/createdAt). `getMessages()` (the separate dealership-message preview list, not this table) stays demo-only — no endpoint asked for here.
+
+**Verified**
+- `scripts/check-notifications-http.ts` (new, 28 assertions): no session → 401 on all three routes; a user's list contains only their own notifications; `read` reflects `readAt`; marking your own → 200 and idempotent on a second call; marking someone else's, an unknown id, or a wrong organization's → 404; `{read:false}` → 400; mark-all-read updates only the caller's unread and returns 0 the second time; the follow-up-reminder job reminds a due lead once, leaves a not-due one alone, does not double-remind, and rescheduling a lead's `nextFollowUpAt` (via the real `PUT /api/v1/leads/:id`) resets the gate so the new date gets its own reminder.
+- Each real trigger tested alongside the module that fires it, not duplicated: `check-crm-http.ts` (+6 assertions — new lead notifies the assignee and not a self-assigner; a price change notifies an interested lead's assignee; an update that doesn't touch price sends nothing), `check-documents-http.ts` (+5 — contract generation notifies the creator, a non-contract document does not, an inspection report reaching completed notifies its creator, nothing else does), `check-ai-agent-http.ts` (+1 — a pending proposal notifies the user who triggered it).
+- Full regression re-run (notifications, CRM, documents, AI agent, tasks, services-frontend, security-http, security-db, RBAC, rate-limiting, jobs, auth, dashboard, storage, messages, and the rest) with zero failures. tsc, eslint and `npm run build` clean.
+
+**NOT done, or limits worth knowing**
+- `deal.created`/`deal.updated`-equivalent ("Deal update") cannot fire until the deals module exists.
+- No real channel fan-out (email/WhatsApp/push/SMS) — the seam (`notifyUser`) is ready for it, nothing sends yet.
+- A vehicle price change only reaches a salesperson already working an interested lead on that car — there is no "watch this vehicle" feature for a lead not yet linked to it, and building one was not asked for here.
+
+---
+
+## 0.30 Messages: already built (re-verified, nothing new needed)
+
+A separate spec section asked for "a messaging architecture" with WhatsApp/Email/SMS/Website Chat/AI Agent channels, an internal conversation/message model, provider adapters, and no tight coupling to one provider. This is exactly §0.20's messaging module, built earlier: `conversations`/`messages` tables; `src/server/messaging/provider.ts`'s one interface (`MessageProvider.send()`); an adapter per channel (`src/server/messaging/providers/{whatsapp,sms,email,internal}.ts`); `registry.ts` as the only place that maps a channel to its adapter, so the database and the service layer never import a vendor SDK or see a credential. Re-checked line by line against this section's wording and found nothing missing — no new work in this pass.
+
+---
+
+## 0.31 Global Search (implemented and tested)
+
+**What was there before this section**: nothing backend-wide. Each resource already had its own real search (`?search=` on vehicles, customers, leads, documents, messages), but nothing searched *across* them. The frontend's ⌘K command palette papered over that gap in a way that would have become a real problem: on every keystroke, in live mode, it called `getVehicles()`, `getCustomers()`, `getLeads()`, `getDeals()`, `getDocuments()`, `getTasks()`, `getConversations()`, `getChatThreads()` — eight endpoints, each with **no query parameter at all**, fetching the caller's entire table every time, then filtering client-side. Harmless against the small demo fixtures this was built and tested against; a genuine full-table-scan-per-keystroke against a real tenant's data. Section 29 is both the fix and the feature.
+
+**The endpoint**: `GET /api/v1/search?q=&types=&page=&pageSize=&sortBy=`, `composed: true` (no single `[resource,action]` gate fits an endpoint that spans seven resources with seven different permissions — same access kind the dashboard-summary endpoint uses, §0.20).
+
+- **Search**: `q`, required, matched the same way every existing `search` param already does (`contains`, case-insensitive) — no new search technology introduced.
+- **Filters**: `types` — a CSV of which of the 7 real types to search (`vehicles, customers, leads, documents, tasks, messages, ai_conversations`). Omitted = every type the caller can read.
+- **Pagination**: real, not a fixed cap with nowhere to go — `page`/`pageSize` window each type's results, so asking for page 2 of vehicle matches genuinely returns the next page, not a re-run of page 1.
+- **Sorting**: `relevance` (default, each type's own natural order) or `newest`/`oldest`.
+- **Deliberately not searched**: Deals. The deals module does not exist (§0.17/§0.26/§0.29's standing gap) — searching a table with no real write path would be searching demo rows dressed up as real results.
+
+**Why this is a thin fan-out, not a second implementation of search or RBAC**: every type's result comes from calling that module's own, already-permission-checked, already-scope-filtered `list*` function (`listVehicles`, `listCustomers`, `listLeads`, `listDocuments`, `listTasks`, messages' `listConversations`, AI's `listConversations`) with the caller's query text as its `search` param — two of those (tasks, AI conversations) did not have one before this section and now do, as a genuine small addition to each, not a workaround. A type the caller cannot read (checked with `can(ctx, resource, "read")` before it is ever queried) is silently left out of the response, never a 403 for the whole request and never an empty-but-present entry that implies "there are none" — mirrors dashboard-summary's `composed` pattern exactly. Reusing the real function is what makes it impossible for this endpoint to drift out of sync with what a role may actually see; AI conversations in particular are private per-user regardless of role (§0.10), and that stays true here for free, because the real `listConversations` is what is actually called.
+
+**One real correctness bug, found in testing, fixed**: the first version re-sorted (`newest`/`oldest`) the result *after* the underlying call had already truncated it to `pageSize` — sorting a 1-row page is a no-op. Fixed by fetching a single bounded window (100 rows, one query) from the underlying function when a real sort is requested, sorting that in memory, then slicing the requested page — genuine cross-page ordering, still one query per type, never one per row.
+
+**Optimizing the actual query cost**: every type's fan-out runs in parallel (`Promise.all`), not serially. Substring search (`contains`) cannot use a plain btree index at all — a sequential scan is the only option without one. A migration (`20260925000100_search_indexes`) adds `pg_trgm` and a GIN trigram index on every column any `search` filter in the app actually matches against: `vehicles(make, model, trim, vin, stock_number)`, `customers(name, email, phone)`, `generated_documents(title)`, `tasks(title)`, `conversations(contact_name, last_message_preview)`, `ai_conversations(title)` — 13 indexes, purely additive, benefiting every pre-existing `search` param too, not just this new endpoint. No new index chases a query this app doesn't actually run.
+
+**A second real gotcha, caught by `check-security-db.ts` re-running clean, not assumed**: `CREATE EXTENSION pg_trgm` installs its support functions (`similarity`, `gtrgm_consistent`, ...) with PostgreSQL's default EXECUTE-to-PUBLIC grant — re-opening a privilege for Supabase's `anon`/`authenticated` roles that §0.14's lock-down migration had already closed for everything else. `REVOKE ... FROM anon/authenticated` (that migration's own pattern) does not touch this, because their access here comes from PUBLIC membership, not a personal grant. Fixed by revoking from PUBLIC directly and locking future functions in the schema the same way — and then, because a GIN trigram index's support functions run under the *querying role's own privileges* even when invoked internally by an index scan, `cda_app` needed its own explicit `GRANT EXECUTE` or its own indexed searches would have stopped working. Both re-verified: `check-security-db.ts` (260 checks, 0 failed — `anon`/`authenticated` are back to executing nothing) and `check-search-http.ts` (still 21/21 — `cda_app`'s searches still work).
+
+**Frontend**: `src/services/searchService.ts` (now the 13th connected service) replaces the command palette's eight full-table fetches with one debounced (250ms, `src/hooks/use-debounce.ts`) call to this endpoint in live mode; demo mode now does the equivalent substring match over the same small fixtures it always used, so both modes behave the same way instead of two different algorithms (the old client-side fuzzy match vs. a real substring search) pretending to be the same feature. The Deals group in the command palette is untouched — still demo-only, for the same reason Deals is not searched server-side.
+
+**Verified**
+- `scripts/check-search-http.ts` (new, 21 assertions): no session → 401; `q` missing or blank → 400; one call finds a seeded, distinctly-named row in all 7 real types at once, correctly shaped (title/subtitle/link) for each; a viewer (holds only `vehicles:read`) gets a response with exactly one type present, the other six silently omitted, never a 403; an AI conversation belonging to a different user in the *same* organization never appears; `types=` narrows the search, and an unrecognized type in the filter is dropped quietly rather than failing the whole request; another organization's matching vehicle never appears; real page-2-is-genuinely-different pagination and `sortBy=newest/oldest` both verified with vehicles created at different times.
+- `search` added to tasks and AI conversations: +2 assertions each in `check-tasks-http.ts` / `check-ai-http.ts` (found by title, and correctly finds nothing for a title that isn't there) — tested alongside the module that owns the endpoint, not duplicated in the search-specific script.
+- Manually verified in a real browser (demo mode): the rewritten command palette groups results correctly, caps each type, and clicking a result navigates to the right page — confirmed against the pre-existing behavior before rewiring it.
+- Full regression suite (search, tasks, AI, AI agent, security-static, routes, services, services-frontend, security-http, security-db, RBAC, CRM frontend, storage, and the rest) re-run with zero failures. tsc, eslint and `npm run build` clean.
+
+**NOT done, or limits worth knowing**
+- Deals is not searched (no real deals module yet, same standing gap noted throughout this doc).
+- `sortBy=newest/oldest` sorts within a bounded 100-row window per type, not the caller's entire table — a deliberate, documented cap, not a silent limitation.
+- "Relevance" is each type's own default ordering (typically recency-ish already), not a scored/ranked relevance model — this app has no full-text search engine, and building one was not asked for here.
 
 ---
 
